@@ -109,10 +109,10 @@ let handler = get[
 ## Basic handlers
 
 In order to work with Rosencrantz, you can `import rosencrantz`. If you prefer
-a more fine-grained control, there are packages `rosen/core` (which contains the
-definitions common to all handlers), `rosen/handlers` (for the handlers we are
-about to show), and then more specialized handlers under `rosen/jsonsupport`,
-`rosen/formsupport` and so on.
+a more fine-grained control, there are packages `rosencrantz/core` (which
+contains the definitions common to all handlers), `rosencrantz/handlers` (for
+the handlers we are about to show), and then more specialized handlers under
+`rosencrantz/jsonsupport`, `rosencrantz/formsupport` and so on.
 
 The simplest handlers are:
 
@@ -169,7 +169,7 @@ pathChunk("/repeat")[
 To filter by HTTP method, one can use
 
 * `verb(m)`, where `m` is a member of the `HttpMethod` enum defined in
-  `rosen/core`. There are corresponding specializations
+  `rosencrantz/core`. There are corresponding specializations
 * `get`, `post`, `put`, `delete`, `head`, `patch`, `options`, `trace` and
   `connect`
 
@@ -254,14 +254,14 @@ failWith(Http406, "JSON endpoint")(
 ## JSON support
 
 Rosencrantz has support to parse and respond with JSON, under the
-`rosen/jsonsupport` module. It defines two typeclasses:
+`rosencrantz/jsonsupport` module. It defines two typeclasses:
 
 * a type `T` is `JsonReadable` if there is function `readFromJson(json, T): T`
   where `json` is of type `JsonNode`;
 * a type `T` is `JsonWritable` if there is a function
   `renderToJson(t: T): JsonNode`.
 
-The module `rosen/core` contains the following handlers:
+The module `rosencrantz/core` contains the following handlers:
 
 * `ok(j)`, where `j` is of type `JsonNode`, that will respond with a content
   type of `application/json`.
@@ -279,7 +279,7 @@ The module `rosen/core` contains the following handlers:
 Rosencrantz has support to read the body of a form, either of type
 `application/x-www-form-urlencoded` or multipart (to be done).
 
-The module `rosen/formsupport` defines the following handlers:
+The module `rosencrantz/formsupport` defines the following handlers:
 
 * `formBody(p)` where `p` is a `proc(s: StringTableRef): Handler`. It will
   parse the body as an URL-encoded form and pass the corresponding string

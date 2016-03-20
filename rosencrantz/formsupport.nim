@@ -1,5 +1,5 @@
 import strtabs, strutils, asynchttpserver, asyncdispatch
-import rosen/core
+import rosencrantz/core
 
 proc parseUrlencoded(body: string): StringTableRef {.inline.} =
   result = {:}.newStringTable

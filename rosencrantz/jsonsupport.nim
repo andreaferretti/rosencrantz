@@ -1,5 +1,5 @@
 import json, asynchttpserver, asyncdispatch, strtabs
-import rosen/core, rosen/handlers
+import rosencrantz/core, rosencrantz/handlers
 
 type
   JsonReadable* = concept x

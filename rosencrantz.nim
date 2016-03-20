@@ -1,3 +1,3 @@
-import rosen/core, rosen/handlers, rosen/jsonsupport, rosen/formsupport
+import rosencrantz/core, rosencrantz/handlers, rosencrantz/jsonsupport, rosencrantz/formsupport
 
 export core, handlers, jsonsupport, formsupport
