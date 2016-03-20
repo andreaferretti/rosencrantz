@@ -168,7 +168,7 @@ about to show), and then more specialized handlers under <code>rosen/jsonsupport
 <li>
 <code>complete(code, body, headers)</code> that actually responds to the request. Here
 <code>code</code> is an instance of <code>HttpCode</code> from <code>asynchttpserver</code>, <code>body</code> is a
-  <code>string</code> and <code>headers</code> are an instance of <code>StringTableRef</code>.</li>
+<code>string</code> and <code>headers</code> are an instance of <code>StringTableRef</code>.</li>
 <li>
 <code>ok(body)</code>, which is a specialization of <code>complete</code> for a response of <code>200 Ok</code>
 with a content type of <code>text/plain</code>.</li>
@@ -178,14 +178,14 @@ with a content type of <code>text/plain</code>.</li>
 <li>
 <code>body(p)</code> extracts the body of the request. Here <code>p</code> is a
 <code>proc(s: string): Handler</code> which takes the extracted body as input and
-  returns a handler.</li>
+returns a handler.</li>
 </ul>
 
 <p>For instance, a simple handler that echoes back the body of the request would
 look like</p>
 
 <div class="highlight highlight-source-nim"><pre><span class="pl-c1">body</span>(<span class="pl-k">proc</span>(s: <span class="pl-k">string</span>)<span class="pl-k">:</span> <span class="pl-k">auto</span> =
-    <span class="pl-c1">ok</span>(s)
+  <span class="pl-c1">ok</span>(s)
 )</pre></div>
 
 <h3>
@@ -199,26 +199,26 @@ look like</p>
 <li>
 <code>pathChunk(s)</code> does the same but only for a prefix of the path. This means
 that one can nest more path handlers after it, unlike <code>path</code>, that matches
-  and consumes the whole path.</li>
+and consumes the whole path.</li>
 <li>
 <code>segment(p)</code>, that extracts a segment of path among two <code>/</code> signs. Here <code>p</code>
 is a <code>proc(s: string): Handler</code> that takes the matched segment and return a
-  handler. This fails if the position is not just before a <code>/</code> sign.</li>
+handler. This fails if the position is not just before a <code>/</code> sign.</li>
 <li>
 <code>intSegment(p)</code>, works the same as <code>segment</code>, but extracts and parses an
 integer number. It fails if the segment does not represent an integer. Here
-  <code>p</code> is a <code>proc(s: int): Handler</code>.</li>
+<code>p</code> is a <code>proc(s: int): Handler</code>.</li>
 </ul>
 
 <p>For instance, to match and extract parameters out of a route like
 <code>repeat/$msg/$n</code>, one would nest the above to get</p>
 
 <div class="highlight highlight-source-nim"><pre><span class="pl-c1">pathChunk</span>(<span class="pl-s">"/repeat"</span>)[
-    <span class="pl-c1">segment</span>(<span class="pl-k">proc</span>(msg: <span class="pl-k">string</span>)<span class="pl-k">:</span> <span class="pl-k">auto</span> =
-        <span class="pl-c1">intSegment</span>(<span class="pl-k">proc</span>(n: <span class="pl-k">int</span>)<span class="pl-k">:</span> <span class="pl-k">auto</span> =
-            someHandler
-        )
+  <span class="pl-c1">segment</span>(<span class="pl-k">proc</span>(msg: <span class="pl-k">string</span>)<span class="pl-k">:</span> <span class="pl-k">auto</span> =
+    <span class="pl-c1">intSegment</span>(<span class="pl-k">proc</span>(n: <span class="pl-k">int</span>)<span class="pl-k">:</span> <span class="pl-k">auto</span> =
+      someHandler
     )
+  )
 ]</pre></div>
 
 <h3>
@@ -260,19 +260,19 @@ is is equivalent to <code>headers(("Content-Type", s))</code>.</li>
 <li>
 <code>readHeaders(s1, p)</code> extracts the value of the header with key <code>s1</code> and
 passes it to <code>p</code>, which is of type <code>proc(h1: string): Handler</code>. It rejects
-  the request if the header <code>s1</code> is not defined. There are overloads
-  <code>readHeaders(s1, s2, p)</code> and <code>readHeaders(s1, s2, s3, p)</code>, where <code>p</code> is a
-  function of two arguments (resp. three arguments). To extract more than
-  three headers, one can use <code>readAllHeaders</code> or nest <code>readHeaders</code> calls.</li>
+the request if the header <code>s1</code> is not defined. There are overloads
+<code>readHeaders(s1, s2, p)</code> and <code>readHeaders(s1, s2, s3, p)</code>, where <code>p</code> is a
+function of two arguments (resp. three arguments). To extract more than
+three headers, one can use <code>readAllHeaders</code> or nest <code>readHeaders</code> calls.</li>
 <li>
 <code>tryReadHeaders(s1, p)</code> works the same as <code>readHeaders</code>, but it does not
 reject the request if header <code>s</code> is missing; instead, <code>p</code> receives an empty
-  string as default. Again, there are overloads for two and three arguments.</li>
+string as default. Again, there are overloads for two and three arguments.</li>
 <li>
 <code>checkHeaders(h1, h2, ...)</code> filters the request for the header value. Here
 <code>h1</code> and the other are pairs of strings, representing a key and a value. If
-  the request does not have the corresponding headers with these values, it
-  will be rejected.</li>
+the request does not have the corresponding headers with these values, it
+will be rejected.</li>
 <li>
 <code>accept(mimetype)</code> is equivalent to <code>checkHeaders(("Accept", mimetype))</code>.</li>
 </ul>
@@ -281,13 +281,13 @@ reject the request if header <code>s</code> is missing; instead, <code>p</code> 
 request, you can do</p>
 
 <div class="highlight highlight-source-nim"><pre><span class="pl-c1">accept</span>(<span class="pl-s">"application/json"</span>)[
-    <span class="pl-c1">contentType</span>(<span class="pl-s">"application/json"</span>)[
-        <span class="pl-c1">ok</span>(someJsonValue)
-    ]
+  <span class="pl-c1">contentType</span>(<span class="pl-s">"application/json"</span>)[
+    <span class="pl-c1">ok</span>(someJsonValue)
+  ]
 ] <span class="pl-k">~</span> <span class="pl-c1">accept</span>(<span class="pl-s">"text/xml"</span>)[
-    <span class="pl-c1">contentType</span>(<span class="pl-s">"text/xml"</span>)[
-        <span class="pl-c1">ok</span>(someXmlValue)
-    ]
+  <span class="pl-c1">contentType</span>(<span class="pl-s">"text/xml"</span>)[
+    <span class="pl-c1">ok</span>(someXmlValue)
+  ]
 ]</pre></div>
 
 <h3>
@@ -305,7 +305,7 @@ of <code>406 Not Accepted</code>.</p>
 <p>One way to do this is to put the 406 response as an alternative, like this:</p>
 
 <div class="highlight highlight-source-nim"><pre><span class="pl-c1">accept</span>(<span class="pl-s">"application/json"</span>)[
-    someResponse
+  someResponse
 ] <span class="pl-k">~</span> <span class="pl-c1">complete</span>(Http406, <span class="pl-s">"JSON endpoint"</span>)</pre></div>
 
 <p>However, it can be more clear to use an equivalent combinators that wraps
@@ -318,9 +318,9 @@ handler fails to match. For this, there is</p>
 </ul>
 
 <div class="highlight highlight-source-nim"><pre><span class="pl-c1">failWith</span>(Http406, <span class="pl-s">"JSON endpoint"</span>)(
-    <span class="pl-c1">accept</span>(<span class="pl-s">"application/json"</span>)[
-        someResponse
-    ]
+  <span class="pl-c1">accept</span>(<span class="pl-s">"application/json"</span>)[
+    someResponse
+  ]
 )</pre></div>
 
 <h2>
@@ -348,11 +348,11 @@ with the JSON representation of <code>t</code> and a content type of <code>appli
 <li>
 <code>jsonBody(p)</code>, where <code>p</code> is a <code>proc(j: JsonNode): Handler</code>, that extracts the
 body as a <code>JsonNode</code> and passes it to <code>p</code>, failing if the body is not valid
-  JSON.</li>
+JSON.</li>
 <li>
 <code>jsonBody(p)</code>, where <code>p</code> is a <code>proc(t: T): Handler</code>, where <code>T</code> is a type that
 is <code>JsonReadable</code>; it extracts the body as a <code>T</code> and passes it to <code>p</code>, failing
-  if the body is not valid JSON or cannot be converted to <code>T</code>.</li>
+if the body is not valid JSON or cannot be converted to <code>T</code>.</li>
 </ul>
 
 <h2>
@@ -367,7 +367,7 @@ is <code>JsonReadable</code>; it extracts the body as a <code>T</code> and passe
 <li>
 <code>formBody(p)</code> where <code>p</code> is a <code>proc(s: StringTableRef): Handler</code>. It will
 parse the body as an URL-encoded form and pass the corresponding string
-  table to <code>p</code>, rejecting the request if the body is not parseable.</li>
+table to <code>p</code>, rejecting the request if the body is not parseable.</li>
 </ul>
 
 <h2>
