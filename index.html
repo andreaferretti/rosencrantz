@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Rosencrantz by andreaferretti</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Rosencrantz</h1>
+      <h2 class="project-tagline">A web DSL for Nim</h2>
+      <a href="https://github.com/andreaferretti/rosencrantz" class="btn">View on GitHub</a>
+      <a href="https://github.com/andreaferretti/rosencrantz/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/andreaferretti/rosencrantz/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="rosencrantz" class="anchor" href="#rosencrantz" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Rosencrantz</h1>
+
+<p>Rosencrantz is a DSL to write web servers, inspired by <a href="http://spray.io/">Spray</a>
+and its successor <a href="http://doc.akka.io/docs/akka/2.4.2/scala/http/introduction.html">Akka HTTP</a>.</p>
+
+<p>It sits on top of <a href="http://nim-lang.org/docs/asynchttpserver.html">asynchttpserver</a>
+and provides a composable way to write HTTP handlers.</p>
+
+
+
+<ul>
+<li>
+<a href="#rosencrantz">Rosencrantz</a>
+
+<ul>
+<li>
+<a href="#introduction">Introduction</a>
+
+<ul>
+<li><a href="#composing-handlers">Composing handlers</a></li>
+<li><a href="#starting-a-server">Starting a server</a></li>
+</ul>
+</li>
+<li><a href="#an-example">An example</a></li>
+<li>
+<a href="#basic-handlers">Basic handlers</a>
+
+<ul>
+<li><a href="#path-handling">Path handling</a></li>
+<li><a href="#http-methods">HTTP methods</a></li>
+<li><a href="#querystring-extraction">Querystring extraction</a></li>
+<li><a href="#working-with-headers">Working with headers</a></li>
+<li><a href="#failure-containment">Failure containment</a></li>
+</ul>
+</li>
+<li><a href="#json-support">JSON support</a></li>
+<li><a href="#form-handling-support">Form handling support</a></li>
+<li><a href="#static-file-support">Static file support</a></li>
+</ul>
+</li>
+</ul>
+
+
+
+<h2>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>The core abstraction in Rosencrantz is the <code>Handler</code>, which is just an alias
+for a <code>proc(req: ref Request, ctx: Context): Future[Context]</code>. Here <code>Request</code>
+is the HTTP request from <code>asynchttpserver</code>, while <code>Context</code> is a place where
+we accumulate information such as:</p>
+
+<ul>
+<li>what part of the path has been matched so far;</li>
+<li>what headers to emit with the response;</li>
+<li>whether the request has matched a route so far.</li>
+</ul>
+
+<p>A handler usually does one or more of the following:</p>
+
+<ul>
+<li>filter the request, by returning <code>ctx.reqject()</code> if some condition is not
+satisfied;</li>
+<li>accumulate some headers;</li>
+<li>actually respond to the request, by calling the <code>complete</code> function or one
+derived from it.</li>
+</ul>
+
+<p>Rosencrantz provides many of those handlers, which are described below.</p>
+
+<h3>
+<a id="composing-handlers" class="anchor" href="#composing-handlers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Composing handlers</h3>
+
+<p>The nice thing about handlers is that they are composable. There are two ways
+to compose two headers <code>h1</code> and <code>h2</code>:</p>
+
+<ul>
+<li>
+<code>h1 -&gt; h2</code> (read <code>h1</code> <strong>and</strong> <code>h2</code>) returns a handler that passes the request
+through <code>h1</code> to update the context; then, if <code>h1</code> does not reject the request,
+it passes it, together with the new context, to <code>h2</code>. Think filtering first
+by HTTP method, then by path.</li>
+<li>
+<code>h1 ~ h2</code> (read <code>h1</code> <strong>or</strong> <code>h2</code>) returns a handler that passes the request
+through <code>h1</code>; if it rejects the request, it tries again with <code>h2</code>. Think
+matching on two alternative paths.</li>
+</ul>
+
+<p>The combination <code>h1 -&gt; h2</code> can also be written <code>h1[h2]</code>, which makes it nicer
+when composing many handlers one inside each other.</p>
+
+<h3>
+<a id="starting-a-server" class="anchor" href="#starting-a-server" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Starting a server</h3>
+
+<p>Once you have a handler, you can serve it using a server from <code>asynchttpserver</code>,
+like this:</p>
+
+<div class="highlight highlight-source-nim"><pre><span class="pl-k">let</span> server = <span class="pl-c1">newAsyncHttpServer</span>()
+
+<span class="pl-c1">waitFor</span> server.<span class="pl-c1">serve</span>(<span class="pl-c1">Port</span>(<span class="pl-c1">8080</span>), handler)</pre></div>
+
+<h2>
+<a id="an-example" class="anchor" href="#an-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>An example</h2>
+
+<p>The following uses some of the predefined handlers and composes them together.
+We write a small piece of a fictionary API to save and retrieve messages, and
+we assume we have functions such as <code>getMessageById</code> that perform the actual
+business logic. This should give a feel of how the DSL looks like:</p>
+
+<div class="highlight highlight-source-nim"><pre><span class="pl-k">let</span> handler = get[
+  <span class="pl-c1">path</span>(<span class="pl-s">"/api/status"</span>)[
+    <span class="pl-c1">ok</span>(<span class="pl-c1">getStatus</span>())
+  ] <span class="pl-k">~</span>
+  <span class="pl-c1">pathChunk</span>(<span class="pl-s">"/api/message"</span>)[
+    <span class="pl-c1">accept</span>(<span class="pl-s">"application/json"</span>)[
+      <span class="pl-c1">intSegment</span>(<span class="pl-k">proc</span>(id: <span class="pl-k">int</span>)<span class="pl-k">:</span> <span class="pl-k">auto</span> =
+        <span class="pl-k">let</span> message = <span class="pl-c1">getMessageById</span>(id)
+        <span class="pl-c1">ok</span>(message)
+      )
+    ]
+  ]
+] <span class="pl-k">~</span> post [
+  <span class="pl-c1">path</span>(<span class="pl-s">"/api/new-message"</span>)[
+    <span class="pl-c1">jsonBody</span>(<span class="pl-k">proc</span>(msg: Message)<span class="pl-k">:</span> <span class="pl-k">auto</span> =
+      <span class="pl-k">let</span>
+        id = <span class="pl-c1">generateId</span>()
+        saved = <span class="pl-c1">saveMessage</span>(id, msg)
+      <span class="pl-k">if</span> saved: <span class="pl-c1">ok</span>(id)
+      <span class="pl-k">else</span>: <span class="pl-c1">complete</span>(Http500, <span class="pl-s">"save failed"</span>)
+    )
+  ]
+]</pre></div>
+
+<h2>
+<a id="basic-handlers" class="anchor" href="#basic-handlers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Basic handlers</h2>
+
+<p>In order to work with Rosencrantz, you can <code>import rosencrantz</code>. If you prefer
+a more fine-grained control, there are packages <code>rosen/core</code> (which contains the
+definitions common to all handlers), <code>rosen/handlers</code> (for the handlers we are
+about to show), and then more specialized handlers under <code>rosen/jsonsupport</code>,
+<code>rosen/formsupport</code> and so on.</p>
+
+<p>The simplest handlers are:</p>
+
+<ul>
+<li>
+<code>complete(code, body, headers)</code> that actually responds to the request. Here
+<code>code</code> is an instance of <code>HttpCode</code> from <code>asynchttpserver</code>, <code>body</code> is a
+  <code>string</code> and <code>headers</code> are an instance of <code>StringTableRef</code>.</li>
+<li>
+<code>ok(body)</code>, which is a specialization of <code>complete</code> for a response of <code>200 Ok</code>
+with a content type of <code>text/plain</code>.</li>
+<li>
+<code>notFound(body)</code>, which is a specialization of <code>complete</code> for a response of
+<code>404 Not Found</code> with a content type of <code>text/plain</code>.</li>
+<li>
+<code>body(p)</code> extracts the body of the request. Here <code>p</code> is a
+<code>proc(s: string): Handler</code> which takes the extracted body as input and
+  returns a handler.</li>
+</ul>
+
+<p>For instance, a simple handler that echoes back the body of the request would
+look like</p>
+
+<div class="highlight highlight-source-nim"><pre><span class="pl-c1">body</span>(<span class="pl-k">proc</span>(s: <span class="pl-k">string</span>)<span class="pl-k">:</span> <span class="pl-k">auto</span> =
+    <span class="pl-c1">ok</span>(s)
+)</pre></div>
+
+<h3>
+<a id="path-handling" class="anchor" href="#path-handling" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Path handling</h3>
+
+<p>There are a few handlers to filter by path and extract path parameters:</p>
+
+<ul>
+<li>
+<code>path(s)</code> filters the requests where the path is equal to <code>s</code>.</li>
+<li>
+<code>pathChunk(s)</code> does the same but only for a prefix of the path. This means
+that one can nest more path handlers after it, unlike <code>path</code>, that matches
+  and consumes the whole path.</li>
+<li>
+<code>segment(p)</code>, that extracts a segment of path among two <code>/</code> signs. Here <code>p</code>
+is a <code>proc(s: string): Handler</code> that takes the matched segment and return a
+  handler. This fails if the position is not just before a <code>/</code> sign.</li>
+<li>
+<code>intSegment(p)</code>, works the same as <code>segment</code>, but extracts and parses an
+integer number. It fails if the segment does not represent an integer. Here
+  <code>p</code> is a <code>proc(s: int): Handler</code>.</li>
+</ul>
+
+<p>For instance, to match and extract parameters out of a route like
+<code>repeat/$msg/$n</code>, one would nest the above to get</p>
+
+<div class="highlight highlight-source-nim"><pre><span class="pl-c1">pathChunk</span>(<span class="pl-s">"/repeat"</span>)[
+    <span class="pl-c1">segment</span>(<span class="pl-k">proc</span>(msg: <span class="pl-k">string</span>)<span class="pl-k">:</span> <span class="pl-k">auto</span> =
+        <span class="pl-c1">intSegment</span>(<span class="pl-k">proc</span>(n: <span class="pl-k">int</span>)<span class="pl-k">:</span> <span class="pl-k">auto</span> =
+            someHandler
+        )
+    )
+]</pre></div>
+
+<h3>
+<a id="http-methods" class="anchor" href="#http-methods" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HTTP methods</h3>
+
+<p>To filter by HTTP method, one can use</p>
+
+<ul>
+<li>
+<code>verb(m)</code>, where <code>m</code> is a member of the <code>HttpMethod</code> enum defined in
+<code>rosen/core</code>. There are corresponding specializations</li>
+<li>
+<code>get</code>, <code>post</code>, <code>put</code>, <code>delete</code>, <code>head</code>, <code>patch</code>, <code>options</code>, <code>trace</code> and
+<code>connect</code>
+</li>
+</ul>
+
+<h3>
+<a id="querystring-extraction" class="anchor" href="#querystring-extraction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Querystring extraction</h3>
+
+<p>TBD</p>
+
+<h3>
+<a id="working-with-headers" class="anchor" href="#working-with-headers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Working with headers</h3>
+
+<p>There are various handlers to read HTTP headers, filter requests by their
+values, or accumulate HTTP headers for the response.</p>
+
+<ul>
+<li>
+<code>headers(h1, h2, ...)</code> adds headers for the response. Here each argument is
+a tuple of two strings, which are a key/value pair.</li>
+<li>
+<code>contentType(s)</code> is a specialization to emit the <code>Content-Type</code> header, so
+is is equivalent to <code>headers(("Content-Type", s))</code>.</li>
+<li>
+<code>readAllHeaders(p)</code> extract the headers as a string table. Here <code>p</code> is a
+<code>proc(hs: StringTableRef): Handler</code>.</li>
+<li>
+<code>readHeaders(s1, p)</code> extracts the value of the header with key <code>s1</code> and
+passes it to <code>p</code>, which is of type <code>proc(h1: string): Handler</code>. It rejects
+  the request if the header <code>s1</code> is not defined. There are overloads
+  <code>readHeaders(s1, s2, p)</code> and <code>readHeaders(s1, s2, s3, p)</code>, where <code>p</code> is a
+  function of two arguments (resp. three arguments). To extract more than
+  three headers, one can use <code>readAllHeaders</code> or nest <code>readHeaders</code> calls.</li>
+<li>
+<code>tryReadHeaders(s1, p)</code> works the same as <code>readHeaders</code>, but it does not
+reject the request if header <code>s</code> is missing; instead, <code>p</code> receives an empty
+  string as default. Again, there are overloads for two and three arguments.</li>
+<li>
+<code>checkHeaders(h1, h2, ...)</code> filters the request for the header value. Here
+<code>h1</code> and the other are pairs of strings, representing a key and a value. If
+  the request does not have the corresponding headers with these values, it
+  will be rejected.</li>
+<li>
+<code>accept(mimetype)</code> is equivalent to <code>checkHeaders(("Accept", mimetype))</code>.</li>
+</ul>
+
+<p>For example, if you can return a result both as JSON or XML, according to the
+request, you can do</p>
+
+<div class="highlight highlight-source-nim"><pre><span class="pl-c1">accept</span>(<span class="pl-s">"application/json"</span>)[
+    <span class="pl-c1">contentType</span>(<span class="pl-s">"application/json"</span>)[
+        <span class="pl-c1">ok</span>(someJsonValue)
+    ]
+] <span class="pl-k">~</span> <span class="pl-c1">accept</span>(<span class="pl-s">"text/xml"</span>)[
+    <span class="pl-c1">contentType</span>(<span class="pl-s">"text/xml"</span>)[
+        <span class="pl-c1">ok</span>(someXmlValue)
+    ]
+]</pre></div>
+
+<h3>
+<a id="failure-containment" class="anchor" href="#failure-containment" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Failure containment</h3>
+
+<p>When a requests falls through all routes without matching, Rosencrantz will
+return a standard response of <code>404 Not Found</code>. Similarly, whenever an
+exception arises, Rosencrantz will respond with <code>500 Server Error</code>.</p>
+
+<p>Sometimes, it can be useful to have more control over failure cases. For
+instance, you are able only to generate responses with type <code>application/json</code>:
+if the <code>Accept</code> header does not match it, you may want to return a status code
+of <code>406 Not Accepted</code>.</p>
+
+<p>One way to do this is to put the 406 response as an alternative, like this:</p>
+
+<div class="highlight highlight-source-nim"><pre><span class="pl-c1">accept</span>(<span class="pl-s">"application/json"</span>)[
+    someResponse
+] <span class="pl-k">~</span> <span class="pl-c1">complete</span>(Http406, <span class="pl-s">"JSON endpoint"</span>)</pre></div>
+
+<p>However, it can be more clear to use an equivalent combinators that wraps
+an existing handler and it returns a given failure message in case the inner
+handler fails to match. For this, there is</p>
+
+<ul>
+<li>
+<code>failWith(code, s)</code>, to be used like this:</li>
+</ul>
+
+<div class="highlight highlight-source-nim"><pre><span class="pl-c1">failWith</span>(Http406, <span class="pl-s">"JSON endpoint"</span>)(
+    <span class="pl-c1">accept</span>(<span class="pl-s">"application/json"</span>)[
+        someResponse
+    ]
+)</pre></div>
+
+<h2>
+<a id="json-support" class="anchor" href="#json-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>JSON support</h2>
+
+<p>Rosencrantz has support to parse and respond with JSON, under the
+<code>rosen/jsonsupport</code> module. It defines two typeclasses:</p>
+
+<ul>
+<li>a type <code>T</code> is <code>JsonReadable</code> if there is function <code>readFromJson(json, T): T</code>
+where <code>json</code> is of type <code>JsonNode</code>;</li>
+<li>a type <code>T</code> is <code>JsonWritable</code> if there is a function
+<code>renderToJson(t: T): JsonNode</code>.</li>
+</ul>
+
+<p>The module <code>rosen/core</code> contains the following handlers:</p>
+
+<ul>
+<li>
+<code>ok(j)</code>, where <code>j</code> is of type <code>JsonNode</code>, that will respond with a content
+type of <code>application/json</code>.</li>
+<li>
+<code>ok(t)</code>, where <code>t</code> has a type <code>T</code> that is <code>JsonWritable</code>, that will respond
+with the JSON representation of <code>t</code> and a content type of <code>application/json</code>.</li>
+<li>
+<code>jsonBody(p)</code>, where <code>p</code> is a <code>proc(j: JsonNode): Handler</code>, that extracts the
+body as a <code>JsonNode</code> and passes it to <code>p</code>, failing if the body is not valid
+  JSON.</li>
+<li>
+<code>jsonBody(p)</code>, where <code>p</code> is a <code>proc(t: T): Handler</code>, where <code>T</code> is a type that
+is <code>JsonReadable</code>; it extracts the body as a <code>T</code> and passes it to <code>p</code>, failing
+  if the body is not valid JSON or cannot be converted to <code>T</code>.</li>
+</ul>
+
+<h2>
+<a id="form-handling-support" class="anchor" href="#form-handling-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Form handling support</h2>
+
+<p>Rosencrantz has support to read the body of a form, either of type
+<code>application/x-www-form-urlencoded</code> or multipart (to be done).</p>
+
+<p>The module <code>rosen/formsupport</code> defines the following handlers:</p>
+
+<ul>
+<li>
+<code>formBody(p)</code> where <code>p</code> is a <code>proc(s: StringTableRef): Handler</code>. It will
+parse the body as an URL-encoded form and pass the corresponding string
+  table to <code>p</code>, rejecting the request if the body is not parseable.</li>
+</ul>
+
+<h2>
+<a id="static-file-support" class="anchor" href="#static-file-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Static file support</h2>
+
+<p>TBD</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/andreaferretti/rosencrantz">Rosencrantz</a> is maintained by <a href="https://github.com/andreaferretti">andreaferretti</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
