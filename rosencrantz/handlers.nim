@@ -43,6 +43,17 @@ proc pathChunk*(s: string): Handler =
 
   return h
 
+proc pathEnd*(p: proc(s: string): Handler): Handler =
+  proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
+    template path: auto = req.url.path
+
+    let s = path[ctx.position .. path.high]
+    let handler = p(s)
+    let newCtx = await handler(req, ctx.withPosition(path.high))
+    return newCtx
+
+  return h
+
 proc segment*(p: proc(s: string): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     template path: auto = req.url.path

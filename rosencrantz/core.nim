@@ -40,6 +40,13 @@ proc addPosition*(ctx: Context, n: int): Context =
     headers: ctx.headers
   )
 
+proc withPosition*(ctx: Context, n: int): Context =
+  Context(
+    position: n,
+    accept: ctx.accept,
+    headers: ctx.headers
+  )
+
 proc withHeaders*(ctx: Context, hs: openarray[StrPair]): Context =
   var headers = ctx.headers
   for h in hs:

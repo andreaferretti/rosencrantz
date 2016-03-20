@@ -148,6 +148,9 @@ There are a few handlers to filter by path and extract path parameters:
 * `pathChunk(s)` does the same but only for a prefix of the path. This means
   that one can nest more path handlers after it, unlike `path`, that matches
   and consumes the whole path.
+* `pathEnd(p)` extracts whatever is not matched yet of the path and passes it
+  to `p`. Here `p` is a `proc(s: string): Handler` that takes the final part of
+  the path and returns a handler.
 * `segment(p)`, that extracts a segment of path among two `/` signs. Here `p`
   is a `proc(s: string): Handler` that takes the matched segment and return a
   handler. This fails if the position is not just before a `/` sign.
