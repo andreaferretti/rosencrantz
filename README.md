@@ -38,7 +38,7 @@ we accumulate information such as:
 
 A handler usually does one or more of the following:
 
-* filter the request, by returning `ctx.reqject()` if some condition is not
+* filter the request, by returning `ctx.reqect()` if some condition is not
   satisfied;
 * accumulate some headers;
 * actually respond to the request, by calling the `complete` function or one
