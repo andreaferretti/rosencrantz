@@ -28,6 +28,9 @@ and its successor <a href="http://doc.akka.io/docs/akka/2.4.2/scala/http/introdu
 <p>It sits on top of <a href="http://nim-lang.org/docs/asynchttpserver.html">asynchttpserver</a>
 and provides a composable way to write HTTP handlers.</p>
 
+<h2>
+<a id="table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Table of contents</h2>
+
 
 
 <ul>
@@ -58,6 +61,7 @@ and provides a composable way to write HTTP handlers.</p>
 <li><a href="#json-support">JSON support</a></li>
 <li><a href="#form-handling-support">Form handling support</a></li>
 <li><a href="#static-file-support">Static file support</a></li>
+<li><a href="#api-stability">API stability</a></li>
 </ul>
 </li>
 </ul>
@@ -200,6 +204,10 @@ look like</p>
 <code>pathChunk(s)</code> does the same but only for a prefix of the path. This means
 that one can nest more path handlers after it, unlike <code>path</code>, that matches
 and consumes the whole path.</li>
+<li>
+<code>pathEnd(p)</code> extracts whatever is not matched yet of the path and passes it
+to <code>p</code>. Here <code>p</code> is a <code>proc(s: string): Handler</code> that takes the final part of
+the path and returns a handler.</li>
 <li>
 <code>segment(p)</code>, that extracts a segment of path among two <code>/</code> signs. Here <code>p</code>
 is a <code>proc(s: string): Handler</code> that takes the matched segment and return a
@@ -374,6 +382,17 @@ table to <code>p</code>, rejecting the request if the body is not parseable.</li
 <a id="static-file-support" class="anchor" href="#static-file-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Static file support</h2>
 
 <p>TBD</p>
+
+<h2>
+<a id="api-stability" class="anchor" href="#api-stability" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>API stability</h2>
+
+<p>While the basic design is not going to change, the API is not completely
+stable yet. It is possible that the <code>Context</code> will change to accomodate some
+more information, or that it will be passed as a <code>ref</code> to handlers.</p>
+
+<p>As long as you compose the handlers defined above, everything will continue to
+work, but if you write your own handlers by hand, this is something to be
+aware of.</p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/andreaferretti/rosencrantz">Rosencrantz</a> is maintained by <a href="https://github.com/andreaferretti">andreaferretti</a>.</span>
