@@ -6,22 +6,26 @@ and its successor [Akka HTTP](http://doc.akka.io/docs/akka/2.4.2/scala/http/intr
 It sits on top of [asynchttpserver](http://nim-lang.org/docs/asynchttpserver.html)
 and provides a composable way to write HTTP handlers.
 
+Table of contents
+-----------------
+
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Rosencrantz](#rosencrantz)
-  - [Introduction](#introduction)
-    - [Composing handlers](#composing-handlers)
-    - [Starting a server](#starting-a-server)
-  - [An example](#an-example)
-  - [Basic handlers](#basic-handlers)
-    - [Path handling](#path-handling)
-    - [HTTP methods](#http-methods)
-    - [Querystring extraction](#querystring-extraction)
-    - [Working with headers](#working-with-headers)
-    - [Failure containment](#failure-containment)
-  - [JSON support](#json-support)
-  - [Form handling support](#form-handling-support)
-  - [Static file support](#static-file-support)
+	- [Introduction](#introduction)
+		- [Composing handlers](#composing-handlers)
+		- [Starting a server](#starting-a-server)
+	- [An example](#an-example)
+	- [Basic handlers](#basic-handlers)
+		- [Path handling](#path-handling)
+		- [HTTP methods](#http-methods)
+		- [Querystring extraction](#querystring-extraction)
+		- [Working with headers](#working-with-headers)
+		- [Failure containment](#failure-containment)
+	- [JSON support](#json-support)
+	- [Form handling support](#form-handling-support)
+	- [Static file support](#static-file-support)
+	- [API stability](#api-stability)
 
 <!-- /TOC -->
 
@@ -288,3 +292,13 @@ The module `rosencrantz/formsupport` defines the following handlers:
 ## Static file support
 
 TBD
+
+## API stability
+
+While the basic design is not going to change, the API is not completely
+stable yet. It is possible that the `Context` will change to accomodate some
+more information, or that it will be passed as a `ref` to handlers.
+
+As long as you compose the handlers defined above, everything will continue to
+work, but if you write your own handlers by hand, this is something to be
+aware of.
