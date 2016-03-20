@@ -1,0 +1,5 @@
+nimcache
+/web
+nimsuggest.log
+tests/client
+tests/server
