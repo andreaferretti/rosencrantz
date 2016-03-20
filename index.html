@@ -157,10 +157,10 @@ business logic. This should give a feel of how the DSL looks like:</p>
 <a id="basic-handlers" class="anchor" href="#basic-handlers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Basic handlers</h2>
 
 <p>In order to work with Rosencrantz, you can <code>import rosencrantz</code>. If you prefer
-a more fine-grained control, there are packages <code>rosen/core</code> (which contains the
-definitions common to all handlers), <code>rosen/handlers</code> (for the handlers we are
-about to show), and then more specialized handlers under <code>rosen/jsonsupport</code>,
-<code>rosen/formsupport</code> and so on.</p>
+a more fine-grained control, there are packages <code>rosencrantz/core</code> (which
+contains the definitions common to all handlers), <code>rosencrantz/handlers</code> (for
+the handlers we are about to show), and then more specialized handlers under
+<code>rosencrantz/jsonsupport</code>, <code>rosencrantz/formsupport</code> and so on.</p>
 
 <p>The simplest handlers are:</p>
 
@@ -229,7 +229,7 @@ integer number. It fails if the segment does not represent an integer. Here
 <ul>
 <li>
 <code>verb(m)</code>, where <code>m</code> is a member of the <code>HttpMethod</code> enum defined in
-<code>rosen/core</code>. There are corresponding specializations</li>
+<code>rosencrantz/core</code>. There are corresponding specializations</li>
 <li>
 <code>get</code>, <code>post</code>, <code>put</code>, <code>delete</code>, <code>head</code>, <code>patch</code>, <code>options</code>, <code>trace</code> and
 <code>connect</code>
@@ -327,7 +327,7 @@ handler fails to match. For this, there is</p>
 <a id="json-support" class="anchor" href="#json-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>JSON support</h2>
 
 <p>Rosencrantz has support to parse and respond with JSON, under the
-<code>rosen/jsonsupport</code> module. It defines two typeclasses:</p>
+<code>rosencrantz/jsonsupport</code> module. It defines two typeclasses:</p>
 
 <ul>
 <li>a type <code>T</code> is <code>JsonReadable</code> if there is function <code>readFromJson(json, T): T</code>
@@ -336,7 +336,7 @@ where <code>json</code> is of type <code>JsonNode</code>;</li>
 <code>renderToJson(t: T): JsonNode</code>.</li>
 </ul>
 
-<p>The module <code>rosen/core</code> contains the following handlers:</p>
+<p>The module <code>rosencrantz/core</code> contains the following handlers:</p>
 
 <ul>
 <li>
@@ -361,7 +361,7 @@ if the body is not valid JSON or cannot be converted to <code>T</code>.</li>
 <p>Rosencrantz has support to read the body of a form, either of type
 <code>application/x-www-form-urlencoded</code> or multipart (to be done).</p>
 
-<p>The module <code>rosen/formsupport</code> defines the following handlers:</p>
+<p>The module <code>rosencrantz/formsupport</code> defines the following handlers:</p>
 
 <ul>
 <li>
