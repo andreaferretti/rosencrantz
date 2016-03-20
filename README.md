@@ -9,19 +9,19 @@ and provides a composable way to write HTTP handlers.
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Rosencrantz](#rosencrantz)
-	- [Introduction](#introduction)
-		- [Composing handlers](#composing-handlers)
-		- [Starting a server](#starting-a-server)
-	- [An example](#an-example)
-	- [Basic handlers](#basic-handlers)
-		- [Path handling](#path-handling)
-		- [HTTP methods](#http-methods)
-		- [Querystring extraction](#querystring-extraction)
-		- [Working with headers](#working-with-headers)
-		- [Failure containment](#failure-containment)
-	- [JSON support](#json-support)
-	- [Form handling support](#form-handling-support)
-	- [Static file support](#static-file-support)
+  - [Introduction](#introduction)
+    - [Composing handlers](#composing-handlers)
+    - [Starting a server](#starting-a-server)
+  - [An example](#an-example)
+  - [Basic handlers](#basic-handlers)
+    - [Path handling](#path-handling)
+    - [HTTP methods](#http-methods)
+    - [Querystring extraction](#querystring-extraction)
+    - [Working with headers](#working-with-headers)
+    - [Failure containment](#failure-containment)
+  - [JSON support](#json-support)
+  - [Form handling support](#form-handling-support)
+  - [Static file support](#static-file-support)
 
 <!-- /TOC -->
 
@@ -118,21 +118,21 @@ The simplest handlers are:
 
 * `complete(code, body, headers)` that actually responds to the request. Here
   `code` is an instance of `HttpCode` from `asynchttpserver`, `body` is a
-	`string` and `headers` are an instance of `StringTableRef`.
+  `string` and `headers` are an instance of `StringTableRef`.
 * `ok(body)`, which is a specialization of `complete` for a response of `200 Ok`
   with a content type of `text/plain`.
 * `notFound(body)`, which is a specialization of `complete` for a response of
-	`404 Not Found` with a content type of `text/plain`.
+  `404 Not Found` with a content type of `text/plain`.
 * `body(p)` extracts the body of the request. Here `p` is a
   `proc(s: string): Handler` which takes the extracted body as input and
-	returns a handler.
+  returns a handler.
 
 For instance, a simple handler that echoes back the body of the request would
 look like
 
 ```nim
 body(proc(s: string): auto =
-	ok(s)
+  ok(s)
 )
 ```
 
@@ -143,24 +143,24 @@ There are a few handlers to filter by path and extract path parameters:
 * `path(s)` filters the requests where the path is equal to `s`.
 * `pathChunk(s)` does the same but only for a prefix of the path. This means
   that one can nest more path handlers after it, unlike `path`, that matches
-	and consumes the whole path.
+  and consumes the whole path.
 * `segment(p)`, that extracts a segment of path among two `/` signs. Here `p`
   is a `proc(s: string): Handler` that takes the matched segment and return a
-	handler. This fails if the position is not just before a `/` sign.
+  handler. This fails if the position is not just before a `/` sign.
 * `intSegment(p)`, works the same as `segment`, but extracts and parses an
   integer number. It fails if the segment does not represent an integer. Here
-	`p` is a `proc(s: int): Handler`.
+  `p` is a `proc(s: int): Handler`.
 
 For instance, to match and extract parameters out of a route like
 `repeat/$msg/$n`, one would nest the above to get
 
 ```nim
 pathChunk("/repeat")[
-	segment(proc(msg: string): auto =
-		intSegment(proc(n: int): auto =
-			someHandler
-		)
-	)
+  segment(proc(msg: string): auto =
+    intSegment(proc(n: int): auto =
+      someHandler
+    )
+  )
 ]
 ```
 
@@ -190,17 +190,17 @@ values, or accumulate HTTP headers for the response.
   `proc(hs: StringTableRef): Handler`.
 * `readHeaders(s1, p)` extracts the value of the header with key `s1` and
   passes it to `p`, which is of type `proc(h1: string): Handler`. It rejects
-	the request if the header `s1` is not defined. There are overloads
-	`readHeaders(s1, s2, p)` and `readHeaders(s1, s2, s3, p)`, where `p` is a
-	function of two arguments (resp. three arguments). To extract more than
-	three headers, one can use `readAllHeaders` or nest `readHeaders` calls.
+  the request if the header `s1` is not defined. There are overloads
+  `readHeaders(s1, s2, p)` and `readHeaders(s1, s2, s3, p)`, where `p` is a
+  function of two arguments (resp. three arguments). To extract more than
+  three headers, one can use `readAllHeaders` or nest `readHeaders` calls.
 * `tryReadHeaders(s1, p)` works the same as `readHeaders`, but it does not
   reject the request if header `s` is missing; instead, `p` receives an empty
-	string as default. Again, there are overloads for two and three arguments.
+  string as default. Again, there are overloads for two and three arguments.
 * `checkHeaders(h1, h2, ...)` filters the request for the header value. Here
   `h1` and the other are pairs of strings, representing a key and a value. If
-	the request does not have the corresponding headers with these values, it
-	will be rejected.
+  the request does not have the corresponding headers with these values, it
+  will be rejected.
 * `accept(mimetype)` is equivalent to `checkHeaders(("Accept", mimetype))`.
 
 For example, if you can return a result both as JSON or XML, according to the
@@ -208,13 +208,13 @@ request, you can do
 
 ```nim
 accept("application/json")[
-	contentType("application/json")[
-		ok(someJsonValue)
-	]
+  contentType("application/json")[
+    ok(someJsonValue)
+  ]
 ] ~ accept("text/xml")[
-	contentType("text/xml")[
-		ok(someXmlValue)
-	]
+  contentType("text/xml")[
+    ok(someXmlValue)
+  ]
 ]
 ```
 
@@ -233,7 +233,7 @@ One way to do this is to put the 406 response as an alternative, like this:
 
 ```nim
 accept("application/json")[
-	someResponse
+  someResponse
 ] ~ complete(Http406, "JSON endpoint")
 ```
 
@@ -245,9 +245,9 @@ handler fails to match. For this, there is
 
 ```nim
 failWith(Http406, "JSON endpoint")(
-	accept("application/json")[
-		someResponse
-	]
+  accept("application/json")[
+    someResponse
+  ]
 )
 ```
 
@@ -269,10 +269,10 @@ The module `rosen/core` contains the following handlers:
   with the JSON representation of `t` and a content type of `application/json`.
 * `jsonBody(p)`, where `p` is a `proc(j: JsonNode): Handler`, that extracts the
   body as a `JsonNode` and passes it to `p`, failing if the body is not valid
-	JSON.
+  JSON.
 * `jsonBody(p)`, where `p` is a `proc(t: T): Handler`, where `T` is a type that
   is `JsonReadable`; it extracts the body as a `T` and passes it to `p`, failing
-	if the body is not valid JSON or cannot be converted to `T`.
+  if the body is not valid JSON or cannot be converted to `T`.
 
 ## Form handling support
 
@@ -283,7 +283,7 @@ The module `rosen/formsupport` defines the following handlers:
 
 * `formBody(p)` where `p` is a `proc(s: StringTableRef): Handler`. It will
   parse the body as an URL-encoded form and pass the corresponding string
-	table to `p`, rejecting the request if the body is not parseable.
+  table to `p`, rejecting the request if the body is not parseable.
 
 ## Static file support
 
