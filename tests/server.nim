@@ -15,6 +15,14 @@ let handler = get[
   path("/hello")[
     ok("Hello, World!")
   ] ~
+  path("/hello/2")[
+    ok("Hello, World!")
+  ] ~
+  pathChunk("/hello")[
+    pathChunk("/3")[
+      ok("Hello, World!")
+    ]
+  ] ~
   path("/benchmark/json/simple")[
     ok(Message(message: "Hello, World!"))
   ] ~
