@@ -23,3 +23,11 @@ suite "basic functionality":
     let resp = get(baseUrl & "/hello")
     check resp.body == "Hello, World!"
     check resp.isOkTextPlain
+  test "nested route":
+    let resp = get(baseUrl & "/hello/2")
+    check resp.body == "Hello, World!"
+    check resp.isOkTextPlain
+  test "nested route handlers":
+    let resp = get(baseUrl & "/hello/3")
+    check resp.body == "Hello, World!"
+    check resp.isOkTextPlain
