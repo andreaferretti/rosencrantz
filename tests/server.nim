@@ -12,7 +12,7 @@ proc parseFromJson(j: JsonNode, m: typedesc[Message]): Message =
   return Message(message: s)
 
 let handler = get[
-  path("/benchmark/text")[
+  path("/hello")[
     ok("Hello, World!")
   ] ~
   path("/benchmark/json/simple")[
