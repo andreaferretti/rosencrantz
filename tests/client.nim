@@ -24,10 +24,10 @@ suite "basic functionality":
     check resp.body == "Hello, World!"
     check resp.isOkTextPlain
   test "nested route":
-    let resp = get(baseUrl & "/hello/2")
+    let resp = get(baseUrl & "/nested/hello")
     check resp.body == "Hello, World!"
     check resp.isOkTextPlain
   test "nested route handlers":
-    let resp = get(baseUrl & "/hello/3")
+    let resp = get(baseUrl & "/nested/hello-again")
     check resp.body == "Hello, World!"
     check resp.isOkTextPlain

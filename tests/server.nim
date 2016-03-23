@@ -15,11 +15,11 @@ let handler = get[
   path("/hello")[
     ok("Hello, World!")
   ] ~
-  path("/hello/2")[
+  path("/nested/hello")[
     ok("Hello, World!")
   ] ~
-  pathChunk("/hello")[
-    pathChunk("/3")[
+  pathChunk("/nested")[
+    pathChunk("/hello-again")[
       ok("Hello, World!")
     ]
   ] ~
