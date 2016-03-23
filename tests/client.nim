@@ -43,3 +43,11 @@ suite "basic functionality":
     check resp.isStatus(401)
     check resp.hasCorrectContentLength
     check resp.hasContentType("text/plain")
+  test "post request":
+    let resp = post(baseUrl & "/hello-post")
+    check resp.body == "Hello, World!"
+    check resp.isOkTextPlain
+  test "post body extraction":
+    let resp = post(baseUrl & "/echo", body = "Hi there")
+    check resp.body == "Hi there"
+    check resp.isOkTextPlain

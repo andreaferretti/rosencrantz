@@ -33,13 +33,12 @@ let handler = get[
     ]
   ]
 ] ~ post[
-  path("/benchmark/post/form")[
-    formBody(proc(s: auto): auto =
-      let
-        msg = s["message"]
-        n = s["n"].parseInt
-        resp = sequtils.repeat(msg, n).join(",")
-      ok(resp)
+  path("/hello-post")[
+    ok("Hello, World!")
+  ] ~
+  path("/echo")[
+    body(proc(s: string): auto =
+      ok(s)
     )
   ]
 ]
