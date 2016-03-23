@@ -31,6 +31,9 @@ let handler = get[
       complete(Http401, "Authorization failed",
         {"Content-Type": "text/plain"}.newStringTable)
     ]
+  ] ~
+  pathChunk("/echo")[
+    pathEnd(proc(rest: string): auto = ok(rest))
   ]
 ] ~ post[
   path("/hello-post")[

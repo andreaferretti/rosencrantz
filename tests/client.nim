@@ -55,3 +55,7 @@ suite "basic functionality":
     let resp = request(baseUrl & "/hello-put", httpMethod = httpPUT)
     check resp.body == "Hello, World!"
     check resp.isOkTextPlain
+  test "path end extraction":
+    let resp = get(baseUrl & "/echo/hi-there")
+    check resp.body == "/hi-there"
+    check resp.isOkTextPlain
