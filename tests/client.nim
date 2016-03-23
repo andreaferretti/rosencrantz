@@ -31,3 +31,15 @@ suite "basic functionality":
     let resp = get(baseUrl & "/nested/hello-again")
     check resp.body == "Hello, World!"
     check resp.isOkTextPlain
+  test "not found response":
+    let resp = get(baseUrl & "/error/not-found")
+    check resp.body == "Not found"
+    check resp.isStatus(404)
+    check resp.hasCorrectContentLength
+    check resp.hasContentType("text/plain")
+  test "unauthorized response":
+    let resp = get(baseUrl & "/error/unauthorized")
+    check resp.body == "Authorization failed"
+    check resp.isStatus(401)
+    check resp.hasCorrectContentLength
+    check resp.hasContentType("text/plain")

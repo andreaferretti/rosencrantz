@@ -23,28 +23,14 @@ let handler = get[
       ok("Hello, World!")
     ]
   ] ~
-  path("/benchmark/json/simple")[
-    ok(Message(message: "Hello, World!"))
-  ] ~
-  pathChunk("/benchmark/json/nested")[
-    intSegment(proc(n: int): auto =
-      segment(proc(msg: string): auto =
-        var messages = newJArray()
-        for i in 1 .. n:
-          messages.add(%{"id": %i, "message": %msg})
-        ok(%{"count": %n, "messages": messages})
-      )
-    )
-  ] ~
-  pathChunk("/benchmark/cpu/isprime")[
-    intSegment(proc(n: int): auto =
-      var isPrime = true
-      for i in 2 .. n.float.sqrt.int:
-        if (n mod i) == 0:
-          isPrime = false
-          break
-      if isPrime: ok("True") else: ok("False")
-    )
+  pathChunk("/error")[
+    pathChunk("/not-found")[
+      notFound("Not found")
+    ] ~
+    pathChunk("/unauthorized")[
+      complete(Http401, "Authorization failed",
+        {"Content-Type": "text/plain"}.newStringTable)
+    ]
   ]
 ] ~ post[
   path("/benchmark/post/form")[
