@@ -51,3 +51,7 @@ suite "basic functionality":
     let resp = post(baseUrl & "/echo", body = "Hi there")
     check resp.body == "Hi there"
     check resp.isOkTextPlain
+  test "put request":
+    let resp = request(baseUrl & "/hello-put", httpMethod = httpPUT)
+    check resp.body == "Hello, World!"
+    check resp.isOkTextPlain

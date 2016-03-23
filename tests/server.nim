@@ -41,6 +41,10 @@ let handler = get[
       ok(s)
     )
   ]
+] ~ put[
+  path("/hello-put")[
+    ok("Hello, World!")
+  ]
 ]
 
 let server = newAsyncHttpServer()
