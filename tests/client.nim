@@ -59,3 +59,7 @@ suite "basic functionality":
     let resp = get(baseUrl & "/echo/hi-there")
     check resp.body == "/hi-there"
     check resp.isOkTextPlain
+  test "segments extraction":
+    let resp = get(baseUrl & "/repeat/hello/3")
+    check resp.body == "hello,hello,hello"
+    check resp.isOkTextPlain

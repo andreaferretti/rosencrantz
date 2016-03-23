@@ -34,6 +34,13 @@ let handler = get[
   ] ~
   pathChunk("/echo")[
     pathEnd(proc(rest: string): auto = ok(rest))
+  ] ~
+  pathChunk("/repeat")[
+    segment(proc(msg: string): auto =
+      intSegment(proc(n: int): auto =
+        ok(sequtils.repeat(msg, n).join(","))
+      )
+    )
   ]
 ] ~ post[
   path("/hello-post")[
