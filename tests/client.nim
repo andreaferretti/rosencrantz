@@ -11,11 +11,11 @@ proc hasContentType(resp: Response, t: string): bool =
 proc hasCorrectContentLength(resp: Response): bool =
   parseInt(resp.headers[cl]) == resp.body.len
 
-proc isStatus(resp: Response, code: int): bool =
+proc hasStatus(resp: Response, code: int): bool =
   resp.status.split(" ")[0].parseInt == code
 
 proc isOkTextPlain(resp: Response): bool =
-  resp.isStatus(200) and resp.hasCorrectContentLength and
+  resp.hasStatus(200) and resp.hasCorrectContentLength and
     resp.hasContentType("text/plain")
 
 suite "basic functionality":
@@ -34,13 +34,13 @@ suite "basic functionality":
   test "not found response":
     let resp = get(baseUrl & "/error/not-found")
     check resp.body == "Not found"
-    check resp.isStatus(404)
+    check resp.hasStatus(404)
     check resp.hasCorrectContentLength
     check resp.hasContentType("text/plain")
   test "unauthorized response":
     let resp = get(baseUrl & "/error/unauthorized")
     check resp.body == "Authorization failed"
-    check resp.isStatus(401)
+    check resp.hasStatus(401)
     check resp.hasCorrectContentLength
     check resp.hasContentType("text/plain")
   test "post request":
@@ -63,3 +63,11 @@ suite "basic functionality":
     let resp = get(baseUrl & "/repeat/hello/3")
     check resp.body == "hello,hello,hello"
     check resp.isOkTextPlain
+
+suite "handling headers":
+  test "producing headers":
+    let resp = get(baseUrl & "/emit-headers")
+    check resp.body == "Hi there"
+    check resp.hasStatus(200)
+    check resp.hasContentType("text/html")
+    check resp.headers["Date"] == "Today"

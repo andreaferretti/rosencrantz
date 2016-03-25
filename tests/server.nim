@@ -41,6 +41,11 @@ let handler = get[
         ok(sequtils.repeat(msg, n).join(","))
       )
     )
+  ] ~
+  pathChunk("/emit-headers")[
+    headers(("Content-Type", "text/html"), ("Date", "Today")) [
+      ok("Hi there")
+    ]
   ]
 ] ~ post[
   path("/hello-post")[
