@@ -46,6 +46,18 @@ let handler = get[
     headers(("Content-Type", "text/html"), ("Date", "Today")) [
       ok("Hi there")
     ]
+  ] ~
+  path("/content-negotiation")[
+    accept("text/html")[
+      contentType("text/html")[
+        ok("<html>hi</html>")
+      ]
+    ] ~
+    accept("text/plain")[
+      contentType("text/plain")[
+        ok("hi")
+      ]
+    ]
   ]
 ] ~ post[
   path("/hello-post")[

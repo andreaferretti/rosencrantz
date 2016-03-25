@@ -71,3 +71,12 @@ suite "handling headers":
     check resp.hasStatus(200)
     check resp.hasContentType("text/html")
     check resp.headers["Date"] == "Today"
+  test "content negotiation":
+    let resp1 = get(baseUrl & "/content-negotiation", "Accept: text/html\n")
+    check resp1.body == "<html>hi</html>"
+    check resp1.hasStatus(200)
+    check resp1.hasContentType("text/html")
+    let resp2 = get(baseUrl & "/content-negotiation", "Accept: text/plain\n")
+    check resp2.body == "hi"
+    check resp2.hasStatus(200)
+    check resp2.hasContentType("text/plain")
