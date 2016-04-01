@@ -108,3 +108,17 @@ suite "handling headers":
     let now = getTime().getGMTime()
     check resp.isOkTextPlain
     check now.yearday == date.yearday
+
+suite "handling failures":
+  test "missing page":
+    let resp = get(baseUrl & "/missing")
+    check resp.body == "Not Found"
+    check resp.hasStatus(404)
+  test "server error":
+    let resp = get(baseUrl & "/crash")
+    check resp.body == "Server Error"
+    check resp.hasStatus(500)
+  test "custom failure":
+    let resp = get(baseUrl & "/custom-failure")
+    check resp.body == "Unauthorized"
+    check resp.hasStatus(401)

@@ -83,6 +83,18 @@ let handler = get[
     addDate()[
       ok("Hello, World!")
     ]
+  ] ~
+  path("/crash")[
+    readAllHeaders(proc(hs: StringTableRef): auto =
+      ok(hs["Missing"])
+    )
+  ] ~
+  path("/custom-failure")[
+    failWith(Http401, "Unauthorized")(
+      checkHeaders(("First", "Hello"))[
+        ok("Hello, World!")
+      ]
+    )
   ]
 ] ~ post[
   path("/hello-post")[
