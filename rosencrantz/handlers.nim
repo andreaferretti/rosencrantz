@@ -181,7 +181,7 @@ proc tryReadHeaders*(s1, s2: string, p: proc(h1, h2: string): Handler): Handler 
 
 proc tryReadHeaders*(s1, s2, s3: string, p: proc(h1, h2, h3: string): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
-    let handler = p(req.headers.getOrDefault(s1), req.headers.getOrDefault(s2) ,req.headers.getOrDefault(s2))
+    let handler = p(req.headers.getOrDefault(s1), req.headers.getOrDefault(s2) ,req.headers.getOrDefault(s3))
     let newCtx = await handler(req, ctx)
     return newCtx
 
@@ -210,7 +210,7 @@ proc failWith*(code: HttpCode, s: string): auto =
 proc addDate*(): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     # https://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
-    let now = getTime().getGMTime().format("ddd, dd MMM yyyy HH:mm:ss") & " GMT"
+    let now = getTime().getGMTime().format("ddd, dd MMM yyyy HH:mm:ss 'GMT'")
     return ctx.withHeaders([("Date", now)])
 
   return h

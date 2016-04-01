@@ -58,6 +58,31 @@ let handler = get[
         ok("hi")
       ]
     ]
+  ] ~
+  path("/read-all-headers")[
+    readAllHeaders(proc(hs: StringTableRef): auto =
+      ok(hs["First"] & ", " & hs["Second"])
+    )
+  ] ~
+  path("/read-headers")[
+    readHeaders("First", "Second", proc(first, second: string): auto =
+      ok(first & ", " & second)
+    )
+  ] ~
+  path("/try-read-headers")[
+    tryReadHeaders("First", "Second", "Third", proc(first, second, third: string): auto =
+      ok(first & ", " & second & third)
+    )
+  ] ~
+  path("/check-headers")[
+    checkHeaders(("First", "Hello"), ("Second", "World!"))[
+      ok("Hello, World!")
+    ]
+  ] ~
+  path("/date")[
+    addDate()[
+      ok("Hello, World!")
+    ]
   ]
 ] ~ post[
   path("/hello-post")[

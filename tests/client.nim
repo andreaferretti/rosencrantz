@@ -1,4 +1,4 @@
-import unittest, httpclient, strtabs, strutils
+import unittest, httpclient, strtabs, strutils, times
 
 const
   baseUrl = "http://localhost:8080"
@@ -80,3 +80,31 @@ suite "handling headers":
     check resp2.body == "hi"
     check resp2.hasStatus(200)
     check resp2.hasContentType("text/plain")
+  test "read all headers":
+    let resp = get(baseUrl & "/read-all-headers", "First: Hello\nSecond: World!\n")
+    check resp.body == "Hello, World!"
+    check resp.isOkTextPlain
+  test "read some headers":
+    let resp = get(baseUrl & "/read-headers", "First: Hello\nSecond: World!\n")
+    check resp.body == "Hello, World!"
+    check resp.isOkTextPlain
+  test "sending less headers than expected should not match":
+    let resp = get(baseUrl & "/read-headers", "First: Hello\n")
+    check resp.hasStatus(404)
+  test "try read some headers":
+    let resp = get(baseUrl & "/try-read-headers", "First: Hello\nSecond: World!\n")
+    check resp.body == "Hello, World!"
+    check resp.isOkTextPlain
+  test "checking headers":
+    let resp = get(baseUrl & "/check-headers", "First: Hello\nSecond: World!\n")
+    check resp.body == "Hello, World!"
+    check resp.isOkTextPlain
+  test "failing to match headers":
+    let resp = get(baseUrl & "/check-headers", "First: Hi\nSecond: World!\n")
+    check resp.hasStatus(404)
+  test "date header":
+    let resp = get(baseUrl & "/date")
+    let date = parse(resp.headers["Date"], "ddd, dd MMM yyyy HH:mm:ss 'GMT'")
+    let now = getTime().getGMTime()
+    check resp.isOkTextPlain
+    check now.yearday == date.yearday

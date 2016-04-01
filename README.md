@@ -209,6 +209,8 @@ values, or accumulate HTTP headers for the response.
   the request does not have the corresponding headers with these values, it
   will be rejected.
 * `accept(mimetype)` is equivalent to `checkHeaders(("Accept", mimetype))`.
+* `addDate()` returns a handler that adds the `Date` header, formatted as
+  a GMT date in the [HTTP date format](https://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html).
 
 For example, if you can return a result both as JSON or XML, according to the
 request, you can do
