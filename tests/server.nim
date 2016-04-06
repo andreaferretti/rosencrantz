@@ -3,13 +3,16 @@ import asynchttpserver, asyncdispatch, json, math, strtabs, strutils, sequtils,
 
 type Message = object
   message: string
+  count: int
 
 proc renderToJson(m: Message): JsonNode =
-  %{"message": %(m.message)}
+  %{"msg": %(m.message), "count": %(m.count)}
 
 proc parseFromJson(j: JsonNode, m: typedesc[Message]): Message =
-  let s = j["message"].getStr
-  return Message(message: s)
+  let
+    s = j["msg"].getStr
+    c = j["count"].getNum.int
+  return Message(message: s, count: c)
 
 let handler = get[
   path("/hello")[
@@ -95,6 +98,12 @@ let handler = get[
         ok("Hello, World!")
       ]
     )
+  ] ~
+  path("/write-json")[
+    ok(%{"msg": %"hi there", "count": %5})
+  ] ~
+  path("/write-json-typeclass")[
+    ok(Message(message: "hi there", count: 5))
   ]
 ] ~ post[
   path("/hello-post")[
@@ -103,6 +112,21 @@ let handler = get[
   path("/echo")[
     body(proc(s: string): auto =
       ok(s)
+    )
+  ] ~
+  path("/read-json")[
+    jsonBody(proc(j: JsonNode): auto =
+      ok(j["msg"].getStr)
+    )
+  ] ~
+  path("/read-json-typeclass")[
+    jsonBody(proc(m: Message): auto =
+      ok(m.message)
+    )
+  ] ~
+  path("/read-form")[
+    formBody(proc(s: StringTableRef): auto =
+      ok(s["msg"])
     )
   ]
 ] ~ put[

@@ -1,4 +1,4 @@
-import unittest, httpclient, strtabs, strutils, times
+import unittest, httpclient, strtabs, strutils, times, json
 
 const
   baseUrl = "http://localhost:8080"
@@ -17,6 +17,10 @@ proc hasStatus(resp: Response, code: int): bool =
 proc isOkTextPlain(resp: Response): bool =
   resp.hasStatus(200) and resp.hasCorrectContentLength and
     resp.hasContentType("text/plain")
+
+proc isOkJson(resp: Response): bool =
+  resp.hasStatus(200) and resp.hasCorrectContentLength and
+    resp.hasContentType("application/json")
 
 suite "basic functionality":
   test "simple text":
@@ -122,3 +126,27 @@ suite "handling failures":
     let resp = get(baseUrl & "/custom-failure")
     check resp.body == "Unauthorized"
     check resp.hasStatus(401)
+
+suite "json support":
+  test "producing json":
+    let resp = get(baseUrl & "/write-json")
+    check resp.body.parseJson["msg"].getStr == "hi there"
+    check resp.isOkJson
+  test "reading json":
+    let resp = post(baseUrl & "/read-json", body = $(%{"msg": %"hi there", "count": %5}))
+    check resp.body == "hi there"
+    check resp.isOkTextPlain
+  test "producing json via typeclasses":
+    let resp = get(baseUrl & "/write-json-typeclass")
+    check resp.body.parseJson["msg"].getStr == "hi there"
+    check resp.isOkJson
+  test "reading json via typeclasses":
+    let resp = post(baseUrl & "/read-json-typeclass", body = $(%{"msg": %"hi there", "count": %5}))
+    check resp.body == "hi there"
+    check resp.isOkTextPlain
+
+suite "form support":
+  test "reading form as x-www-form-urlencoded":
+    let resp = post(baseUrl & "/read-form", body = "msg=hi there&count=5")
+    check resp.body == "hi there"
+    check resp.isOkTextPlain
