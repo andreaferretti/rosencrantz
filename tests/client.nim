@@ -150,3 +150,13 @@ suite "form support":
     let resp = post(baseUrl & "/read-form", body = "msg=hi there&count=5")
     check resp.body == "hi there"
     check resp.isOkTextPlain
+
+suite "static file support":
+  test "serving a single file":
+    let resp = get(baseUrl & "/serve-file")
+    check resp.body.contains("Apache License")
+    check resp.isOkTextPlain
+  test "serving a directory":
+    let resp = get(baseUrl & "/serve-dir/LICENSE")
+    check resp.body.contains("Apache License")
+    check resp.isOkTextPlain

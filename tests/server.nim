@@ -104,6 +104,12 @@ let handler = get[
   ] ~
   path("/write-json-typeclass")[
     ok(Message(message: "hi there", count: 5))
+  ] ~
+  path("/serve-file")[
+    file("LICENSE")
+  ] ~
+  pathChunk("/serve-dir")[
+    dir(".")
   ]
 ] ~ post[
   path("/hello-post")[
