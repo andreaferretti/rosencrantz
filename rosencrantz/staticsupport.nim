@@ -3,11 +3,14 @@ import rosencrantz/core, rosencrantz/handlers
 
 let mime = newMimetypes()
 
+proc getContentType(fileName: string): string {.inline.} =
+  let (_, _, ext) = splitFile(fileName)
+  let extension = if ext[0] == '.': ext[1 .. ext.high] else: ext
+  return mime.getMimetype(extension)
+
 
 proc file*(path: string): Handler =
-  let
-    (_, _, ext) = splitFile(path)
-    mimeType = mime.getMimetype(ext)
+  let mimeType = getContentType(path)
 
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     if fileExists(path):
@@ -34,8 +37,7 @@ proc dir*(path: string): Handler =
       completeFileName = path / fileName
     if fileExists(completeFileName):
       let
-        (_, _, ext) = splitFile(completeFileName)
-        mimeType = mime.getMimetype(ext)
+        mimeType = getContentType(completeFileName)
         f = openAsync(completeFileName)
       let content = await f.readAll
       close(f)

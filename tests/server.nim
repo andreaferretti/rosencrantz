@@ -111,6 +111,9 @@ let handler = get[
   path("/serve-missing-file")[
     file("LICENS")
   ] ~
+  path("/serve-image")[
+    file("shakespeare.jpg")
+  ] ~
   pathChunk("/serve-dir")[
     dir(".")
   ]

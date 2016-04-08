@@ -168,3 +168,11 @@ suite "static file support":
     let resp = get(baseUrl & "/serve-dir/LICENS")
     check resp.body == "Not Found"
     check resp.hasStatus(404)
+  test "mimetype on a single file":
+    let resp = get(baseUrl & "/serve-image")
+    check resp.hasStatus(200)
+    check resp.hasContentType("image/jpeg")
+  test "mimetype on a directory":
+    let resp = get(baseUrl & "/serve-dir/shakespeare.jpg")
+    check resp.hasStatus(200)
+    check resp.hasContentType("image/jpeg")
