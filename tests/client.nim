@@ -160,3 +160,11 @@ suite "static file support":
     let resp = get(baseUrl & "/serve-dir/LICENSE")
     check resp.body.contains("Apache License")
     check resp.isOkTextPlain
+  test "error on a missing file":
+    let resp = get(baseUrl & "/serve-missing-file")
+    check resp.body == "Not Found"
+    check resp.hasStatus(404)
+  test "error on a missing file in a directory":
+    let resp = get(baseUrl & "/serve-dir/LICENS")
+    check resp.body == "Not Found"
+    check resp.hasStatus(404)

@@ -108,6 +108,9 @@ let handler = get[
   path("/serve-file")[
     file("LICENSE")
   ] ~
+  path("/serve-missing-file")[
+    file("LICENS")
+  ] ~
   pathChunk("/serve-dir")[
     dir(".")
   ]
