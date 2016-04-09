@@ -27,6 +27,7 @@ Table of contents
 	- [JSON support](#json-support)
 	- [Form handling support](#form-handling-support)
 	- [Static file support](#static-file-support)
+	- [CORS support](#cors-support)
 	- [API stability](#api-stability)
 
 <!-- /TOC -->
