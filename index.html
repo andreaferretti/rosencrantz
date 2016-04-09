@@ -22,6 +22,8 @@
       <h1>
 <a id="rosencrantz" class="anchor" href="#rosencrantz" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Rosencrantz</h1>
 
+<p><img src="https://raw.githubusercontent.com/andreaferretti/rosencrantz/master/shakespeare.jpg" alt="shakespeare"></p>
+
 <p>Rosencrantz is a DSL to write web servers, inspired by <a href="http://spray.io/">Spray</a>
 and its successor <a href="http://doc.akka.io/docs/akka/2.4.2/scala/http/introduction.html">Akka HTTP</a>.</p>
 
@@ -61,6 +63,7 @@ and provides a composable way to write HTTP handlers.</p>
 <li><a href="#json-support">JSON support</a></li>
 <li><a href="#form-handling-support">Form handling support</a></li>
 <li><a href="#static-file-support">Static file support</a></li>
+<li><a href="#cors-support">CORS support</a></li>
 <li><a href="#api-stability">API stability</a></li>
 </ul>
 </li>
@@ -384,7 +387,48 @@ table to <code>p</code>, rejecting the request if the body is not parseable.</li
 <h2>
 <a id="static-file-support" class="anchor" href="#static-file-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Static file support</h2>
 
-<p>TBD</p>
+<p>Rosencrantz has support to serve static files or directories. For now, it is
+limited to small files, because it does not support streaming yet.</p>
+
+<p>The module <code>rosencrantz/staticsupport</code> defines the following handlers:</p>
+
+<ul>
+<li>
+<code>file(path)</code>, where <code>path</code> is either absolute or relative to the current
+working directory. It will respond by serving the content of the file, if
+  it exists and is a simple file, or reject the request if it does not exist
+  or is a directory.</li>
+<li>
+<code>dir(path)</code>, where <code>path</code> is either absolute or relative to the current
+working directory. It will respond by taking the part of the URL
+  requested that is not matched yet, concatenate it to <code>path</code>, and serve the
+  corresponding file. Again, if the file does not exist or is a directory, the
+  handler will reject the request.</li>
+</ul>
+
+<p>To make things concrete, consider the following handler:</p>
+
+<div class="highlight highlight-source-nim"><pre><span class="pl-c1">path</span>(<span class="pl-s">"/main"</span>)[
+  <span class="pl-c1">file</span>(<span class="pl-s">"index.html"</span>)
+] <span class="pl-k">~</span>
+<span class="pl-c1">pathChunk</span>(<span class="pl-s">"/static"</span>)[
+    <span class="pl-c1">dir</span>(<span class="pl-s">"public"</span>)
+]</pre></div>
+
+<p>This will server the file <code>index.html</code> when the request is for the path <code>/main</code>,
+and it will serve the contents of the directory <code>public</code> under the URL <code>static</code>.
+So, for instance, a request for <code>/static/css/boostrap.css</code> will return the
+contents of the file <code>./public/css/boostrap.css</code>.</p>
+
+<p>All static handlers use the <a href="http://nim-lang.org/docs/mimetypes.html">mimetypes module</a>
+to try to guess the correct content type depending on the file extension. This
+should be usually enough; if you need more control, you can wrap a <code>file</code>
+handler inside a <code>contentType</code> handler to override the content type.</p>
+
+<h2>
+<a id="cors-support" class="anchor" href="#cors-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>CORS support</h2>
+
+<p>To be done.</p>
 
 <h2>
 <a id="api-stability" class="anchor" href="#api-stability" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>API stability</h2>
