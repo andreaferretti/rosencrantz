@@ -1,5 +1,7 @@
 # Rosencrantz
 
+![shakespeare](https://raw.githubusercontent.com/andreaferretti/rosencrantz/master/shakespeare.jpg)
+
 Rosencrantz is a DSL to write web servers, inspired by [Spray](http://spray.io/)
 and its successor [Akka HTTP](http://doc.akka.io/docs/akka/2.4.2/scala/http/introduction.html).
 
