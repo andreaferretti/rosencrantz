@@ -283,6 +283,9 @@ the request does not have the corresponding headers with these values, it
 will be rejected.</li>
 <li>
 <code>accept(mimetype)</code> is equivalent to <code>checkHeaders(("Accept", mimetype))</code>.</li>
+<li>
+<code>addDate()</code> returns a handler that adds the <code>Date</code> header, formatted as
+a GMT date in the <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html">HTTP date format</a>.</li>
 </ul>
 
 <p>For example, if you can return a result both as JSON or XML, according to the
