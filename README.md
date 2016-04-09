@@ -298,7 +298,46 @@ The module `rosencrantz/formsupport` defines the following handlers:
 
 ## Static file support
 
-TBD
+Rosencrantz has support to serve static files or directories. For now, it is
+limited to small files, because it does not support streaming yet.
+
+The module `rosencrantz/staticsupport` defines the following handlers:
+
+* `file(path)`, where `path` is either absolute or relative to the current
+  working directory. It will respond by serving the content of the file, if
+	it exists and is a simple file, or reject the request if it does not exist
+	or is a directory.
+* `dir(path)`, where `path` is either absolute or relative to the current
+  working directory. It will respond by taking the part of the URL
+	requested that is not matched yet, concatenate it to `path`, and serve the
+	corresponding file. Again, if the file does not exist or is a directory, the
+	handler will reject the request.
+
+To make things concrete, consider the following handler:
+
+```
+path("/main")[
+  file("index.html")
+] ~
+pathChunk("/static")[
+	dir("public")
+]
+```
+
+This will server the file `index.html` when the request is for the path `/main`,
+and it will serve the contents of the directory `public` under the URL `static`.
+So, for instance, a request for `/static/css/boostrap.css` will return the
+contents of the file `./public/css/boostrap.css`.
+
+All static handlers use the [mimetypes module](http://nim-lang.org/docs/mimetypes.html)
+to try to guess the correct content type depending on the file extension. This
+should be usually enough; if you need more control, you can wrap a `file`
+handler inside a `contentType` handler to override the content type.
+
+
+## CORS support
+
+To be done.
 
 ## API stability
 
