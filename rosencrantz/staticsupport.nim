@@ -1,4 +1,5 @@
-import asynchttpserver, asyncdispatch, asyncfile, strtabs, os, mimetypes
+import asynchttpserver, asyncdispatch, asyncfile, strtabs, os, mimetypes,
+  strutils
 import rosencrantz/core, rosencrantz/handlers
 
 let mime = newMimetypes()
@@ -6,7 +7,7 @@ let mime = newMimetypes()
 proc getContentType(fileName: string): string {.inline.} =
   let (_, _, ext) = splitFile(fileName)
   let extension = if ext[0] == '.': ext[1 .. ext.high] else: ext
-  return mime.getMimetype(extension)
+  return mime.getMimetype(extension.toLower)
 
 
 proc file*(path: string): Handler =
