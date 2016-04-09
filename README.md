@@ -316,7 +316,7 @@ The module `rosencrantz/staticsupport` defines the following handlers:
 
 To make things concrete, consider the following handler:
 
-```
+```nim
 path("/main")[
   file("index.html")
 ] ~
