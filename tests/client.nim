@@ -127,6 +127,12 @@ suite "handling failures":
     check resp.body == "Unauthorized"
     check resp.hasStatus(401)
 
+suite "writing custom handlers":
+  test "scope template":
+    let resp = get(baseUrl & "/custom-block")
+    check resp.body == "Hello, World!"
+    check resp.isOkTextPlain
+
 suite "json support":
   test "producing json":
     let resp = get(baseUrl & "/write-json")

@@ -116,6 +116,11 @@ let handler = get[
   ] ~
   pathChunk("/serve-dir")[
     dir(".")
+  ] ~
+  path("/custom-block")[
+    scope do:
+      let x = "Hello, World!"
+      return ok(x)
   ]
 ] ~ post[
   path("/hello-post")[

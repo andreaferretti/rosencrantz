@@ -1,4 +1,4 @@
-import rosencrantz/core, rosencrantz/handlers, rosencrantz/jsonsupport,
-  rosencrantz/formsupport, rosencrantz/staticsupport
+import rosencrantz/core, rosencrantz/handlers, rosencrantz/custom,
+  rosencrantz/jsonsupport, rosencrantz/formsupport, rosencrantz/staticsupport
 
-export core, handlers, jsonsupport, formsupport, staticsupport
+export core, handlers, custom, jsonsupport, formsupport, staticsupport
