@@ -356,6 +356,10 @@ allows you to access the whole <code>Request</code> object, and as such allows m
 <code>scope</code> is a template that creates a local scope. It us useful when one needs
 to define a few variables to write a little logic inline before returning an
   actual handler.</li>
+<li>
+<code>makeHandler</code> is a macro that removes some boilerplate in writing a custom
+handler. It accepts the body of a handler, and surrounds it with the proper
+  function declaration, etc.</li>
 </ul>
 
 <p>An example of usage of <code>scope</code> is the following:</p>
@@ -366,6 +370,34 @@ to define a few variables to write a little logic inline before returning an
         <span class="pl-c1">echo</span> <span class="pl-s">"We are returning: "</span>, x
         <span class="pl-k">return</span> <span class="pl-c1">ok</span>(x)
 ]</pre></div>
+
+<p>An example of usage of <code>makeHandler</code> is the following:</p>
+
+<div class="highlight highlight-source-nim"><pre><span class="pl-c1">path</span>(<span class="pl-s">"/custom-handler"</span>)[
+    <span class="pl-c1">makeHandler</span> <span class="pl-k">do</span>:
+        <span class="pl-k">let</span> x = <span class="pl-s">"Hello, World!"</span>
+        <span class="pl-k">await</span> req[].<span class="pl-c1">respond</span>(Http200, x, {<span class="pl-s">"Content-Type"</span><span class="pl-k">:</span> <span class="pl-s">"text/plain;charset=utf-8"</span>}<span class="pl-k">.</span>newStringTable)
+        <span class="pl-k">return</span> ctx
+]</pre></div>
+
+<p>That is expanded into something like:</p>
+
+<p>path("/custom-handler")[
+    proc innerProc() =
+        proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
+            let x = "Hello, World!"
+            await req[].respond(Http200, x, {"Content-Type": "text/plain;charset=utf-8"}.newStringTable)
+            return ctx</p>
+
+<pre><code>    return h
+
+innerProc()
+</code></pre>
+
+<p>]</p>
+
+<p>Notice that <code>makeHandler</code> is a little lower-level than other parts of
+Rosencrantz, and requires you to know how to write a custom handler.</p>
 
 <h2>
 <a id="json-support" class="anchor" href="#json-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>JSON support</h2>
