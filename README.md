@@ -263,6 +263,30 @@ failWith(Http406, "JSON endpoint")(
 )
 ```
 
+### Writing custom handlers
+
+Sometimes, the need arises to write handlers that perform a little more custom
+logic than those shown above. For those cases, Rosencrantz provides a few
+procedures and templates that help creating your handlers.
+
+* `getRequest(p)`, where `p` is a `proc(req: ref Request): Handler`. This
+  allows you to access the whole `Request` object, and as such allows more
+	flexibility.
+* `scope` is a template that creates a local scope. It us useful when one needs
+  to define a few variables to write a little logic inline before returning an
+	actual handler.
+
+An example of usage of `scope` is the following:
+
+```nim
+path("/using-scope")[
+	scope do:
+		let x = "Hello, World!"
+		echo "We are returning: ", x
+		return ok(x)
+]
+```
+
 ## JSON support
 
 Rosencrantz has support to parse and respond with JSON, under the
