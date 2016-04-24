@@ -121,6 +121,12 @@ let handler = get[
     scope do:
       let x = "Hello, World!"
       return ok(x)
+  ] ~
+  path("/custom-handler")[
+    getRequest(proc(req: ref Request): auto =
+      let x = req.url.path
+      return ok(x)
+    )
   ]
 ] ~ post[
   path("/hello-post")[

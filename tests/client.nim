@@ -132,6 +132,10 @@ suite "writing custom handlers":
     let resp = get(baseUrl & "/custom-block")
     check resp.body == "Hello, World!"
     check resp.isOkTextPlain
+  test "request extractor":
+    let resp = get(baseUrl & "/custom-handler")
+    check resp.body == "/custom-handler"
+    check resp.isOkTextPlain
 
 suite "json support":
   test "producing json":
