@@ -186,6 +186,9 @@ with a content type of <code>text/plain</code>.</li>
 <code>body(p)</code> extracts the body of the request. Here <code>p</code> is a
 <code>proc(s: string): Handler</code> which takes the extracted body as input and
 returns a handler.</li>
+<li>
+<code>logging(handler)</code> takes a handler and returns the same handler, but logs
+some information when a request passes through.</li>
 </ul>
 
 <p>For instance, a simple handler that echoes back the body of the request would
@@ -336,6 +339,33 @@ handler fails to match. For this, there is</p>
     someResponse
   ]
 )</pre></div>
+
+<h3>
+<a id="writing-custom-handlers" class="anchor" href="#writing-custom-handlers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Writing custom handlers</h3>
+
+<p>Sometimes, the need arises to write handlers that perform a little more custom
+logic than those shown above. For those cases, Rosencrantz provides a few
+procedures and templates that help creating your handlers.</p>
+
+<ul>
+<li>
+<code>getRequest(p)</code>, where <code>p</code> is a <code>proc(req: ref Request): Handler</code>. This
+allows you to access the whole <code>Request</code> object, and as such allows more
+  flexibility.</li>
+<li>
+<code>scope</code> is a template that creates a local scope. It us useful when one needs
+to define a few variables to write a little logic inline before returning an
+  actual handler.</li>
+</ul>
+
+<p>An example of usage of <code>scope</code> is the following:</p>
+
+<div class="highlight highlight-source-nim"><pre><span class="pl-c1">path</span>(<span class="pl-s">"/using-scope"</span>)[
+    <span class="pl-c1">scope</span> <span class="pl-k">do</span>:
+        <span class="pl-k">let</span> x = <span class="pl-s">"Hello, World!"</span>
+        <span class="pl-c1">echo</span> <span class="pl-s">"We are returning: "</span>, x
+        <span class="pl-k">return</span> <span class="pl-c1">ok</span>(x)
+]</pre></div>
 
 <h2>
 <a id="json-support" class="anchor" href="#json-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>JSON support</h2>
