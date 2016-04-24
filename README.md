@@ -133,6 +133,8 @@ The simplest handlers are:
 * `body(p)` extracts the body of the request. Here `p` is a
   `proc(s: string): Handler` which takes the extracted body as input and
   returns a handler.
+* `logging(handler)` takes a handler and returns the same handler, but logs
+  some information when a request passes through.
 
 For instance, a simple handler that echoes back the body of the request would
 look like
