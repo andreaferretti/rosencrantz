@@ -136,6 +136,10 @@ suite "writing custom handlers":
     let resp = get(baseUrl & "/custom-handler")
     check resp.body == "/custom-handler"
     check resp.isOkTextPlain
+  test "handler macros":
+    let resp = get(baseUrl & "/handler-macro")
+    check resp.body == "/handler-macro"
+    check resp.isOkTextPlain
 
 suite "json support":
   test "producing json":

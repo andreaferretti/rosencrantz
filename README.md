@@ -277,6 +277,9 @@ procedures and templates that help creating your handlers.
 * `scope` is a template that creates a local scope. It us useful when one needs
   to define a few variables to write a little logic inline before returning an
 	actual handler.
+* `makeHandler` is a macro that removes some boilerplate in writing a custom
+  handler. It accepts the body of a handler, and surrounds it with the proper
+	function declaration, etc.
 
 An example of usage of `scope` is the following:
 
@@ -288,6 +291,34 @@ path("/using-scope")[
 		return ok(x)
 ]
 ```
+
+An example of usage of `makeHandler` is the following:
+
+```nim
+path("/custom-handler")[
+	makeHandler do:
+		let x = "Hello, World!"
+		await req[].respond(Http200, x, {"Content-Type": "text/plain;charset=utf-8"}.newStringTable)
+		return ctx
+]
+```
+
+That is expanded into something like:
+
+path("/custom-handler")[
+	proc innerProc() =
+		proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
+			let x = "Hello, World!"
+			await req[].respond(Http200, x, {"Content-Type": "text/plain;charset=utf-8"}.newStringTable)
+			return ctx
+
+		return h
+
+	innerProc()
+]
+
+Notice that `makeHandler` is a little lower-level than other parts of
+Rosencrantz, and requires you to know how to write a custom handler.
 
 ## JSON support
 

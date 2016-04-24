@@ -129,6 +129,12 @@ let handler = get[
       let x = req.url.path
       return ok(x)
     )
+  ] ~
+  path("/handler-macro")[
+    makeHandler do:
+      let x = req.url.path
+      await req[].respond(Http200, x, {"Content-Type": "text/plain;charset=utf-8"}.newStringTable)
+      return ctx
   ]
 ] ~ post[
   path("/hello-post")[

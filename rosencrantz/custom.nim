@@ -1,9 +1,5 @@
-import asyncHttpServer, asyncDispatch
+import asyncHttpServer, asyncDispatch, macros
 import rosencrantz/core
-
-# macro scope*(body: untyped): untyped =
-#  if kind(body) != nnkDo: body
-#  else: newBlockStmt(body[6])
 
 template scope*(body: untyped): untyped =
   proc inner: auto {.gensym.} = body
@@ -16,9 +12,14 @@ proc getRequest*(p: proc(req: ref Request): Handler): Handler =
 
   return h
 
-template handle*(body: untyped): untyped =
-  scope do:
-    proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
-      body
+macro makeHandler*(body: untyped): untyped =
+  template inner(body: untyped): untyped  {.dirty.} =
+    proc innerProc(): auto =
+      proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
+        body
 
-    return h
+      return h
+
+    innerProc()
+
+  getAst(inner(body[6]))
