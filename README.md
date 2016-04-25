@@ -290,8 +290,8 @@ An example of usage of `scope` is the following:
 
 ```nim
 path("/using-scope")[
-	scope do:
-		let x = "Hello, World!"
+  scope do:
+    let x = "Hello, World!"
 		echo "We are returning: ", x
 		return ok(x)
 ]
@@ -301,8 +301,8 @@ An example of usage of `makeHandler` is the following:
 
 ```nim
 path("/custom-handler")[
-	makeHandler do:
-		let x = "Hello, World!"
+  makeHandler do:
+	  let x = "Hello, World!"
 		await req[].respond(Http200, x, {"Content-Type": "text/plain;charset=utf-8"}.newStringTable)
 		return ctx
 ]
@@ -310,17 +310,19 @@ path("/custom-handler")[
 
 That is expanded into something like:
 
+```nim
 path("/custom-handler")[
-	proc innerProc() =
-		proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
-			let x = "Hello, World!"
+  proc innerProc() =
+	  proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
+		  let x = "Hello, World!"
 			await req[].respond(Http200, x, {"Content-Type": "text/plain;charset=utf-8"}.newStringTable)
 			return ctx
 
 		return h
 
-	innerProc()
+  innerProc()
 ]
+```
 
 Notice that `makeHandler` is a little lower-level than other parts of
 Rosencrantz, and requires you to know how to write a custom handler.
