@@ -360,15 +360,15 @@ procedures and templates that help creating your handlers.</p>
 <li>
 <code>getRequest(p)</code>, where <code>p</code> is a <code>proc(req: ref Request): Handler</code>. This
 allows you to access the whole <code>Request</code> object, and as such allows more
-  flexibility.</li>
+flexibility.</li>
 <li>
 <code>scope</code> is a template that creates a local scope. It us useful when one needs
 to define a few variables to write a little logic inline before returning an
-  actual handler.</li>
+actual handler.</li>
 <li>
 <code>makeHandler</code> is a macro that removes some boilerplate in writing a custom
 handler. It accepts the body of a handler, and surrounds it with the proper
-  function declaration, etc.</li>
+function declaration, etc.</li>
 </ul>
 
 <p>An example of usage of <code>scope</code> is the following:</p>
@@ -376,29 +376,29 @@ handler. It accepts the body of a handler, and surrounds it with the proper
 <div class="highlight highlight-source-nim"><pre><span class="pl-c1">path</span>(<span class="pl-s">"/using-scope"</span>)[
   <span class="pl-c1">scope</span> <span class="pl-k">do</span>:
     <span class="pl-k">let</span> x = <span class="pl-s">"Hello, World!"</span>
-        <span class="pl-c1">echo</span> <span class="pl-s">"We are returning: "</span>, x
-        <span class="pl-k">return</span> <span class="pl-c1">ok</span>(x)
+    <span class="pl-c1">echo</span> <span class="pl-s">"We are returning: "</span>, x
+    <span class="pl-k">return</span> <span class="pl-c1">ok</span>(x)
 ]</pre></div>
 
 <p>An example of usage of <code>makeHandler</code> is the following:</p>
 
 <div class="highlight highlight-source-nim"><pre><span class="pl-c1">path</span>(<span class="pl-s">"/custom-handler"</span>)[
   <span class="pl-c1">makeHandler</span> <span class="pl-k">do</span>:
-      <span class="pl-k">let</span> x = <span class="pl-s">"Hello, World!"</span>
-        <span class="pl-k">await</span> req[].<span class="pl-c1">respond</span>(Http200, x, {<span class="pl-s">"Content-Type"</span><span class="pl-k">:</span> <span class="pl-s">"text/plain;charset=utf-8"</span>}<span class="pl-k">.</span>newStringTable)
-        <span class="pl-k">return</span> ctx
+    <span class="pl-k">let</span> x = <span class="pl-s">"Hello, World!"</span>
+    <span class="pl-k">await</span> req[].<span class="pl-c1">respond</span>(Http200, x, {<span class="pl-s">"Content-Type"</span><span class="pl-k">:</span> <span class="pl-s">"text/plain;charset=utf-8"</span>}<span class="pl-k">.</span>newStringTable)
+    <span class="pl-k">return</span> ctx
 ]</pre></div>
 
 <p>That is expanded into something like:</p>
 
 <div class="highlight highlight-source-nim"><pre><span class="pl-c1">path</span>(<span class="pl-s">"/custom-handler"</span>)[
   <span class="pl-k">proc</span> <span class="pl-en">innerProc</span>() <span class="pl-k">=</span>
-      <span class="pl-k">proc</span> <span class="pl-en">h</span>(req: <span class="pl-k">ref</span> Request, ctx: Context)<span class="pl-k">:</span> Future[Context] {.<span class="pl-e">async</span>.} <span class="pl-k">=</span>
-          <span class="pl-k">let</span> x = <span class="pl-s">"Hello, World!"</span>
-            <span class="pl-k">await</span> req[].<span class="pl-c1">respond</span>(Http200, x, {<span class="pl-s">"Content-Type"</span><span class="pl-k">:</span> <span class="pl-s">"text/plain;charset=utf-8"</span>}<span class="pl-k">.</span>newStringTable)
-            <span class="pl-k">return</span> ctx
+    <span class="pl-k">proc</span> <span class="pl-en">h</span>(req: <span class="pl-k">ref</span> Request, ctx: Context)<span class="pl-k">:</span> Future[Context] {.<span class="pl-e">async</span>.} <span class="pl-k">=</span>
+      <span class="pl-k">let</span> x = <span class="pl-s">"Hello, World!"</span>
+      <span class="pl-k">await</span> req[].<span class="pl-c1">respond</span>(Http200, x, {<span class="pl-s">"Content-Type"</span><span class="pl-k">:</span> <span class="pl-s">"text/plain;charset=utf-8"</span>}<span class="pl-k">.</span>newStringTable)
+      <span class="pl-k">return</span> ctx
 
-        <span class="pl-k">return</span> h
+    <span class="pl-k">return</span> h
 
   <span class="pl-c1">innerProc</span>()
 ]</pre></div>
@@ -465,14 +465,14 @@ limited to small files, because it does not support streaming yet.</p>
 <li>
 <code>file(path)</code>, where <code>path</code> is either absolute or relative to the current
 working directory. It will respond by serving the content of the file, if
-  it exists and is a simple file, or reject the request if it does not exist
-  or is a directory.</li>
+it exists and is a simple file, or reject the request if it does not exist
+or is a directory.</li>
 <li>
 <code>dir(path)</code>, where <code>path</code> is either absolute or relative to the current
 working directory. It will respond by taking the part of the URL
-  requested that is not matched yet, concatenate it to <code>path</code>, and serve the
-  corresponding file. Again, if the file does not exist or is a directory, the
-  handler will reject the request.</li>
+requested that is not matched yet, concatenate it to <code>path</code>, and serve the
+corresponding file. Again, if the file does not exist or is a directory, the
+handler will reject the request.</li>
 </ul>
 
 <p>To make things concrete, consider the following handler:</p>
@@ -481,7 +481,7 @@ working directory. It will respond by taking the part of the URL
   <span class="pl-c1">file</span>(<span class="pl-s">"index.html"</span>)
 ] <span class="pl-k">~</span>
 <span class="pl-c1">pathChunk</span>(<span class="pl-s">"/static"</span>)[
-    <span class="pl-c1">dir</span>(<span class="pl-s">"public"</span>)
+  <span class="pl-c1">dir</span>(<span class="pl-s">"public"</span>)
 ]</pre></div>
 
 <p>This will server the file <code>index.html</code> when the request is for the path <code>/main</code>,
