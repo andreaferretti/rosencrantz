@@ -240,5 +240,6 @@ proc logging*(handler: Handler): auto =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     let ret = handler(req, ctx)
     debugEcho "$3 $1 $2".format(req.reqMethod, req.url.path, req.hostname)
-    await ret
+    return await ret
+
   return h
