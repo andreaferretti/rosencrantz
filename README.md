@@ -187,7 +187,12 @@ To filter by HTTP method, one can use
 
 ### Querystring extraction
 
-TBD
+There are two handlers to extract the querystring from a request:
+
+* `queryString(p)`, where `p` is a `proc(s: string): Handler` allows to generate
+  a handler from the raw querystring (not parsed into parameters yet)
+* `queryString(p)`, where `p` is a `proc(s: StringTableRef): Handler` allows to
+	generate a handler from the querystring parameters, parsed as a string table.
 
 ### Working with headers
 
