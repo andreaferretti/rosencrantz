@@ -253,7 +253,16 @@ integer number. It fails if the segment does not represent an integer. Here
 <h3>
 <a id="querystring-extraction" class="anchor" href="#querystring-extraction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Querystring extraction</h3>
 
-<p>TBD</p>
+<p>There are two handlers to extract the querystring from a request:</p>
+
+<ul>
+<li>
+<code>queryString(p)</code>, where <code>p</code> is a <code>proc(s: string): Handler</code> allows to generate
+a handler from the raw querystring (not parsed into parameters yet)</li>
+<li>
+<code>queryString(p)</code>, where <code>p</code> is a <code>proc(s: StringTableRef): Handler</code> allows to
+generate a handler from the querystring parameters, parsed as a string table.</li>
+</ul>
 
 <h3>
 <a id="working-with-headers" class="anchor" href="#working-with-headers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Working with headers</h3>
@@ -365,8 +374,8 @@ handler. It accepts the body of a handler, and surrounds it with the proper
 <p>An example of usage of <code>scope</code> is the following:</p>
 
 <div class="highlight highlight-source-nim"><pre><span class="pl-c1">path</span>(<span class="pl-s">"/using-scope"</span>)[
-    <span class="pl-c1">scope</span> <span class="pl-k">do</span>:
-        <span class="pl-k">let</span> x = <span class="pl-s">"Hello, World!"</span>
+  <span class="pl-c1">scope</span> <span class="pl-k">do</span>:
+    <span class="pl-k">let</span> x = <span class="pl-s">"Hello, World!"</span>
         <span class="pl-c1">echo</span> <span class="pl-s">"We are returning: "</span>, x
         <span class="pl-k">return</span> <span class="pl-c1">ok</span>(x)
 ]</pre></div>
@@ -374,27 +383,25 @@ handler. It accepts the body of a handler, and surrounds it with the proper
 <p>An example of usage of <code>makeHandler</code> is the following:</p>
 
 <div class="highlight highlight-source-nim"><pre><span class="pl-c1">path</span>(<span class="pl-s">"/custom-handler"</span>)[
-    <span class="pl-c1">makeHandler</span> <span class="pl-k">do</span>:
-        <span class="pl-k">let</span> x = <span class="pl-s">"Hello, World!"</span>
+  <span class="pl-c1">makeHandler</span> <span class="pl-k">do</span>:
+      <span class="pl-k">let</span> x = <span class="pl-s">"Hello, World!"</span>
         <span class="pl-k">await</span> req[].<span class="pl-c1">respond</span>(Http200, x, {<span class="pl-s">"Content-Type"</span><span class="pl-k">:</span> <span class="pl-s">"text/plain;charset=utf-8"</span>}<span class="pl-k">.</span>newStringTable)
         <span class="pl-k">return</span> ctx
 ]</pre></div>
 
 <p>That is expanded into something like:</p>
 
-<p>path("/custom-handler")[
-    proc innerProc() =
-        proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
-            let x = "Hello, World!"
-            await req[].respond(Http200, x, {"Content-Type": "text/plain;charset=utf-8"}.newStringTable)
-            return ctx</p>
+<div class="highlight highlight-source-nim"><pre><span class="pl-c1">path</span>(<span class="pl-s">"/custom-handler"</span>)[
+  <span class="pl-k">proc</span> <span class="pl-en">innerProc</span>() <span class="pl-k">=</span>
+      <span class="pl-k">proc</span> <span class="pl-en">h</span>(req: <span class="pl-k">ref</span> Request, ctx: Context)<span class="pl-k">:</span> Future[Context] {.<span class="pl-e">async</span>.} <span class="pl-k">=</span>
+          <span class="pl-k">let</span> x = <span class="pl-s">"Hello, World!"</span>
+            <span class="pl-k">await</span> req[].<span class="pl-c1">respond</span>(Http200, x, {<span class="pl-s">"Content-Type"</span><span class="pl-k">:</span> <span class="pl-s">"text/plain;charset=utf-8"</span>}<span class="pl-k">.</span>newStringTable)
+            <span class="pl-k">return</span> ctx
 
-<pre><code>    return h
+        <span class="pl-k">return</span> h
 
-innerProc()
-</code></pre>
-
-<p>]</p>
+  <span class="pl-c1">innerProc</span>()
+]</pre></div>
 
 <p>Notice that <code>makeHandler</code> is a little lower-level than other parts of
 Rosencrantz, and requires you to know how to write a custom handler.</p>
