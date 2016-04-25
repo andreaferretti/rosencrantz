@@ -52,6 +52,14 @@ let handler = get[
       ok(s)
     )
   ] ~
+  path("/query-repeat")[
+    queryString(proc(s: StringTableRef): auto =
+      let
+        msg = s["msg"]
+        count = s["count"].parseInt
+      ok(sequtils.repeat(msg, count).join(","))
+    )
+  ] ~
   pathChunk("/emit-headers")[
     headers(("Content-Type", "text/html"), ("Date", "Today")) [
       ok("Hi there")

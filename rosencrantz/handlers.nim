@@ -1,5 +1,5 @@
 import asynchttpserver, asyncdispatch, strtabs, strutils, json, times
-import rosencrantz/core
+import rosencrantz/core, rosencrantz/util
 
 proc reject*(): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
@@ -85,6 +85,19 @@ proc intSegment*(p: proc(n: int): Handler): Handler =
 proc queryString*(p: proc(s: string): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     let handler = p(req.url.query)
+    let newCtx = await handler(req, ctx)
+    return newCtx
+
+  return h
+
+proc queryString*(p: proc(s: StringTableRef): Handler): Handler =
+  proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
+    var s: StringTableRef
+    try:
+      s = req.url.query.parseUrlencoded
+    except:
+      return ctx.reject()
+    let handler = p(s)
     let newCtx = await handler(req, ctx)
     return newCtx
 
