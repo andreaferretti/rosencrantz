@@ -67,6 +67,10 @@ suite "basic functionality":
     let resp = get(baseUrl & "/repeat/hello/3")
     check resp.body == "hello,hello,hello"
     check resp.isOkTextPlain
+  test "querystring extraction":
+    let resp = get(baseUrl & "/query-echo?hello")
+    check resp.body == "hello"
+    check resp.isOkTextPlain
 
 suite "handling headers":
   test "producing headers":

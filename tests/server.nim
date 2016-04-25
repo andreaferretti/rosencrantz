@@ -47,6 +47,11 @@ let handler = get[
       )
     )
   ] ~
+  path("/query-echo")[
+    queryString(proc(s: string): auto =
+      ok(s)
+    )
+  ] ~
   pathChunk("/emit-headers")[
     headers(("Content-Type", "text/html"), ("Date", "Today")) [
       ok("Hi there")
