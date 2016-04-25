@@ -14,21 +14,21 @@ Table of contents
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Rosencrantz](#rosencrantz)
-	- [Introduction](#introduction)
-		- [Composing handlers](#composing-handlers)
-		- [Starting a server](#starting-a-server)
-	- [An example](#an-example)
-	- [Basic handlers](#basic-handlers)
-		- [Path handling](#path-handling)
-		- [HTTP methods](#http-methods)
-		- [Querystring extraction](#querystring-extraction)
-		- [Working with headers](#working-with-headers)
-		- [Failure containment](#failure-containment)
-	- [JSON support](#json-support)
-	- [Form handling support](#form-handling-support)
-	- [Static file support](#static-file-support)
-	- [CORS support](#cors-support)
-	- [API stability](#api-stability)
+  - [Introduction](#introduction)
+    - [Composing handlers](#composing-handlers)
+    - [Starting a server](#starting-a-server)
+  - [An example](#an-example)
+  - [Basic handlers](#basic-handlers)
+    - [Path handling](#path-handling)
+    - [HTTP methods](#http-methods)
+    - [Querystring extraction](#querystring-extraction)
+    - [Working with headers](#working-with-headers)
+    - [Failure containment](#failure-containment)
+  - [JSON support](#json-support)
+  - [Form handling support](#form-handling-support)
+  - [Static file support](#static-file-support)
+  - [CORS support](#cors-support)
+  - [API stability](#api-stability)
 
 <!-- /TOC -->
 
@@ -192,7 +192,7 @@ There are two handlers to extract the querystring from a request:
 * `queryString(p)`, where `p` is a `proc(s: string): Handler` allows to generate
   a handler from the raw querystring (not parsed into parameters yet)
 * `queryString(p)`, where `p` is a `proc(s: StringTableRef): Handler` allows to
-	generate a handler from the querystring parameters, parsed as a string table.
+  generate a handler from the querystring parameters, parsed as a string table.
 
 ### Working with headers
 
@@ -278,13 +278,13 @@ procedures and templates that help creating your handlers.
 
 * `getRequest(p)`, where `p` is a `proc(req: ref Request): Handler`. This
   allows you to access the whole `Request` object, and as such allows more
-	flexibility.
+  flexibility.
 * `scope` is a template that creates a local scope. It us useful when one needs
   to define a few variables to write a little logic inline before returning an
-	actual handler.
+  actual handler.
 * `makeHandler` is a macro that removes some boilerplate in writing a custom
   handler. It accepts the body of a handler, and surrounds it with the proper
-	function declaration, etc.
+  function declaration, etc.
 
 An example of usage of `scope` is the following:
 
@@ -292,8 +292,8 @@ An example of usage of `scope` is the following:
 path("/using-scope")[
   scope do:
     let x = "Hello, World!"
-		echo "We are returning: ", x
-		return ok(x)
+    echo "We are returning: ", x
+    return ok(x)
 ]
 ```
 
@@ -302,9 +302,9 @@ An example of usage of `makeHandler` is the following:
 ```nim
 path("/custom-handler")[
   makeHandler do:
-	  let x = "Hello, World!"
-		await req[].respond(Http200, x, {"Content-Type": "text/plain;charset=utf-8"}.newStringTable)
-		return ctx
+    let x = "Hello, World!"
+    await req[].respond(Http200, x, {"Content-Type": "text/plain;charset=utf-8"}.newStringTable)
+    return ctx
 ]
 ```
 
@@ -313,12 +313,12 @@ That is expanded into something like:
 ```nim
 path("/custom-handler")[
   proc innerProc() =
-	  proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
-		  let x = "Hello, World!"
-			await req[].respond(Http200, x, {"Content-Type": "text/plain;charset=utf-8"}.newStringTable)
-			return ctx
+    proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
+      let x = "Hello, World!"
+      await req[].respond(Http200, x, {"Content-Type": "text/plain;charset=utf-8"}.newStringTable)
+      return ctx
 
-		return h
+    return h
 
   innerProc()
 ]
@@ -370,13 +370,13 @@ The module `rosencrantz/staticsupport` defines the following handlers:
 
 * `file(path)`, where `path` is either absolute or relative to the current
   working directory. It will respond by serving the content of the file, if
-	it exists and is a simple file, or reject the request if it does not exist
-	or is a directory.
+  it exists and is a simple file, or reject the request if it does not exist
+  or is a directory.
 * `dir(path)`, where `path` is either absolute or relative to the current
   working directory. It will respond by taking the part of the URL
-	requested that is not matched yet, concatenate it to `path`, and serve the
-	corresponding file. Again, if the file does not exist or is a directory, the
-	handler will reject the request.
+  requested that is not matched yet, concatenate it to `path`, and serve the
+  corresponding file. Again, if the file does not exist or is a directory, the
+  handler will reject the request.
 
 To make things concrete, consider the following handler:
 
@@ -385,7 +385,7 @@ path("/main")[
   file("index.html")
 ] ~
 pathChunk("/static")[
-	dir("public")
+  dir("public")
 ]
 ```
 
