@@ -6,7 +6,7 @@ proc formBody*(p: proc(s: StringTableRef): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     var s: StringTableRef
     try:
-      s = req.body.parseUrlencoded
+      s = req.body.parseUrlEncoded
     except:
       return ctx.reject()
     let handler = p(s)

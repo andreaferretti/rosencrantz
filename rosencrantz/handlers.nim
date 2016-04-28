@@ -94,7 +94,7 @@ proc queryString*(p: proc(s: StringTableRef): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     var s: StringTableRef
     try:
-      s = req.url.query.parseUrlencoded
+      s = req.url.query.parseUrlEncoded
     except:
       return ctx.reject()
     let handler = p(s)
