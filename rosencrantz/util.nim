@@ -19,6 +19,7 @@ proc parseUrlEncoded*(body: string): StringTableRef {.inline.} =
         result[s[0 .. i-1]] = s[i+1 .. h]
 
 proc parseUrlEncodedMulti*(body: string): TableRef[string, seq[string]] {.inline.} =
+  new result
   result[] = initTable[string, seq[string]]()
   template add(k, v: string) =
     if result.hasKey(k):

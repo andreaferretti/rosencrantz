@@ -172,6 +172,10 @@ suite "form support":
     let resp = post(baseUrl & "/read-form", body = "msg=hi there&count=5")
     check resp.body == "hi there"
     check resp.isOkTextPlain
+  test "reading form as x-www-form-urlencoded with multiple params":
+    let resp = post(baseUrl & "/read-multi-form", body = "msg=Hello&foo=bar&msg=World")
+    check resp.body == "Hello World"
+    check resp.isOkTextPlain
 
 suite "static file support":
   test "serving a single file":

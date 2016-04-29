@@ -1,5 +1,5 @@
 import asynchttpserver, asyncdispatch, json, math, strtabs, strutils, sequtils,
-  rosencrantz
+  tables, rosencrantz
 
 type Message = object
   message: string
@@ -171,6 +171,11 @@ let handler = get[
   path("/read-form")[
     formBody(proc(s: StringTableRef): auto =
       ok(s["msg"])
+    )
+  ] ~
+  path("/read-multi-form")[
+    formBody(proc(s: TableRef[string, seq[string]]): auto =
+      ok(s["msg"][0] & " " & s["msg"][1])
     )
   ]
 ] ~ put[
