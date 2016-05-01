@@ -1,6 +1,10 @@
 import strtabs, tables, asynchttpserver, asyncdispatch
-import rosencrantz/core, rosencrantz/util
+import rosencrantz/core, rosencrantz/handlers, rosencrantz/util
 
+type
+  UrlEncodable* = concept x
+    var s: StringTableRef
+    parseFromUrl(s, type(x)) is type(x)
 
 proc formBody*(p: proc(s: StringTableRef): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
@@ -14,6 +18,16 @@ proc formBody*(p: proc(s: StringTableRef): Handler): Handler =
     return newCtx
 
   return h
+
+proc formBody*[A: UrlEncodable](p: proc(a: A): Handler): Handler =
+  formBody(proc(s: StringTableRef): Handler =
+    var a: A
+    try:
+      a = s.parseFromUrl(A)
+    except:
+      return reject()
+    return p(a)
+  )
 
 proc formBody*(p: proc(s: TableRef[string, seq[string]]): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =

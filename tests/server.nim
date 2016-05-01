@@ -8,6 +8,9 @@ type Message = object
 proc renderToJson(m: Message): JsonNode =
   %{"msg": %(m.message), "count": %(m.count)}
 
+proc parseFromUrl(s: StringTableRef, m: typedesc[Message]): Message =
+  Message(message: s["msg"], count: s["count"].parseInt)
+
 proc parseFromJson(j: JsonNode, m: typedesc[Message]): Message =
   let
     s = j["msg"].getStr
@@ -171,6 +174,11 @@ let handler = get[
   path("/read-form")[
     formBody(proc(s: StringTableRef): auto =
       ok(s["msg"])
+    )
+  ] ~
+  path("/read-form-typeclass")[
+    formBody(proc(m: Message): auto =
+      ok(m.message)
     )
   ] ~
   path("/read-multi-form")[
