@@ -71,15 +71,25 @@ let handler = get[
       ok(sequtils.repeat(msg, count).join(","))
     )
   ] ~
-  pathChunk("/emit-headers")[
-    headers(("Content-Type", "text/html"), ("Date", "Today")) [
-      ok("Hi there")
-    ]
-  ] ~
   path("/query-typeclass")[
     queryString(proc(m: Message): auto =
       ok(sequtils.repeat(m.message, m.count).join(","))
     )
+  ] ~
+  path("/query-multi")[
+    queryString(proc(s: TableRef[string, seq[string]]): auto =
+      ok(s["msg"].join(" "))
+    )
+  ] ~
+  path("/query-multi-typeclass")[
+    queryString(proc(m: Messages): auto =
+      ok(m.message1 & " " & m.message2 & " " & m.message3)
+    )
+  ] ~
+  pathChunk("/emit-headers")[
+    headers(("Content-Type", "text/html"), ("Date", "Today")) [
+      ok("Hi there")
+    ]
   ] ~
   path("/content-negotiation")[
     accept("text/html")[

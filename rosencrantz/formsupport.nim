@@ -40,6 +40,29 @@ proc queryString*[A: UrlDecodable](p: proc(a: A): Handler): Handler =
     return p(a)
   )
 
+proc queryString*(p: proc(s: TableRef[string, seq[string]]): Handler): Handler =
+  proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
+    var s: TableRef[string, seq[string]]
+    try:
+      s = req.url.query.parseUrlEncodedMulti
+    except:
+      return ctx.reject()
+    let handler = p(s)
+    let newCtx = await handler(req, ctx)
+    return newCtx
+
+  return h
+
+proc queryString*[A: UrlMultiDecodable](p: proc(a: A): Handler): Handler =
+  queryString(proc(s: TableRef[string, seq[string]]): Handler =
+    var a: A
+    try:
+      a = s.parseFromUrl(A)
+    except:
+      return reject()
+    return p(a)
+  )
+
 proc formBody*(p: proc(s: StringTableRef): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     var s: StringTableRef

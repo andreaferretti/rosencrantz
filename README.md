@@ -14,21 +14,21 @@ Table of contents
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Rosencrantz](#rosencrantz)
-  - [Introduction](#introduction)
-    - [Composing handlers](#composing-handlers)
-    - [Starting a server](#starting-a-server)
-  - [An example](#an-example)
-  - [Basic handlers](#basic-handlers)
-    - [Path handling](#path-handling)
-    - [HTTP methods](#http-methods)
-    - [Working with headers](#working-with-headers)
-    - [Failure containment](#failure-containment)
-    - [Writing custom handlers](#writing-custom-handlers)
-  - [JSON support](#json-support)
-  - [Form handling support](#form-handling-support)
-  - [Static file support](#static-file-support)
-  - [CORS support](#cors-support)
-  - [API stability](#api-stability)
+	- [Introduction](#introduction)
+		- [Composing handlers](#composing-handlers)
+		- [Starting a server](#starting-a-server)
+	- [An example](#an-example)
+	- [Basic handlers](#basic-handlers)
+		- [Path handling](#path-handling)
+		- [HTTP methods](#http-methods)
+		- [Working with headers](#working-with-headers)
+		- [Failure containment](#failure-containment)
+		- [Writing custom handlers](#writing-custom-handlers)
+	- [JSON support](#json-support)
+	- [Form and querystring support](#form-and-querystring-support)
+	- [Static file support](#static-file-support)
+	- [CORS support](#cors-support)
+	- [API stability](#api-stability)
 
 <!-- /TOC -->
 
@@ -347,7 +347,7 @@ Rosencrantz has support to read the body of a form, either of type
 `application/x-www-form-urlencoded` or multipart (to be done). It also supports
 parsing the querystring as `application/x-www-form-urlencoded`.
 
-It defines two typeclasses:
+The `rosencrantz/formsupport` module defines two typeclasses:
 
 * a type `T` is `UrlDecodable` if there is function `parseFromUrl(s, T): T`
   where `s` is of type `StringTableRef`;
@@ -380,6 +380,11 @@ There are similar handlers to extract the querystring from a request:
   generate a handler from the querystring parameters, parsed as a string table.
 * `queryString(t)` where `t` has a type `T` that is `UrlDecodable`; works the
   same as `formBody`.
+* `queryString(p)`, where `p` is a
+	`proc(s: TableRef[string, seq[string]]): Handler` allows to generate a handler
+	from the querystring with repeated parameters, parsed as a table.
+* `queryString(t)` where `t` has a type `T` that is `UrlMultiDecodable`; works
+	the same as `formBody`.
 
 ## Static file support
 

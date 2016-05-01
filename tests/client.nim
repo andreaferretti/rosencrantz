@@ -188,6 +188,14 @@ suite "form and querystring support":
     let resp = get(baseUrl & "/query-typeclass?msg=hello&count=3")
     check resp.body == "hello,hello,hello"
     check resp.isOkTextPlain
+  test "querystring multiple parameters extraction":
+    let resp = get(baseUrl & "/query-multi?msg=Hello&msg=World")
+    check resp.body == "Hello World"
+    check resp.isOkTextPlain
+  test "querystring multiple parameters extraction":
+    let resp = get(baseUrl & "/query-multi-typeclass?msg=Hello&msg=my&msg=World")
+    check resp.body == "Hello my World"
+    check resp.isOkTextPlain
 
 suite "static file support":
   test "serving a single file":
