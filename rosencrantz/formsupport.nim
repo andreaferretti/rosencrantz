@@ -5,6 +5,9 @@ type
   UrlEncodable* = concept x
     var s: StringTableRef
     parseFromUrl(s, type(x)) is type(x)
+  UrlMultiEncodable* = concept x
+    var s: TableRef[string, seq[string]]
+    parseFromUrl(s, type(x)) is type(x)
 
 proc formBody*(p: proc(s: StringTableRef): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
@@ -41,3 +44,13 @@ proc formBody*(p: proc(s: TableRef[string, seq[string]]): Handler): Handler =
     return newCtx
 
   return h
+
+proc formBody*[A: UrlMultiEncodable](p: proc(a: A): Handler): Handler =
+  formBody(proc(s: TableRef[string, seq[string]]): Handler =
+    var a: A
+    try:
+      a = s.parseFromUrl(A)
+    except:
+      return reject()
+    return p(a)
+  )

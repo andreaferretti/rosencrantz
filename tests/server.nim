@@ -1,15 +1,23 @@
 import asynchttpserver, asyncdispatch, json, math, strtabs, strutils, sequtils,
   tables, rosencrantz
 
-type Message = object
-  message: string
-  count: int
+type
+  Message = object
+    message: string
+    count: int
+  Messages = object
+    message1: string
+    message2: string
+    message3: string
 
 proc renderToJson(m: Message): JsonNode =
   %{"msg": %(m.message), "count": %(m.count)}
 
 proc parseFromUrl(s: StringTableRef, m: typedesc[Message]): Message =
   Message(message: s["msg"], count: s["count"].parseInt)
+
+proc parseFromUrl(s: TableRef[string, seq[string]], m: typedesc[Messages]): Messages =
+  Messages(message1: s["msg"][0], message2: s["msg"][1], message3: s["msg"][2])
 
 proc parseFromJson(j: JsonNode, m: typedesc[Message]): Message =
   let
@@ -184,6 +192,11 @@ let handler = get[
   path("/read-multi-form")[
     formBody(proc(s: TableRef[string, seq[string]]): auto =
       ok(s["msg"][0] & " " & s["msg"][1])
+    )
+  ] ~
+  path("/read-multi-form-typeclass")[
+    formBody(proc(m: Messages): auto =
+      ok(m.message1 & m.message2 & m.message3)
     )
   ]
 ] ~ put[
