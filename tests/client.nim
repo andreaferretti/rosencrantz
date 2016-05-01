@@ -67,14 +67,6 @@ suite "basic functionality":
     let resp = get(baseUrl & "/repeat/hello/3")
     check resp.body == "hello,hello,hello"
     check resp.isOkTextPlain
-  test "querystring extraction":
-    let resp = get(baseUrl & "/query-echo?hello")
-    check resp.body == "hello"
-    check resp.isOkTextPlain
-  test "querystring parameters extraction":
-    let resp = get(baseUrl & "/query-repeat?msg=hello&count=3")
-    check resp.body == "hello,hello,hello"
-    check resp.isOkTextPlain
 
 suite "handling headers":
   test "producing headers":
@@ -167,7 +159,7 @@ suite "json support":
     check resp.body == "hi there"
     check resp.isOkTextPlain
 
-suite "form support":
+suite "form and querystring support":
   test "reading form as x-www-form-urlencoded":
     let resp = post(baseUrl & "/read-form", body = "msg=hi there&count=5")
     check resp.body == "hi there"
@@ -183,6 +175,18 @@ suite "form support":
   test "reading form as x-www-form-urlencoded with multiple params via typeclasses":
     let resp = post(baseUrl & "/read-multi-form-typeclass", body = "msg=Hello&msg=, &msg=World")
     check resp.body == "Hello, World"
+    check resp.isOkTextPlain
+  test "querystring extraction":
+    let resp = get(baseUrl & "/query-echo?hello")
+    check resp.body == "hello"
+    check resp.isOkTextPlain
+  test "querystring parameters extraction":
+    let resp = get(baseUrl & "/query-repeat?msg=hello&count=3")
+    check resp.body == "hello,hello,hello"
+    check resp.isOkTextPlain
+  test "querystring parameters extraction via typeclasses":
+    let resp = get(baseUrl & "/query-typeclass?msg=hello&count=3")
+    check resp.body == "hello,hello,hello"
     check resp.isOkTextPlain
 
 suite "static file support":

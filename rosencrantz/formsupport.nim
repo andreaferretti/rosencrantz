@@ -9,6 +9,37 @@ type
     var s: TableRef[string, seq[string]]
     parseFromUrl(s, type(x)) is type(x)
 
+proc queryString*(p: proc(s: string): Handler): Handler =
+  proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
+    let handler = p(req.url.query)
+    let newCtx = await handler(req, ctx)
+    return newCtx
+
+  return h
+
+proc queryString*(p: proc(s: StringTableRef): Handler): Handler =
+  proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
+    var s: StringTableRef
+    try:
+      s = req.url.query.parseUrlEncoded
+    except:
+      return ctx.reject()
+    let handler = p(s)
+    let newCtx = await handler(req, ctx)
+    return newCtx
+
+  return h
+
+proc queryString*[A: UrlDecodable](p: proc(a: A): Handler): Handler =
+  queryString(proc(s: StringTableRef): Handler =
+    var a: A
+    try:
+      a = s.parseFromUrl(A)
+    except:
+      return reject()
+    return p(a)
+  )
+
 proc formBody*(p: proc(s: StringTableRef): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     var s: StringTableRef

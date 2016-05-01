@@ -76,6 +76,11 @@ let handler = get[
       ok("Hi there")
     ]
   ] ~
+  path("/query-typeclass")[
+    queryString(proc(m: Message): auto =
+      ok(sequtils.repeat(m.message, m.count).join(","))
+    )
+  ] ~
   path("/content-negotiation")[
     accept("text/html")[
       contentType("text/html")[

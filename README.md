@@ -21,7 +21,6 @@ Table of contents
   - [Basic handlers](#basic-handlers)
     - [Path handling](#path-handling)
     - [HTTP methods](#http-methods)
-    - [Querystring extraction](#querystring-extraction)
     - [Working with headers](#working-with-headers)
     - [Failure containment](#failure-containment)
     - [Writing custom handlers](#writing-custom-handlers)
@@ -186,15 +185,6 @@ To filter by HTTP method, one can use
 * `get`, `post`, `put`, `delete`, `head`, `patch`, `options`, `trace` and
   `connect`
 
-### Querystring extraction
-
-There are two handlers to extract the querystring from a request:
-
-* `queryString(p)`, where `p` is a `proc(s: string): Handler` allows to generate
-  a handler from the raw querystring (not parsed into parameters yet)
-* `queryString(p)`, where `p` is a `proc(s: StringTableRef): Handler` allows to
-  generate a handler from the querystring parameters, parsed as a string table.
-
 ### Working with headers
 
 There are various handlers to read HTTP headers, filter requests by their
@@ -351,11 +341,13 @@ The module `rosencrantz/core` contains the following handlers:
   is `JsonReadable`; it extracts the body as a `T` and passes it to `p`, failing
   if the body is not valid JSON or cannot be converted to `T`.
 
-## Form handling support
+## Form and querystring support
 
 Rosencrantz has support to read the body of a form, either of type
-`application/x-www-form-urlencoded` or multipart (to be done). It defines two
-typeclasses:
+`application/x-www-form-urlencoded` or multipart (to be done). It also supports
+parsing the querystring as `application/x-www-form-urlencoded`.
+
+It defines two typeclasses:
 
 * a type `T` is `UrlDecodable` if there is function `parseFromUrl(s, T): T`
   where `s` is of type `StringTableRef`;
@@ -379,6 +371,15 @@ The module `rosencrantz/formsupport` defines the following handlers:
   parse the body as an URL-encoded with repeated parameters form, convert it
   to `T`, and pass the resulting object to `p`. It will reject a request if the
   body is not parseable or if the conversion to `T` fails.
+
+There are similar handlers to extract the querystring from a request:
+
+* `queryString(p)`, where `p` is a `proc(s: string): Handler` allows to generate
+  a handler from the raw querystring (not parsed into parameters yet)
+* `queryString(p)`, where `p` is a `proc(s: StringTableRef): Handler` allows to
+  generate a handler from the querystring parameters, parsed as a string table.
+* `queryString(t)` where `t` has a type `T` that is `UrlDecodable`; works the
+  same as `formBody`.
 
 ## Static file support
 
