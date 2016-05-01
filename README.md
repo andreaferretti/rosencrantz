@@ -14,22 +14,22 @@ Table of contents
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Rosencrantz](#rosencrantz)
-	- [Introduction](#introduction)
-		- [Composing handlers](#composing-handlers)
-		- [Starting a server](#starting-a-server)
-	- [An example](#an-example)
-	- [Basic handlers](#basic-handlers)
-		- [Path handling](#path-handling)
-		- [HTTP methods](#http-methods)
-		- [Querystring extraction](#querystring-extraction)
-		- [Working with headers](#working-with-headers)
-		- [Failure containment](#failure-containment)
-		- [Writing custom handlers](#writing-custom-handlers)
-	- [JSON support](#json-support)
-	- [Form handling support](#form-handling-support)
-	- [Static file support](#static-file-support)
-	- [CORS support](#cors-support)
-	- [API stability](#api-stability)
+  - [Introduction](#introduction)
+    - [Composing handlers](#composing-handlers)
+    - [Starting a server](#starting-a-server)
+  - [An example](#an-example)
+  - [Basic handlers](#basic-handlers)
+    - [Path handling](#path-handling)
+    - [HTTP methods](#http-methods)
+    - [Querystring extraction](#querystring-extraction)
+    - [Working with headers](#working-with-headers)
+    - [Failure containment](#failure-containment)
+    - [Writing custom handlers](#writing-custom-handlers)
+  - [JSON support](#json-support)
+  - [Form handling support](#form-handling-support)
+  - [Static file support](#static-file-support)
+  - [CORS support](#cors-support)
+  - [API stability](#api-stability)
 
 <!-- /TOC -->
 
@@ -354,13 +354,31 @@ The module `rosencrantz/core` contains the following handlers:
 ## Form handling support
 
 Rosencrantz has support to read the body of a form, either of type
-`application/x-www-form-urlencoded` or multipart (to be done).
+`application/x-www-form-urlencoded` or multipart (to be done). It defines two
+typeclasses:
+
+* a type `T` is `UrlDecodable` if there is function `parseFromUrl(s, T): T`
+  where `s` is of type `StringTableRef`;
+* a type `T` is `UrlMultiDecodable` if there is a function
+  `parseFromUrl(s, T): T` where `s` is of type `TableRef[string, seq[string]]`.
 
 The module `rosencrantz/formsupport` defines the following handlers:
 
 * `formBody(p)` where `p` is a `proc(s: StringTableRef): Handler`. It will
   parse the body as an URL-encoded form and pass the corresponding string
   table to `p`, rejecting the request if the body is not parseable.
+* `formBody(t)` where `t` has a type `T` that is `UrlDecodable`. It will
+  parse the body as an URL-encoded form, convert it to `T`, and pass the
+  resulting object to `p`. It will reject a request if the body is not parseable
+  or if the conversion to `T` fails.
+* `formBody(p)` where `p` is a
+  `proc(s: TableRef[string, seq[string]]): Handler`. It will parse the body as
+  an URL-encoded form, accumulating repeated parameters into sequences, and pass
+  table to `p`, rejecting the request if the body is not parseable.
+* `formBody(t)` where `t` has a type `T` that is `UrlMultiDecodable`. It will
+  parse the body as an URL-encoded with repeated parameters form, convert it
+  to `T`, and pass the resulting object to `p`. It will reject a request if the
+  body is not parseable or if the conversion to `T` fails.
 
 ## Static file support
 

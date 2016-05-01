@@ -2,10 +2,10 @@ import strtabs, tables, asynchttpserver, asyncdispatch
 import rosencrantz/core, rosencrantz/handlers, rosencrantz/util
 
 type
-  UrlEncodable* = concept x
+  UrlDecodable* = concept x
     var s: StringTableRef
     parseFromUrl(s, type(x)) is type(x)
-  UrlMultiEncodable* = concept x
+  UrlMultiDecodable* = concept x
     var s: TableRef[string, seq[string]]
     parseFromUrl(s, type(x)) is type(x)
 
@@ -22,7 +22,7 @@ proc formBody*(p: proc(s: StringTableRef): Handler): Handler =
 
   return h
 
-proc formBody*[A: UrlEncodable](p: proc(a: A): Handler): Handler =
+proc formBody*[A: UrlDecodable](p: proc(a: A): Handler): Handler =
   formBody(proc(s: StringTableRef): Handler =
     var a: A
     try:
@@ -45,7 +45,7 @@ proc formBody*(p: proc(s: TableRef[string, seq[string]]): Handler): Handler =
 
   return h
 
-proc formBody*[A: UrlMultiEncodable](p: proc(a: A): Handler): Handler =
+proc formBody*[A: UrlMultiDecodable](p: proc(a: A): Handler): Handler =
   formBody(proc(s: TableRef[string, seq[string]]): Handler =
     var a: A
     try:
