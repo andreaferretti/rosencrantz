@@ -18,12 +18,13 @@ Table of contents
 		- [Composing handlers](#composing-handlers)
 		- [Starting a server](#starting-a-server)
 	- [An example](#an-example)
+	- [Structure of the package](#structure-of-the-package)
 	- [Basic handlers](#basic-handlers)
 		- [Path handling](#path-handling)
 		- [HTTP methods](#http-methods)
 		- [Working with headers](#working-with-headers)
 		- [Failure containment](#failure-containment)
-		- [Writing custom handlers](#writing-custom-handlers)
+	- [Writing custom handlers](#writing-custom-handlers)
 	- [JSON support](#json-support)
 	- [Form and querystring support](#form-and-querystring-support)
 	- [Static file support](#static-file-support)
@@ -112,6 +113,19 @@ let handler = get[
   ]
 ]
 ```
+
+## Structure of the package
+
+Rosencrantz can be fully imported with just
+
+```nim
+import rosencrantz
+```
+
+The `rosencrantz` module just re-exports functionality from the submodules
+`rosencrantz/core`, `rosencrantz/handlers`, `rosencrantz/jsonsupport` and so
+on. These modules can be imported separately. The API is available
+[here](http://andreaferretti.github.io/rosencrantz/rosencrantz.html).
 
 ## Basic handlers
 
@@ -261,11 +275,12 @@ failWith(Http406, "JSON endpoint")(
 )
 ```
 
-### Writing custom handlers
+## Writing custom handlers
 
 Sometimes, the need arises to write handlers that perform a little more custom
 logic than those shown above. For those cases, Rosencrantz provides a few
-procedures and templates that help creating your handlers.
+procedures and templates (under `rosencrantz/custom`) that help creating
+your handlers.
 
 * `getRequest(p)`, where `p` is a `proc(req: ref Request): Handler`. This
   allows you to access the whole `Request` object, and as such allows more
