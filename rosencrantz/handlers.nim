@@ -1,5 +1,5 @@
 import asynchttpserver, asyncdispatch, strtabs, strutils, json, times
-import rosencrantz/core, rosencrantz/util
+import rosencrantz/core
 
 proc reject*(): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
