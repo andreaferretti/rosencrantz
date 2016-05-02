@@ -28,3 +28,8 @@ task server, "run server":
 task client, "run client":
   configForTests()
   setCommand "c", "tests/client"
+
+task gendoc, "generate documentation":
+  --docSeeSrcUrl: https://github.com/andreaferretti/rosencrantz/blob/master
+  --project
+  setCommand "doc2", "rosencrantz"
