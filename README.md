@@ -22,8 +22,8 @@ Table of contents
 	- [Basic handlers](#basic-handlers)
 		- [Path handling](#path-handling)
 		- [HTTP methods](#http-methods)
-		- [Working with headers](#working-with-headers)
 		- [Failure containment](#failure-containment)
+	- [Working with headers](#working-with-headers)
 	- [Writing custom handlers](#writing-custom-handlers)
 	- [JSON support](#json-support)
 	- [Form and querystring support](#form-and-querystring-support)
@@ -199,10 +199,44 @@ To filter by HTTP method, one can use
 * `get`, `post`, `put`, `delete`, `head`, `patch`, `options`, `trace` and
   `connect`
 
-### Working with headers
+### Failure containment
 
-There are various handlers to read HTTP headers, filter requests by their
-values, or accumulate HTTP headers for the response.
+When a requests falls through all routes without matching, Rosencrantz will
+return a standard response of `404 Not Found`. Similarly, whenever an
+exception arises, Rosencrantz will respond with `500 Server Error`.
+
+Sometimes, it can be useful to have more control over failure cases. For
+instance, you are able only to generate responses with type `application/json`:
+if the `Accept` header does not match it, you may want to return a status code
+of `406 Not Accepted`.
+
+One way to do this is to put the 406 response as an alternative, like this:
+
+```nim
+accept("application/json")[
+  someResponse
+] ~ complete(Http406, "JSON endpoint")
+```
+
+However, it can be more clear to use an equivalent combinators that wraps
+an existing handler and it returns a given failure message in case the inner
+handler fails to match. For this, there is
+
+* `failWith(code, s)`, to be used like this:
+
+```nim
+failWith(Http406, "JSON endpoint")(
+  accept("application/json")[
+    someResponse
+  ]
+)
+```
+
+## Working with headers
+
+Under `rosencrantz/headersupport`, there are various handlers to read HTTP
+headers, filter requests by their values, or accumulate HTTP headers for the
+response.
 
 * `headers(h1, h2, ...)` adds headers for the response. Here each argument is
   a tuple of two strings, which are a key/value pair.
@@ -240,39 +274,6 @@ accept("application/json")[
     ok(someXmlValue)
   ]
 ]
-```
-
-### Failure containment
-
-When a requests falls through all routes without matching, Rosencrantz will
-return a standard response of `404 Not Found`. Similarly, whenever an
-exception arises, Rosencrantz will respond with `500 Server Error`.
-
-Sometimes, it can be useful to have more control over failure cases. For
-instance, you are able only to generate responses with type `application/json`:
-if the `Accept` header does not match it, you may want to return a status code
-of `406 Not Accepted`.
-
-One way to do this is to put the 406 response as an alternative, like this:
-
-```nim
-accept("application/json")[
-  someResponse
-] ~ complete(Http406, "JSON endpoint")
-```
-
-However, it can be more clear to use an equivalent combinators that wraps
-an existing handler and it returns a given failure message in case the inner
-handler fails to match. For this, there is
-
-* `failWith(code, s)`, to be used like this:
-
-```nim
-failWith(Http406, "JSON endpoint")(
-  accept("application/json")[
-    someResponse
-  ]
-)
 ```
 
 ## Writing custom handlers
