@@ -49,17 +49,18 @@ and provides a composable way to write HTTP handlers.</p>
 </ul>
 </li>
 <li><a href="#an-example">An example</a></li>
+<li><a href="#structure-of-the-package">Structure of the package</a></li>
 <li>
 <a href="#basic-handlers">Basic handlers</a>
 
 <ul>
 <li><a href="#path-handling">Path handling</a></li>
 <li><a href="#http-methods">HTTP methods</a></li>
-<li><a href="#working-with-headers">Working with headers</a></li>
 <li><a href="#failure-containment">Failure containment</a></li>
-<li><a href="#writing-custom-handlers">Writing custom handlers</a></li>
 </ul>
 </li>
+<li><a href="#working-with-headers">Working with headers</a></li>
+<li><a href="#writing-custom-handlers">Writing custom handlers</a></li>
 <li><a href="#json-support">JSON support</a></li>
 <li><a href="#form-and-querystring-support">Form and querystring support</a></li>
 <li><a href="#static-file-support">Static file support</a></li>
@@ -161,6 +162,18 @@ business logic. This should give a feel of how the DSL looks like:</p>
 ]</pre></div>
 
 <h2>
+<a id="structure-of-the-package" class="anchor" href="#structure-of-the-package" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Structure of the package</h2>
+
+<p>Rosencrantz can be fully imported with just</p>
+
+<div class="highlight highlight-source-nim"><pre><span class="pl-k">import</span> rosencrantz</pre></div>
+
+<p>The <code>rosencrantz</code> module just re-exports functionality from the submodules
+<code>rosencrantz/core</code>, <code>rosencrantz/handlers</code>, <code>rosencrantz/jsonsupport</code> and so
+on. These modules can be imported separately. The API is available
+<a href="http://andreaferretti.github.io/rosencrantz/rosencrantz.html">here</a>.</p>
+
+<h2>
 <a id="basic-handlers" class="anchor" href="#basic-handlers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Basic handlers</h2>
 
 <p>In order to work with Rosencrantz, you can <code>import rosencrantz</code>. If you prefer
@@ -251,10 +264,44 @@ integer number. It fails if the segment does not represent an integer. Here
 </ul>
 
 <h3>
-<a id="working-with-headers" class="anchor" href="#working-with-headers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Working with headers</h3>
+<a id="failure-containment" class="anchor" href="#failure-containment" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Failure containment</h3>
 
-<p>There are various handlers to read HTTP headers, filter requests by their
-values, or accumulate HTTP headers for the response.</p>
+<p>When a requests falls through all routes without matching, Rosencrantz will
+return a standard response of <code>404 Not Found</code>. Similarly, whenever an
+exception arises, Rosencrantz will respond with <code>500 Server Error</code>.</p>
+
+<p>Sometimes, it can be useful to have more control over failure cases. For
+instance, you are able only to generate responses with type <code>application/json</code>:
+if the <code>Accept</code> header does not match it, you may want to return a status code
+of <code>406 Not Accepted</code>.</p>
+
+<p>One way to do this is to put the 406 response as an alternative, like this:</p>
+
+<div class="highlight highlight-source-nim"><pre><span class="pl-c1">accept</span>(<span class="pl-s">"application/json"</span>)[
+  someResponse
+] <span class="pl-k">~</span> <span class="pl-c1">complete</span>(Http406, <span class="pl-s">"JSON endpoint"</span>)</pre></div>
+
+<p>However, it can be more clear to use an equivalent combinators that wraps
+an existing handler and it returns a given failure message in case the inner
+handler fails to match. For this, there is</p>
+
+<ul>
+<li>
+<code>failWith(code, s)</code>, to be used like this:</li>
+</ul>
+
+<div class="highlight highlight-source-nim"><pre><span class="pl-c1">failWith</span>(Http406, <span class="pl-s">"JSON endpoint"</span>)(
+  <span class="pl-c1">accept</span>(<span class="pl-s">"application/json"</span>)[
+    someResponse
+  ]
+)</pre></div>
+
+<h2>
+<a id="working-with-headers" class="anchor" href="#working-with-headers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Working with headers</h2>
+
+<p>Under <code>rosencrantz/headersupport</code>, there are various handlers to read HTTP
+headers, filter requests by their values, or accumulate HTTP headers for the
+response.</p>
 
 <ul>
 <li>
@@ -302,45 +349,13 @@ request, you can do</p>
   ]
 ]</pre></div>
 
-<h3>
-<a id="failure-containment" class="anchor" href="#failure-containment" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Failure containment</h3>
-
-<p>When a requests falls through all routes without matching, Rosencrantz will
-return a standard response of <code>404 Not Found</code>. Similarly, whenever an
-exception arises, Rosencrantz will respond with <code>500 Server Error</code>.</p>
-
-<p>Sometimes, it can be useful to have more control over failure cases. For
-instance, you are able only to generate responses with type <code>application/json</code>:
-if the <code>Accept</code> header does not match it, you may want to return a status code
-of <code>406 Not Accepted</code>.</p>
-
-<p>One way to do this is to put the 406 response as an alternative, like this:</p>
-
-<div class="highlight highlight-source-nim"><pre><span class="pl-c1">accept</span>(<span class="pl-s">"application/json"</span>)[
-  someResponse
-] <span class="pl-k">~</span> <span class="pl-c1">complete</span>(Http406, <span class="pl-s">"JSON endpoint"</span>)</pre></div>
-
-<p>However, it can be more clear to use an equivalent combinators that wraps
-an existing handler and it returns a given failure message in case the inner
-handler fails to match. For this, there is</p>
-
-<ul>
-<li>
-<code>failWith(code, s)</code>, to be used like this:</li>
-</ul>
-
-<div class="highlight highlight-source-nim"><pre><span class="pl-c1">failWith</span>(Http406, <span class="pl-s">"JSON endpoint"</span>)(
-  <span class="pl-c1">accept</span>(<span class="pl-s">"application/json"</span>)[
-    someResponse
-  ]
-)</pre></div>
-
-<h3>
-<a id="writing-custom-handlers" class="anchor" href="#writing-custom-handlers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Writing custom handlers</h3>
+<h2>
+<a id="writing-custom-handlers" class="anchor" href="#writing-custom-handlers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Writing custom handlers</h2>
 
 <p>Sometimes, the need arises to write handlers that perform a little more custom
 logic than those shown above. For those cases, Rosencrantz provides a few
-procedures and templates that help creating your handlers.</p>
+procedures and templates (under <code>rosencrantz/custom</code>) that help creating
+your handlers.</p>
 
 <ul>
 <li>
