@@ -3,3 +3,4 @@ nimcache
 nimsuggest.log
 tests/client
 tests/server
+tests/todo

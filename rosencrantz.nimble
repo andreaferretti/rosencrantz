@@ -33,3 +33,8 @@ task gendoc, "generate documentation":
   --docSeeSrcUrl: https://github.com/andreaferretti/rosencrantz/blob/master
   --project
   setCommand "doc2", "rosencrantz"
+
+task todo, "run todo example":
+  --path: "."
+  --run
+  setCommand "c", "tests/todo"
