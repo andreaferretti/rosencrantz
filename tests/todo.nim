@@ -57,7 +57,6 @@ let handler = headers(
     path("/todos")[
       jsonBody(proc(todo: Todo): auto =
         todos.add(todo)
-        echo "post", todos
         return ok(todo)
       )
     ]
@@ -65,7 +64,6 @@ let handler = headers(
   rosencrantz.delete[
     path("/todos")[
       scope do:
-        echo "deleting todos"
         todos = @[]
         return ok(todos)
     ] ~
@@ -99,4 +97,4 @@ let handler = headers(
 
 let server = newAsyncHttpServer()
 
-waitFor server.serve(Port(8080), logging(handler))
+waitFor server.serve(Port(8080), handler)
