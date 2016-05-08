@@ -64,6 +64,15 @@ let handler = headers(
         echo "deleting todos"
         todos = @[]
         return ok(todos)
+    ] ~
+    pathChunk("/todos")[
+      intSegment(proc(n: int): auto =
+        let url = makeUrl(n)
+        for i, todo in todos:
+          if todo.url == url:
+            todos.delete(i)
+            return ok(todo)
+      )
     ]
   ] ~
   patch[
