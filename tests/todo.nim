@@ -4,9 +4,11 @@ type Todo = object
   title: string
   completed: bool
   url: string
+  order: int
 
 proc `%`(todo: Todo): JsonNode =
-  %{"title": %(todo.title), "completed": %(todo.completed), "url": %(todo.url)}
+  %{"title": %(todo.title), "completed": %(todo.completed), "url": %(todo.url),
+    "order": %(todo.order)}
 
 proc `%`(todos: seq[Todo]): JsonNode = %(todos.map(`%`))
 
@@ -19,14 +21,16 @@ proc parseFromJson(j: JsonNode, m: typedesc[Todo]): Todo =
     title = j["title"].getStr
     completed = if j.hasKey("completed"): j["completed"].getBVal else: false
     url = if j.hasKey("url"): j["url"].getStr else: random(1000000).makeUrl
-  return Todo(title: title, completed: completed, url: url)
+    order = if j.hasKey("order"): j["order"].getNum.int else: 0
+  return Todo(title: title, completed: completed, url: url, order: order)
 
 proc merge(todo: Todo, j: JsonNode): Todo =
   let
     title = if j.hasKey("title"): j["title"].getStr else: todo.title
     completed = if j.hasKey("completed"): j["completed"].getBVal else: todo.completed
     url = if j.hasKey("url"): j["url"].getStr else: todo.url
-  return Todo(title: title, completed: completed, url: url)
+    order = if j.hasKey("order"): j["order"].getNum.int else: todo.order
+  return Todo(title: title, completed: completed, url: url, order: order)
 
 var todos: seq[Todo] = @[]
 
