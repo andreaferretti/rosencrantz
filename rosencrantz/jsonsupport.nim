@@ -1,5 +1,5 @@
 import json, asynchttpserver, asyncdispatch, strtabs
-import rosencrantz/core, rosencrantz/handlers
+import rosencrantz/util, rosencrantz/core, rosencrantz/handlers
 
 type
   JsonReadable* = concept x
@@ -24,6 +24,8 @@ proc ok*[A: JsonWritable](a: A): Handler = ok(a.renderToJson)
 proc jsonBody*(p: proc(j: JsonNode): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     var j: JsonNode
+    if req.body == "":
+      await readBody(req)
     try:
       j = req.body.parseJson
     except JsonParsingError:

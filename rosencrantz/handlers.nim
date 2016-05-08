@@ -1,5 +1,5 @@
-import asynchttpserver, asyncdispatch, asyncnet, strtabs, strutils
-import rosencrantz/core
+import asynchttpserver, asyncdispatch, strtabs, strutils
+import rosencrantz/util, rosencrantz/core
 
 proc reject*(): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
@@ -81,14 +81,6 @@ proc intSegment*(p: proc(n: int): Handler): Handler =
     return p(n)
 
   return segment(inner)
-
-proc readBody(req: ref Request): Future[void] {.async.} =
-  var length = 0
-  if req.reqMethod.toLower == "put":
-    echo req.headers
-  if req.headers.hasKey("Content-Length"):
-    length = req.headers["Content-Length"].parseInt
-  req.body = await req.client.recv(length)
 
 proc body*(p: proc(s: string): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =

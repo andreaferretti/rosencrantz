@@ -64,7 +64,6 @@ suite "basic functionality":
       body = "Hi there"
       headers = "Content-Length: " & $(body.len) & "\n"
       resp = request(baseUrl & "/echo", httpMethod = httpPUT, extraHeaders = headers, body = body)
-    echo resp.body
     check resp.body == body
     check resp.isOkTextPlain
   test "path end extraction":

@@ -220,7 +220,6 @@ let handler = get[
   ] ~
   path("/echo")[
     body(proc(s: string): auto =
-      echo "-->", s
       ok(s)
     )
   ]
