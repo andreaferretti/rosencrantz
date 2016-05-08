@@ -217,6 +217,12 @@ let handler = get[
 ] ~ put[
   path("/hello-put")[
     ok("Hello, World!")
+  ] ~
+  path("/echo")[
+    body(proc(s: string): auto =
+      echo "-->", s
+      ok(s)
+    )
   ]
 ]
 

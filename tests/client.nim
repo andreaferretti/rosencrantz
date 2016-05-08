@@ -59,6 +59,14 @@ suite "basic functionality":
     let resp = request(baseUrl & "/hello-put", httpMethod = httpPUT)
     check resp.body == "Hello, World!"
     check resp.isOkTextPlain
+  test "put body extraction":
+    let
+      body = "Hi there"
+      headers = "Content-Length: " & $(body.len) & "\n"
+      resp = request(baseUrl & "/echo", httpMethod = httpPUT, extraHeaders = headers, body = body)
+    echo resp.body
+    check resp.body == body
+    check resp.isOkTextPlain
   test "path end extraction":
     let resp = get(baseUrl & "/echo/hi-there")
     check resp.body == "/hi-there"
