@@ -1210,6 +1210,8 @@ dt pre > span.Operator ~ span.Identifier, dt pre > span.Operator ~ span.Operator
     title="verb(m: HttpMethod): Handler"><wbr />verb</a></li>
   <li><a class="reference" href="#logging,Handler"
     title="logging(handler: Handler): auto"><wbr />logging</a></li>
+  <li><a class="reference" href="#failWith,HttpCode,string"
+    title="failWith(code: HttpCode; s: string): auto"><wbr />fail<wbr />With</a></li>
 
   </ul>
 </li>
@@ -1222,7 +1224,7 @@ dt pre > span.Operator ~ span.Identifier, dt pre > span.Operator ~ span.Operator
   <div class="section" id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="asynchttpserver.html">asynchttpserver</a>, <a class="reference external" href="asyncdispatch.html">asyncdispatch</a>, <a class="reference external" href="strtabs.html">strtabs</a>, <a class="reference external" href="strutils.html">strutils</a>, <a class="reference external" href="rosencrantz/core.html">rosencrantz/core</a>
+<a class="reference external" href="asynchttpserver.html">asynchttpserver</a>, <a class="reference external" href="asyncdispatch.html">asyncdispatch</a>, <a class="reference external" href="strtabs.html">strtabs</a>, <a class="reference external" href="strutils.html">strutils</a>, <a class="reference external" href="rosencrantz/util.html">rosencrantz/util</a>, <a class="reference external" href="rosencrantz/core.html">rosencrantz/core</a>
 </dl></div>
 <div class="section" id="9">
 <h1><a class="toc-backref" href="#9">Lets</a></h1>
@@ -1231,63 +1233,63 @@ dt pre > span.Operator ~ span.Identifier, dt pre > span.Operator ~ span.Operator
 <dd>
 
 &nbsp;&nbsp;<a
-href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L105"
+href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L107"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="post"><a name="post"></a><pre><span class="Identifier">post</span> <span class="Other">=</span> <span class="Identifier">verb</span><span class="Other">(</span><span class="DecNumber">POST</span><span class="Other">)</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L106"
+href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L108"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="put"><a name="put"></a><pre><span class="Identifier">put</span> <span class="Other">=</span> <span class="Identifier">verb</span><span class="Other">(</span><span class="DecNumber">PUT</span><span class="Other">)</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L107"
+href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L109"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="delete"><a name="delete"></a><pre><span class="Identifier">delete</span> <span class="Other">=</span> <span class="Identifier">verb</span><span class="Other">(</span><span class="DecNumber">DELETE</span><span class="Other">)</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L108"
+href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L110"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="head"><a name="head"></a><pre><span class="Identifier">head</span> <span class="Other">=</span> <span class="Identifier">verb</span><span class="Other">(</span><span class="DecNumber">HEAD</span><span class="Other">)</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L109"
+href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L111"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="patch"><a name="patch"></a><pre><span class="Identifier">patch</span> <span class="Other">=</span> <span class="Identifier">verb</span><span class="Other">(</span><span class="DecNumber">PATCH</span><span class="Other">)</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L110"
+href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L112"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="options"><a name="options"></a><pre><span class="Identifier">options</span> <span class="Other">=</span> <span class="Identifier">verb</span><span class="Other">(</span><span class="DecNumber">OPTIONS</span><span class="Other">)</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L111"
+href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L113"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="trace"><a name="trace"></a><pre><span class="Identifier">trace</span> <span class="Other">=</span> <span class="Identifier">verb</span><span class="Other">(</span><span class="DecNumber">TRACE</span><span class="Other">)</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L112"
+href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L114"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="connect"><a name="connect"></a><pre><span class="Identifier">connect</span> <span class="Other">=</span> <span class="Identifier">verb</span><span class="Other">(</span><span class="DecNumber">CONNECT</span><span class="Other">)</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L113"
+href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L115"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 
@@ -1372,14 +1374,21 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 
 &nbsp;&nbsp;<a
-href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L93"
+href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L95"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="logging"><a name="logging,Handler"></a><pre><span class="Keyword">proc</span> <span class="Identifier">logging</span><span class="Other">(</span><span class="Identifier">handler</span><span class="Other">:</span> <span class="Identifier">Handler</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L115"
+href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L117"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="failWith"><a name="failWith,HttpCode,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">failWith</span><span class="Other">(</span><span class="Identifier">code</span><span class="Other">:</span> <span class="Identifier">HttpCode</span><span class="Other">;</span> <span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/handlers.nim#L125"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 
@@ -1392,7 +1401,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-05-02 22:55:45 UTC</small>
+        <small>Made with Nim. Generated: 2016-05-10 02:40:38 UTC</small>
       </div>
     </div>
   </div>
