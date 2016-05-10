@@ -90,12 +90,6 @@ proc checkHeaders*(hs: varargs[StrPair]): Handler =
 
 proc accept*(s: string): Handler = checkHeaders(("Accept", s))
 
-proc failWith*(code: HttpCode, s: string): auto =
-  proc inner(handler: Handler): Handler =
-    handler ~ complete(code, s)
-
-  return inner
-
 proc addDate*(): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     # https://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html

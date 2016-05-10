@@ -121,3 +121,9 @@ proc logging*(handler: Handler): auto =
     return await ret
 
   return h
+
+proc failWith*(code: HttpCode, s: string): auto =
+  proc inner(handler: Handler): Handler =
+    handler ~ complete(code, s)
+
+  return inner
