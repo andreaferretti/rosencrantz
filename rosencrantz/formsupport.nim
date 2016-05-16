@@ -1,23 +1,17 @@
-import strtabs, strutils, tables, asynchttpserver, asyncdispatch, cgi
+import strtabs, strutils, parseutils, tables, asynchttpserver, asyncdispatch, cgi
 import rosencrantz/util, rosencrantz/core, rosencrantz/handlers
 
 proc parseUrlEncoded(body: string): StringTableRef {.inline.} =
   result = {:}.newStringTable
-  for s in body.decodeUrl.split('&'):
-    if s.len == 0 or s == "=":
-      result[""] = ""
-    else:
-      let
-        i = s.find('=')
-        h = s.high()
-      if i == -1:
-        result[s] = ""
-      elif i == 0:
-        result[""] = s[i+1 .. h]
-      elif i == h:
-        result[s[0 .. h-1]] = ""
-      else:
-        result[s[0 .. i-1]] = s[i+1 .. h]
+  var i = 0
+  let c = body.decodeUrl
+  while i < c.len - 1:
+    var k, v: string
+    i += c.parseUntil(k, '=', i)
+    i += 1
+    i += c.parseUntil(v, '&', i)
+    i += 1
+    result[k] = v
 
 proc parseUrlEncodedMulti(body: string): TableRef[string, seq[string]] {.inline.} =
   new result
@@ -28,21 +22,15 @@ proc parseUrlEncodedMulti(body: string): TableRef[string, seq[string]] {.inline.
     else:
       result[k] = @[v]
 
-  for s in body.decodeUrl.split('&'):
-    if s.len == 0 or s == "=":
-      add("", "")
-    else:
-      let
-        i = s.find('=')
-        h = s.high()
-      if i == -1:
-        add(s, "")
-      elif i == 0:
-        add("", s[i+1 .. h])
-      elif i == h:
-        add(s[0 .. h-1], "")
-      else:
-        add(s[0 .. i-1], s[i+1 .. h])
+  var i = 0
+  let c = body.decodeUrl
+  while i < c.len - 1:
+    var k, v: string
+    i += c.parseUntil(k, '=', i)
+    i += 1
+    i += c.parseUntil(v, '&', i)
+    i += 1
+    add(k, v)
 
 type
   UrlDecodable* = concept x
