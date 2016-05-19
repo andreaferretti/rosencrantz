@@ -143,3 +143,21 @@ proc formBody*[A: UrlMultiDecodable](p: proc(a: A): Handler): Handler =
       return reject()
     return p(a)
   )
+
+proc multipart*(p: proc(s: string): Handler): Handler =
+  proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
+    if req.body == "":
+      await readBody(req)
+    try:
+      let
+        contentType = req.headers["Content-Type"]
+        skip = "multipart/form-data; boundary=".len
+        boundary = contentType[skip .. contentType.high]
+        chunks = req.body.split(boundary)
+    except:
+      return ctx.reject()
+    let handler = p(req.body)
+    let newCtx = await handler(req, ctx)
+    return newCtx
+
+  return h

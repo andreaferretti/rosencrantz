@@ -213,6 +213,11 @@ let handler = get[
     formBody(proc(m: Messages): auto =
       ok(m.message1 & m.message2 & m.message3)
     )
+  ] ~
+  path("/multipart-form")[
+    multipart(proc(s: string): auto =
+      ok(s)
+    )
   ]
 ] ~ put[
   path("/hello-put")[
