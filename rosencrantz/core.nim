@@ -68,11 +68,17 @@ proc handle*(h: Handler): auto =
     )
     var reqHeap = new(Request)
     reqHeap[] = req
-    var f = h(reqHeap, emptyCtx)
+    var
+      f: Future[Context]
+      ctx: Context
+    try:
+      f = h(reqHeap, emptyCtx)
+      ctx = await f
+    except:
+      discard
     if f.failed:
       await req.respond(Http500, "Server Error", {"Content-Type": "text/plain;charset=utf-8"}.newStringTable)
     else:
-      let ctx = await f
       if not ctx.accept:
         await req.respond(Http404, "Not Found", {"Content-Type": "text/plain;charset=utf-8"}.newStringTable)
 
