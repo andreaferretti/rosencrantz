@@ -1,5 +1,5 @@
-import asynchttpserver, asyncdispatch, json, math, strtabs, strutils, sequtils,
-  tables, rosencrantz
+import asynchttpserver, asyncdispatch, httpcore, json, math, strtabs, strutils,
+  sequtils, tables, rosencrantz
 
 type
   Message = object
@@ -45,7 +45,7 @@ let handler = get[
     ] ~
     pathChunk("/unauthorized")[
       complete(Http401, "Authorization failed",
-        {"Content-Type": "text/plain"}.newStringTable)
+        {"Content-Type": "text/plain"}.newHttpHeaders)
     ]
   ] ~
   pathChunk("/echo")[
@@ -104,7 +104,7 @@ let handler = get[
     ]
   ] ~
   path("/read-all-headers")[
-    readAllHeaders(proc(hs: StringTableRef): auto =
+    readAllHeaders(proc(hs: HttpHeaders): auto =
       ok(hs["First"] & ", " & hs["Second"])
     )
   ] ~
@@ -129,7 +129,7 @@ let handler = get[
     ]
   ] ~
   path("/crash")[
-    readAllHeaders(proc(hs: StringTableRef): auto =
+    readAllHeaders(proc(hs: HttpHeaders): auto =
       ok(hs["Missing"])
     )
   ] ~
@@ -172,7 +172,7 @@ let handler = get[
   path("/handler-macro")[
     makeHandler do:
       let x = req.url.path
-      await req[].respond(Http200, x, {"Content-Type": "text/plain;charset=utf-8"}.newStringTable)
+      await req[].respond(Http200, x, {"Content-Type": "text/plain;charset=utf-8"}.newHttpHeaders)
       return ctx
   ]
 ] ~ post[

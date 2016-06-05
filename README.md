@@ -8,6 +8,9 @@ and its successor [Akka HTTP](http://doc.akka.io/docs/akka/2.4.2/scala/http/intr
 It sits on top of [asynchttpserver](http://nim-lang.org/docs/asynchttpserver.html)
 and provides a composable way to write HTTP handlers.
 
+New versions work with latest Nim devel. Use versions up to 0.1.9 for Nim
+stable.
+
 Table of contents
 -----------------
 

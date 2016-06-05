@@ -1,4 +1,4 @@
-import asynchttpserver, asyncdispatch, strtabs, strutils
+import asynchttpserver, asyncdispatch, httpcore, strutils
 import rosencrantz/util, rosencrantz/core
 
 proc reject*(): Handler =
@@ -7,7 +7,7 @@ proc reject*(): Handler =
 
   return h
 
-proc complete*(code: HttpCode, body: string, headers: StringTableRef = {:}.newStringTable): Handler =
+proc complete*(code: HttpCode, body: string, headers = newHttpHeaders()): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     var hs = headers
     # Should traverse in reverse order
@@ -19,10 +19,10 @@ proc complete*(code: HttpCode, body: string, headers: StringTableRef = {:}.newSt
   return h
 
 proc ok*(s: string): Handler =
-  complete(Http200, s, {"Content-Type": "text/plain;charset=utf-8"}.newStringTable)
+  complete(Http200, s, {"Content-Type": "text/plain;charset=utf-8"}.newHttpHeaders)
 
 proc notFound*(s: string = "Not Found"): Handler =
-  complete(Http404, s, {"Content-Type": "text/plain;charset=utf-8"}.newStringTable)
+  complete(Http404, s, {"Content-Type": "text/plain;charset=utf-8"}.newHttpHeaders)
 
 proc path*(s: string): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =

@@ -1,4 +1,4 @@
-import asynchttpserver, asyncdispatch, asyncfile, strtabs, os, mimetypes,
+import asynchttpserver, asyncdispatch, asyncfile, httpcore, os, mimetypes,
   strutils
 import rosencrantz/core, rosencrantz/handlers
 
@@ -18,7 +18,7 @@ proc file*(path: string): Handler =
       let f = openAsync(path)
       let content = await f.readAll
       close(f)
-      var hs = {"Content-Type": mimeType}.newStringTable
+      var hs = {"Content-Type": mimeType}.newHttpHeaders
       # Should traverse in reverse order
       for h in ctx.headers:
         hs[h.k] = h.v
@@ -42,7 +42,7 @@ proc dir*(path: string): Handler =
         f = openAsync(completeFileName)
       let content = await f.readAll
       close(f)
-      var hs = {"Content-Type": mimeType}.newStringTable
+      var hs = {"Content-Type": mimeType}.newHttpHeaders
       # Should traverse in reverse order
       for h in ctx.headers:
         hs[h.k] = h.v

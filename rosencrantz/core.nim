@@ -1,4 +1,4 @@
-import asynchttpserver, asyncdispatch, strtabs
+import asynchttpserver, asyncdispatch, httpcore
 
 type
   List[A] = ref object
@@ -77,10 +77,10 @@ proc handle*(h: Handler): auto =
     except:
       discard
     if f.failed:
-      await req.respond(Http500, "Server Error", {"Content-Type": "text/plain;charset=utf-8"}.newStringTable)
+      await req.respond(Http500, "Server Error", {"Content-Type": "text/plain;charset=utf-8"}.newHttpHeaders)
     else:
       if not ctx.accept:
-        await req.respond(Http404, "Not Found", {"Content-Type": "text/plain;charset=utf-8"}.newStringTable)
+        await req.respond(Http404, "Not Found", {"Content-Type": "text/plain;charset=utf-8"}.newHttpHeaders)
 
   return server
 

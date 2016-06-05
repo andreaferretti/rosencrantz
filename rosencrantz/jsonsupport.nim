@@ -1,4 +1,4 @@
-import json, asynchttpserver, asyncdispatch, strtabs
+import json, asynchttpserver, asyncdispatch, httpcore
 import rosencrantz/util, rosencrantz/core, rosencrantz/handlers
 
 type
@@ -10,7 +10,7 @@ type
 
 proc ok*(j: JsonNode): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
-    var headers = {"Content-Type": "application/json"}.newStringTable
+    var headers = {"Content-Type": "application/json"}.newHttpHeaders
     # Should traverse in reverse order
     for h in ctx.headers:
       headers[h.k] = h.v

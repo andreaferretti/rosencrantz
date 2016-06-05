@@ -1,4 +1,4 @@
-import strtabs, asynchttpserver, asyncdispatch, times
+import strtabs, asynchttpserver, asyncdispatch, httpcore, times
 import rosencrantz/core, rosencrantz/handlers
 
 proc headers*(hs: varargs[StrPair]): Handler =
@@ -11,7 +11,7 @@ proc headers*(hs: varargs[StrPair]): Handler =
 
 proc contentType*(s: string): Handler = headers(("Content-Type", s))
 
-proc readAllHeaders*(p: proc(headers: StringTableRef): Handler): Handler =
+proc readAllHeaders*(p: proc(headers: HttpHeaders): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     let handler = p(req.headers)
     let newCtx = await handler(req, ctx)
