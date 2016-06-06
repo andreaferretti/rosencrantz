@@ -1,5 +1,5 @@
 import strtabs, strutils, parseutils, tables, asynchttpserver, asyncdispatch, cgi
-import rosencrantz/util, rosencrantz/core, rosencrantz/handlers
+import rosencrantz/core, rosencrantz/handlers
 
 proc parseUrlEncoded(body: string): StringTableRef {.inline.} =
   result = {:}.newStringTable
@@ -97,8 +97,6 @@ proc queryString*[A: UrlMultiDecodable](p: proc(a: A): Handler): Handler =
 proc formBody*(p: proc(s: StringTableRef): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     var s: StringTableRef
-    if req.body == "":
-      await readBody(req)
     try:
       s = req.body.parseUrlEncoded
     except:
@@ -122,8 +120,6 @@ proc formBody*[A: UrlDecodable](p: proc(a: A): Handler): Handler =
 proc formBody*(p: proc(s: TableRef[string, seq[string]]): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     var s: TableRef[string, seq[string]]
-    if req.body == "":
-      await readBody(req)
     try:
       s = req.body.parseUrlEncodedMulti
     except:
@@ -146,8 +142,6 @@ proc formBody*[A: UrlMultiDecodable](p: proc(a: A): Handler): Handler =
 
 proc multipart*(p: proc(s: string): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
-    if req.body == "":
-      await readBody(req)
     try:
       let
         contentType = req.headers["Content-Type"]

@@ -1,5 +1,5 @@
 import asynchttpserver, asyncdispatch, httpcore, strutils
-import rosencrantz/util, rosencrantz/core
+import rosencrantz/core
 
 proc reject*(): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
@@ -84,8 +84,6 @@ proc intSegment*(p: proc(n: int): Handler): Handler =
 
 proc body*(p: proc(s: string): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
-    if req.body == "":
-      await readBody(req)
     let handler = p(req.body)
     let newCtx = await handler(req, ctx)
     return newCtx
