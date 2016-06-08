@@ -81,7 +81,7 @@ suite "handling headers":
     check resp.body == "Hi there"
     check resp.hasStatus(200)
     check resp.hasContentType("text/html")
-    check seq[string](resp.headers["date"]) == @["today"]
+    check seq[string](resp.headers["date"]) == @["Today"]
   test "content negotiation":
     let resp1 = get(baseUrl & "/content-negotiation", "Accept: text/html\n")
     check resp1.body == "<html>hi</html>"

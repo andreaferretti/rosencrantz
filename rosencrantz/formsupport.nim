@@ -1,6 +1,13 @@
 import strtabs, strutils, parseutils, tables, asynchttpserver, asyncdispatch, cgi
 import rosencrantz/core, rosencrantz/handlers
 
+type
+  MultiPartFile* = object
+    filename*, contentType*, content*: string
+  MultiPart* = object
+    fields*: StringTableRef
+    files*: TableRef[string, MultiPartFile]
+
 proc parseUrlEncoded(body: string): StringTableRef {.inline.} =
   result = {:}.newStringTable
   var i = 0
@@ -18,7 +25,7 @@ proc parseUrlEncodedMulti(body: string): TableRef[string, seq[string]] {.inline.
   result[] = initTable[string, seq[string]]()
   template add(k, v: string) =
     if result.hasKey(k):
-      result.mget(k).add(v)
+      result[k].add(v)
     else:
       result[k] = @[v]
 
@@ -140,14 +147,65 @@ proc formBody*[A: UrlMultiDecodable](p: proc(a: A): Handler): Handler =
     return p(a)
   )
 
+template doSkip(s, token, start: expr): expr =
+  let x = s.skip(token, start)
+  doAssert x != 0
+  x
+
+template doSkipIgnoreCase(s, token, start: expr): expr =
+  let x = s.skipIgnoreCase(token, start)
+  doAssert x != 0
+  x
+
 proc multipart*(p: proc(s: string): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
+    var parsed = MultiPart(
+      fields: {:}.newStringTable,
+      files: newTable[string, MultiPartFile]()
+    )
     try:
       let
-        contentType = req.headers["Content-Type"]
+        contentType: string = req.headers["Content-Type"]
         skip = "multipart/form-data; boundary=".len
-        boundary = contentType[skip .. contentType.high]
-        chunks = req.body.split(boundary)
+        boundary = "--" & contentType[skip .. contentType.high]
+      template c: string = req.body
+
+      var i, j = 0
+      while i < c.len - 1:
+        var chunk, k, name, filename: string = ""
+        i += c.doSkip(boundary, i)
+        i += c.parseUntil(chunk, boundary, i)
+        # Here we start parsing the chunk
+        j = chunk.skipWhiteSpace(0)
+        j += chunk.doSkipIgnoreCase("Content-Disposition:", j)
+        j += chunk.skipWhiteSpace(j)
+        j += chunk.doSkip("form-data;", j)
+        var count = 0
+        while k != nil and count < 3:
+          k = nil
+          count += 1
+          j += chunk.skipWhile({' '}, j)
+          j += chunk.parseUntil(k, '=', j)
+          if k == "name":
+            j += 1
+            j += chunk.doSkip("\"", j)
+            j += chunk.parseUntil(name, '"', j)
+            j += 1
+            j += chunk.skip(";", j)
+          elif k == "filename":
+            j += 1
+            j += chunk.doSkip("\"", j)
+            j += chunk.parseUntil(filename, '"', j)
+            j += 1
+            j += chunk.skip(";", j)
+        doAssert name != ""
+        if filename != "":
+          parsed.files[name] = MultiPartFile(
+            filename: filename,
+            content: chunk[j .. chunk.high]
+          )
+        else:
+          parsed.fields[name] = chunk[j .. chunk.high]
     except:
       return ctx.reject()
     let handler = p(req.body)
