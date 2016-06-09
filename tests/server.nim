@@ -215,8 +215,8 @@ let handler = get[
     )
   ] ~
   path("/multipart-form")[
-    multipart(proc(s: string): auto =
-      ok(s)
+    multipart(proc(s: MultiPart): auto =
+      ok($s)
     )
   ]
 ] ~ put[
