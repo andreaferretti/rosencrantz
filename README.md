@@ -245,7 +245,7 @@ response.
 * `contentType(s)` is a specialization to emit the `Content-Type` header, so
   is is equivalent to `headers(("Content-Type", s))`.
 * `readAllHeaders(p)` extract the headers as a string table. Here `p` is a
-  `proc(hs: StringTableRef): Handler`.
+  `proc(hs: HttpHeaders): Handler`.
 * `readHeaders(s1, p)` extracts the value of the header with key `s1` and
   passes it to `p`, which is of type `proc(h1: string): Handler`. It rejects
   the request if the header `s1` is not defined. There are overloads
