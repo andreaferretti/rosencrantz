@@ -190,7 +190,7 @@ proc parseChunk(chunk: var string, accum: var MultiPart) {.inline.} =
     j += chunk.doSkipIgnoreCase("Content-Type:", j)
     j += chunk.skipWhiteSpace(j)
     j += chunk.parseUntil(contentType, sep[0], j)
-    j += chunk.doSkip(sep, j)
+    j += chunk.doSkip(sep & sep, j)
     accum.files[name] = MultiPartFile(
       filename: filename,
       contentType: contentType,
