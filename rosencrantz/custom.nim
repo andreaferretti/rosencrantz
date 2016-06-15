@@ -20,6 +20,20 @@ template scope*(body: untyped): untyped =
 
   before(inner)
 
+proc before*(p: proc(): Future[Handler]): Handler =
+  proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
+    let h1 = await p()
+    return await h1(req, ctx)
+
+  return h
+
+template scopeAsync*(body: untyped): untyped =
+  proc outer(): auto {.gensym.} =
+    proc inner: Future[Handler] {.async.} = body
+    return inner()
+
+  before(outer)
+
 macro makeHandler*(body: untyped): untyped =
   template inner(body: untyped): untyped  {.dirty.} =
     proc innerProc(): auto =

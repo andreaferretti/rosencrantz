@@ -163,6 +163,12 @@ let handler = get[
       let x = "Hello, World!"
       return ok(x)
   ] ~
+  path("/custom-block-async")[
+    scopeAsync do:
+      let x = "Hello, World!"
+      await sleepAsync(50)
+      return ok(x)
+  ] ~
   path("/custom-handler")[
     getRequest(proc(req: ref Request): auto =
       let x = req.url.path

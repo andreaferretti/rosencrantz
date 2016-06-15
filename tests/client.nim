@@ -139,6 +139,10 @@ suite "writing custom handlers":
     let resp = get(baseUrl & "/custom-block")
     check resp.body == "Hello, World!"
     check resp.isOkTextPlain
+  test "scope async template":
+    let resp = get(baseUrl & "/custom-block-async")
+    check resp.body == "Hello, World!"
+    check resp.isOkTextPlain
   test "request extractor":
     let resp = get(baseUrl & "/custom-handler")
     check resp.body == "/custom-handler"

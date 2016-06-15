@@ -14,22 +14,22 @@ Table of contents
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Rosencrantz](#rosencrantz)
-	- [Introduction](#introduction)
-		- [Composing handlers](#composing-handlers)
-		- [Starting a server](#starting-a-server)
-	- [An example](#an-example)
-	- [Structure of the package](#structure-of-the-package)
-	- [Basic handlers](#basic-handlers)
-		- [Path handling](#path-handling)
-		- [HTTP methods](#http-methods)
-		- [Failure containment](#failure-containment)
-	- [Working with headers](#working-with-headers)
-	- [Writing custom handlers](#writing-custom-handlers)
-	- [JSON support](#json-support)
-	- [Form and querystring support](#form-and-querystring-support)
-	- [Static file support](#static-file-support)
-	- [CORS support](#cors-support)
-	- [API stability](#api-stability)
+  - [Introduction](#introduction)
+    - [Composing handlers](#composing-handlers)
+    - [Starting a server](#starting-a-server)
+  - [An example](#an-example)
+  - [Structure of the package](#structure-of-the-package)
+  - [Basic handlers](#basic-handlers)
+    - [Path handling](#path-handling)
+    - [HTTP methods](#http-methods)
+    - [Failure containment](#failure-containment)
+  - [Working with headers](#working-with-headers)
+  - [Writing custom handlers](#writing-custom-handlers)
+  - [JSON support](#json-support)
+  - [Form and querystring support](#form-and-querystring-support)
+  - [Static file support](#static-file-support)
+  - [CORS support](#cors-support)
+  - [API stability](#api-stability)
 
 <!-- /TOC -->
 
@@ -113,6 +113,8 @@ let handler = get[
   ]
 ]
 ```
+
+For more (actually working) examples, check the `tests` directory.
 
 ## Structure of the package
 
@@ -289,6 +291,8 @@ your handlers.
 * `scope` is a template that creates a local scope. It us useful when one needs
   to define a few variables to write a little logic inline before returning an
   actual handler.
+* `scopeAsync` is like scope, but allows asyncronous logic (for instance waiting
+  on futures) in it.
 * `makeHandler` is a macro that removes some boilerplate in writing a custom
   handler. It accepts the body of a handler, and surrounds it with the proper
   function declaration, etc.
@@ -300,6 +304,18 @@ path("/using-scope")[
   scope do:
     let x = "Hello, World!"
     echo "We are returning: ", x
+    return ok(x)
+]
+```
+
+An example of usage of `scopeAsync` is the following:
+
+```nim
+path("/using-scope")[
+  scopeAsync do:
+    let x = "Hello, World!"
+    echo "We are returning: ", x
+    await sleepAsync(100)
     return ok(x)
 ]
 ```
@@ -360,7 +376,7 @@ The module `rosencrantz/core` contains the following handlers:
 ## Form and querystring support
 
 Rosencrantz has support to read the body of a form, either of type
-`application/x-www-form-urlencoded` or multipart (to be done). It also supports
+`application/x-www-form-urlencoded` or multipart. It also supports
 parsing the querystring as `application/x-www-form-urlencoded`.
 
 The `rosencrantz/formsupport` module defines two typeclasses:
@@ -397,10 +413,29 @@ There are similar handlers to extract the querystring from a request:
 * `queryString(t)` where `t` has a type `T` that is `UrlDecodable`; works the
   same as `formBody`.
 * `queryString(p)`, where `p` is a
-	`proc(s: TableRef[string, seq[string]]): Handler` allows to generate a handler
-	from the querystring with repeated parameters, parsed as a table.
+  `proc(s: TableRef[string, seq[string]]): Handler` allows to generate a handler
+  from the querystring with repeated parameters, parsed as a table.
 * `queryString(t)` where `t` has a type `T` that is `UrlMultiDecodable`; works
-	the same as `formBody`.
+  the same as `formBody`.
+
+Finally, there is a handler to parse multipart forms. The results are
+accumulated inside a `MultiPart` object, which is defined by
+
+```nim
+type
+  MultiPartFile* = object
+    filename*, contentType*, content*: string
+  MultiPart* = object
+    fields*: StringTableRef
+    files*: TableRef[string, MultiPartFile]
+```
+
+The handler for multipart forms is:
+
+* `multipart(p)`, where `p` is a `proc(m: MultiPart): Handler` is handed
+  the result of parsing the form as multipart. In case of parsing error, an
+  exception is raised - you can choose whether to let it propagate it and
+  return a 500 error, or contain it using `failWith`.
 
 ## Static file support
 
