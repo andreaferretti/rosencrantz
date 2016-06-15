@@ -161,6 +161,8 @@ business logic. This should give a feel of how the DSL looks like:</p>
   ]
 ]</pre></div>
 
+<p>For more (actually working) examples, check the <code>tests</code> directory.</p>
+
 <h2>
 <a id="structure-of-the-package" class="anchor" href="#structure-of-the-package" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Structure of the package</h2>
 
@@ -312,7 +314,7 @@ a tuple of two strings, which are a key/value pair.</li>
 is is equivalent to <code>headers(("Content-Type", s))</code>.</li>
 <li>
 <code>readAllHeaders(p)</code> extract the headers as a string table. Here <code>p</code> is a
-<code>proc(hs: StringTableRef): Handler</code>.</li>
+<code>proc(hs: HttpHeaders): Handler</code>.</li>
 <li>
 <code>readHeaders(s1, p)</code> extracts the value of the header with key <code>s1</code> and
 passes it to <code>p</code>, which is of type <code>proc(h1: string): Handler</code>. It rejects
@@ -367,6 +369,9 @@ flexibility.</li>
 to define a few variables to write a little logic inline before returning an
 actual handler.</li>
 <li>
+<code>scopeAsync</code> is like scope, but allows asyncronous logic (for instance waiting
+on futures) in it.</li>
+<li>
 <code>makeHandler</code> is a macro that removes some boilerplate in writing a custom
 handler. It accepts the body of a handler, and surrounds it with the proper
 function declaration, etc.</li>
@@ -378,6 +383,16 @@ function declaration, etc.</li>
   <span class="pl-c1">scope</span> <span class="pl-k">do</span>:
     <span class="pl-k">let</span> x = <span class="pl-s">"Hello, World!"</span>
     <span class="pl-c1">echo</span> <span class="pl-s">"We are returning: "</span>, x
+    <span class="pl-k">return</span> <span class="pl-c1">ok</span>(x)
+]</pre></div>
+
+<p>An example of usage of <code>scopeAsync</code> is the following:</p>
+
+<div class="highlight highlight-source-nim"><pre><span class="pl-c1">path</span>(<span class="pl-s">"/using-scope"</span>)[
+  <span class="pl-c1">scopeAsync</span> <span class="pl-k">do</span>:
+    <span class="pl-k">let</span> x = <span class="pl-s">"Hello, World!"</span>
+    <span class="pl-c1">echo</span> <span class="pl-s">"We are returning: "</span>, x
+    <span class="pl-k">await</span> <span class="pl-c1">sleepAsync</span>(<span class="pl-c1">100</span>)
     <span class="pl-k">return</span> <span class="pl-c1">ok</span>(x)
 ]</pre></div>
 
@@ -443,7 +458,7 @@ if the body is not valid JSON or cannot be converted to <code>T</code>.</li>
 <a id="form-and-querystring-support" class="anchor" href="#form-and-querystring-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Form and querystring support</h2>
 
 <p>Rosencrantz has support to read the body of a form, either of type
-<code>application/x-www-form-urlencoded</code> or multipart (to be done). It also supports
+<code>application/x-www-form-urlencoded</code> or multipart. It also supports
 parsing the querystring as <code>application/x-www-form-urlencoded</code>.</p>
 
 <p>The <code>rosencrantz/formsupport</code> module defines two typeclasses:</p>
@@ -498,6 +513,26 @@ from the querystring with repeated parameters, parsed as a table.</li>
 <li>
 <code>queryString(t)</code> where <code>t</code> has a type <code>T</code> that is <code>UrlMultiDecodable</code>; works
 the same as <code>formBody</code>.</li>
+</ul>
+
+<p>Finally, there is a handler to parse multipart forms. The results are
+accumulated inside a <code>MultiPart</code> object, which is defined by</p>
+
+<div class="highlight highlight-source-nim"><pre><span class="pl-k">type</span>
+  MultiPartFile* = <span class="pl-k">object</span>
+    filename*, contentType*, content*: <span class="pl-k">string</span>
+  MultiPart* = <span class="pl-k">object</span>
+    fields*: StringTableRef
+    files*: TableRef[<span class="pl-k">string</span>, MultiPartFile]</pre></div>
+
+<p>The handler for multipart forms is:</p>
+
+<ul>
+<li>
+<code>multipart(p)</code>, where <code>p</code> is a <code>proc(m: MultiPart): Handler</code> is handed
+the result of parsing the form as multipart. In case of parsing error, an
+exception is raised - you can choose whether to let it propagate it and
+return a 500 error, or contain it using <code>failWith</code>.</li>
 </ul>
 
 <h2>
