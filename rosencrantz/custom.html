@@ -1166,6 +1166,8 @@ dt pre > span.Operator ~ span.Identifier, dt pre > span.Operator ~ span.Operator
     title="getRequest(p: proc (req: ref Request): Handler): Handler"><wbr />get<wbr />Request</a></li>
   <li><a class="reference" href="#before,proc)"
     title="before(p: proc (): Handler): Handler"><wbr />before</a></li>
+  <li><a class="reference" href="#before,proc)_2"
+    title="before(p: proc (): Future[Handler]): Handler"><wbr />before</a></li>
 
   </ul>
 </li>
@@ -1182,6 +1184,8 @@ dt pre > span.Operator ~ span.Identifier, dt pre > span.Operator ~ span.Operator
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#scope.t,untyped"
     title="scope(body: untyped): untyped"><wbr />scope</a></li>
+  <li><a class="reference" href="#scopeAsync.t,untyped"
+    title="scopeAsync(body: untyped): untyped"><wbr />scope<wbr />Async</a></li>
 
   </ul>
 </li>
@@ -1203,14 +1207,21 @@ dt pre > span.Operator ~ span.Identifier, dt pre > span.Operator ~ span.Operator
 <dd>
 
 &nbsp;&nbsp;<a
-href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/custom.nim#L4"
+href="https://github.com/andreaferretti/rosencrantz/blob/master/custom.nim#L4"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="before"><a name="before,proc)"></a><pre><span class="Keyword">proc</span> <span class="Identifier">before</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Handler</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Handler</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/custom.nim#L11"
+href="https://github.com/andreaferretti/rosencrantz/blob/master/custom.nim#L11"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="before"><a name="before,proc)_2"></a><pre><span class="Keyword">proc</span> <span class="Identifier">before</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Future</span><span class="Other">[</span><span class="Identifier">Handler</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Handler</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="https://github.com/andreaferretti/rosencrantz/blob/master/custom.nim#L23"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 
@@ -1222,7 +1233,7 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 
 &nbsp;&nbsp;<a
-href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/custom.nim#L23"
+href="https://github.com/andreaferretti/rosencrantz/blob/master/custom.nim#L37"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 
@@ -1234,7 +1245,14 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 
 &nbsp;&nbsp;<a
-href="https://github.com/andreaferretti/rosencrantz/blob/master/rosencrantz/custom.nim#L18"
+href="https://github.com/andreaferretti/rosencrantz/blob/master/custom.nim#L18"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="scopeAsync"><a name="scopeAsync.t,untyped"></a><pre><span class="Keyword">template</span> <span class="Identifier">scopeAsync</span><span class="Other">(</span><span class="Identifier">body</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="https://github.com/andreaferretti/rosencrantz/blob/master/custom.nim#L30"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 
@@ -1247,7 +1265,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-05-10 02:40:38 UTC</small>
+        <small>Made with Nim. Generated: 2016-06-16 00:42:06 UTC</small>
       </div>
     </div>
   </div>
