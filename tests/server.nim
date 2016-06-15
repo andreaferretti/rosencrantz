@@ -221,6 +221,8 @@ let handler = get[
           ok(s.fields["field"])
         elif params["echo"] == "file":
           ok(s.files["file"].content)
+        elif params["echo"] == "filename":
+          ok(s.files["file"].filename)
         elif params["echo"] == "content-type":
           ok(s.files["file"].contentType)
         else:

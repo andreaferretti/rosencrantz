@@ -232,6 +232,13 @@ suite "form and querystring support":
     let resp = post(baseUrl & "/multipart-form?echo=content-type", multipart = mp)
     check resp.body == "text/plain"
     check resp.isOkTextPlain
+  test "multipart forms: file name":
+    var mp = newMultipartData()
+    mp["field"] = "hi there"
+    mp["file"] = ("text.txt", "text/plain", "Hello, world!")
+    let resp = post(baseUrl & "/multipart-form?echo=filename", multipart = mp)
+    check resp.body == "text.txt"
+    check resp.isOkTextPlain
 
 suite "static file support":
   test "serving a single file":
