@@ -17,8 +17,8 @@ Table of contents
   - [Introduction](#introduction)
     - [Composing handlers](#composing-handlers)
     - [Starting a server](#starting-a-server)
-  - [An example](#an-example)
   - [Structure of the package](#structure-of-the-package)
+  - [An example](#an-example)
   - [Basic handlers](#basic-handlers)
     - [Path handling](#path-handling)
     - [HTTP methods](#http-methods)
@@ -52,7 +52,8 @@ A handler usually does one or more of the following:
 * actually respond to the request, by calling the `complete` function or one
   derived from it.
 
-Rosencrantz provides many of those handlers, which are described below.
+Rosencrantz provides many of those handlers, which are described below. For the
+complete API, check [here](http://andreaferretti.github.io/rosencrantz/rosencrantz.html).
 
 ### Composing handlers
 
@@ -80,6 +81,19 @@ let server = newAsyncHttpServer()
 
 waitFor server.serve(Port(8080), handler)
 ```
+
+## Structure of the package
+
+Rosencrantz can be fully imported with just
+
+```nim
+import rosencrantz
+```
+
+The `rosencrantz` module just re-exports functionality from the submodules
+`rosencrantz/core`, `rosencrantz/handlers`, `rosencrantz/jsonsupport` and so
+on. These modules can be imported separately. The API is available
+[here](http://andreaferretti.github.io/rosencrantz/rosencrantz.html).
 
 ## An example
 
@@ -114,20 +128,11 @@ let handler = get[
 ]
 ```
 
-For more (actually working) examples, check the `tests` directory.
-
-## Structure of the package
-
-Rosencrantz can be fully imported with just
-
-```nim
-import rosencrantz
-```
-
-The `rosencrantz` module just re-exports functionality from the submodules
-`rosencrantz/core`, `rosencrantz/handlers`, `rosencrantz/jsonsupport` and so
-on. These modules can be imported separately. The API is available
-[here](http://andreaferretti.github.io/rosencrantz/rosencrantz.html).
+For more (actually working) examples, check the `tests` directory. In particular,
+[the server example](https://github.com/andreaferretti/rosencrantz/blob/master/tests/server.nim)
+tests every handler defined in Rosencrantz, while [the todo example]
+implements a server compliant with the [TODO backend project](http://www.todobackend.com/)
+specs.
 
 ## Basic handlers
 
