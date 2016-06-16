@@ -48,8 +48,8 @@ and provides a composable way to write HTTP handlers.</p>
 <li><a href="#starting-a-server">Starting a server</a></li>
 </ul>
 </li>
-<li><a href="#an-example">An example</a></li>
 <li><a href="#structure-of-the-package">Structure of the package</a></li>
+<li><a href="#an-example">An example</a></li>
 <li>
 <a href="#basic-handlers">Basic handlers</a>
 
@@ -96,7 +96,8 @@ satisfied;</li>
 derived from it.</li>
 </ul>
 
-<p>Rosencrantz provides many of those handlers, which are described below.</p>
+<p>Rosencrantz provides many of those handlers, which are described below. For the
+complete API, check <a href="http://andreaferretti.github.io/rosencrantz/rosencrantz.html">here</a>.</p>
 
 <h3>
 <a id="composing-handlers" class="anchor" href="#composing-handlers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Composing handlers</h3>
@@ -130,6 +131,18 @@ like this:</p>
 <span class="pl-c1">waitFor</span> server.<span class="pl-c1">serve</span>(<span class="pl-c1">Port</span>(<span class="pl-c1">8080</span>), handler)</pre></div>
 
 <h2>
+<a id="structure-of-the-package" class="anchor" href="#structure-of-the-package" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Structure of the package</h2>
+
+<p>Rosencrantz can be fully imported with just</p>
+
+<div class="highlight highlight-source-nim"><pre><span class="pl-k">import</span> rosencrantz</pre></div>
+
+<p>The <code>rosencrantz</code> module just re-exports functionality from the submodules
+<code>rosencrantz/core</code>, <code>rosencrantz/handlers</code>, <code>rosencrantz/jsonsupport</code> and so
+on. These modules can be imported separately. The API is available
+<a href="http://andreaferretti.github.io/rosencrantz/rosencrantz.html">here</a>.</p>
+
+<h2>
 <a id="an-example" class="anchor" href="#an-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>An example</h2>
 
 <p>The following uses some of the predefined handlers and composes them together.
@@ -161,19 +174,11 @@ business logic. This should give a feel of how the DSL looks like:</p>
   ]
 ]</pre></div>
 
-<p>For more (actually working) examples, check the <code>tests</code> directory.</p>
-
-<h2>
-<a id="structure-of-the-package" class="anchor" href="#structure-of-the-package" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Structure of the package</h2>
-
-<p>Rosencrantz can be fully imported with just</p>
-
-<div class="highlight highlight-source-nim"><pre><span class="pl-k">import</span> rosencrantz</pre></div>
-
-<p>The <code>rosencrantz</code> module just re-exports functionality from the submodules
-<code>rosencrantz/core</code>, <code>rosencrantz/handlers</code>, <code>rosencrantz/jsonsupport</code> and so
-on. These modules can be imported separately. The API is available
-<a href="http://andreaferretti.github.io/rosencrantz/rosencrantz.html">here</a>.</p>
+<p>For more (actually working) examples, check the <code>tests</code> directory. In particular,
+<a href="https://github.com/andreaferretti/rosencrantz/blob/master/tests/server.nim">the server example</a>
+tests every handler defined in Rosencrantz, while [the todo example]
+implements a server compliant with the <a href="http://www.todobackend.com/">TODO backend project</a>
+specs.</p>
 
 <h2>
 <a id="basic-handlers" class="anchor" href="#basic-handlers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Basic handlers</h2>
