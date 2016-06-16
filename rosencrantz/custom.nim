@@ -8,7 +8,7 @@ proc getRequest*(p: proc(req: ref Request): Handler): Handler =
 
   return h
 
-proc before*(p: proc(): Handler): Handler =
+proc before(p: proc(): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     let h1 = p()
     return await h1(req, ctx)
@@ -20,7 +20,7 @@ template scope*(body: untyped): untyped =
 
   before(inner)
 
-proc before*(p: proc(): Future[Handler]): Handler =
+proc before(p: proc(): Future[Handler]): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     let h1 = await p()
     return await h1(req, ctx)
