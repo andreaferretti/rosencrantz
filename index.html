@@ -176,7 +176,8 @@ business logic. This should give a feel of how the DSL looks like:</p>
 
 <p>For more (actually working) examples, check the <code>tests</code> directory. In particular,
 <a href="https://github.com/andreaferretti/rosencrantz/blob/master/tests/server.nim">the server example</a>
-tests every handler defined in Rosencrantz, while [the todo example]
+tests every handler defined in Rosencrantz, while
+<a href="https://github.com/andreaferretti/rosencrantz/blob/master/tests/todo.nim">the todo example</a>
 implements a server compliant with the <a href="http://www.todobackend.com/">TODO backend project</a>
 specs.</p>
 
@@ -580,6 +581,9 @@ contents of the file <code>./public/css/boostrap.css</code>.</p>
 to try to guess the correct content type depending on the file extension. This
 should be usually enough; if you need more control, you can wrap a <code>file</code>
 handler inside a <code>contentType</code> handler to override the content type.</p>
+
+<p><strong>Note</strong> Due to a bug in Nim 0.14.2, the static handlers will not work on this
+version. They work just fine on Nim 0.14.0 or on devel.</p>
 
 <h2>
 <a id="cors-support" class="anchor" href="#cors-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>CORS support</h2>
