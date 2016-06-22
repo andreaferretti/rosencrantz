@@ -481,6 +481,9 @@ to try to guess the correct content type depending on the file extension. This
 should be usually enough; if you need more control, you can wrap a `file`
 handler inside a `contentType` handler to override the content type.
 
+**Note** Due to a bug in Nim 0.14.2, the static handlers will not work on this
+version. They work just fine on Nim 0.14.0 or on devel.
+
 
 ## CORS support
 
