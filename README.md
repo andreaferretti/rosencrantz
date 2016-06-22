@@ -130,7 +130,8 @@ let handler = get[
 
 For more (actually working) examples, check the `tests` directory. In particular,
 [the server example](https://github.com/andreaferretti/rosencrantz/blob/master/tests/server.nim)
-tests every handler defined in Rosencrantz, while [the todo example]
+tests every handler defined in Rosencrantz, while
+[the todo example](https://github.com/andreaferretti/rosencrantz/blob/master/tests/todo.nim)
 implements a server compliant with the [TODO backend project](http://www.todobackend.com/)
 specs.
 
