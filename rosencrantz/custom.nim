@@ -1,5 +1,5 @@
 import asyncHttpServer, asyncDispatch, macros
-import rosencrantz/core
+import ./core
 
 proc getRequest*(p: proc(req: ref Request): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =

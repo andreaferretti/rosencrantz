@@ -1,5 +1,5 @@
 import strtabs, strutils, parseutils, tables, asynchttpserver, asyncdispatch, cgi
-import rosencrantz/core, rosencrantz/handlers
+import ./core, ./handlers
 
 type
   MultiPartFile* = object

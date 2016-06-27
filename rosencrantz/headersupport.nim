@@ -1,5 +1,5 @@
 import strtabs, asynchttpserver, asyncdispatch, httpcore, times
-import rosencrantz/core, rosencrantz/handlers
+import ./core, ./handlers
 
 proc headers*(hs: varargs[StrPair]): Handler =
   let headerSeq = @hs

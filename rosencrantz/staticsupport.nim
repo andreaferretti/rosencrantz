@@ -1,6 +1,6 @@
 import asynchttpserver, asyncdispatch, asyncfile, httpcore, os, mimetypes,
   strutils
-import rosencrantz/core, rosencrantz/handlers
+import ./core, ./handlers
 
 let mime = newMimetypes()
 
