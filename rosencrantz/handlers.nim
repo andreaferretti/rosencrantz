@@ -94,7 +94,7 @@ proc verb*(m: HttpMethod): Handler =
   let verbName = $m
 
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
-    if req.reqMethod.toUpperAscii == verbName:
+    if req.reqMethod.toUpper == verbName:
       return ctx
     else:
       return ctx.reject()

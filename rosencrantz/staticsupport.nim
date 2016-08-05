@@ -5,7 +5,7 @@ import ./core, ./handlers
 proc getContentType(fileName: string, mime: MimeDB): string {.inline.} =
   let (_, _, ext) = splitFile(fileName)
   let extension = if ext[0] == '.': ext[1 .. ext.high] else: ext
-  return mime.getMimetype(extension.toLowerAscii)
+  return mime.getMimetype(extension.toLower)
 
 
 proc file*(path: string): Handler =
