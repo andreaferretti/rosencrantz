@@ -149,12 +149,12 @@ proc formBody*[A: UrlMultiDecodable](p: proc(a: A): Handler): Handler =
 
 const sep = "\c\L"
 
-template doSkip(s, token, start: expr): expr =
+template doSkip(s, token, start: auto): auto =
   let x = s.skip(token, start)
   doAssert x != 0
   x
 
-template doSkipIgnoreCase(s, token, start: expr): expr =
+template doSkipIgnoreCase(s, token, start: auto): auto =
   let x = s.skipIgnoreCase(token, start)
   doAssert x != 0
   x

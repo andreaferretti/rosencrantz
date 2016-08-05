@@ -87,7 +87,7 @@ let handler = get[
     )
   ] ~
   pathChunk("/emit-headers")[
-    headers(("Content-Type", "text/html"), ("Date", "Today")) [
+    headers(("Content-Type", "text/html"), ("Date", "Today"))[
       ok("Hi there")
     ]
   ] ~

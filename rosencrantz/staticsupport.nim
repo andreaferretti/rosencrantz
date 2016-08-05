@@ -2,16 +2,16 @@ import asynchttpserver, asyncdispatch, asyncfile, httpcore, os, mimetypes,
   strutils
 import ./core, ./handlers
 
-let mime = newMimetypes()
-
-proc getContentType(fileName: string): string {.inline.} =
+proc getContentType(fileName: string, mime: MimeDB): string {.inline.} =
   let (_, _, ext) = splitFile(fileName)
   let extension = if ext[0] == '.': ext[1 .. ext.high] else: ext
-  return mime.getMimetype(extension.toLower)
+  return mime.getMimetype(extension.toLowerAscii)
 
 
 proc file*(path: string): Handler =
-  let mimeType = getContentType(path)
+  let
+    mime = newMimetypes()
+    mimeType = getContentType(path, mime)
 
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     if fileExists(path):
@@ -30,6 +30,8 @@ proc file*(path: string): Handler =
   return h
 
 proc dir*(path: string): Handler =
+  let mime = newMimetypes()
+
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     template p: auto = req.url.path
 
@@ -38,7 +40,7 @@ proc dir*(path: string): Handler =
       completeFileName = path / fileName
     if fileExists(completeFileName):
       let
-        mimeType = getContentType(completeFileName)
+        mimeType = getContentType(completeFileName, mime)
         f = openAsync(completeFileName)
       let content = await f.readAll
       close(f)

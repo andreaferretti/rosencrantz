@@ -12,7 +12,7 @@ proc `%`(todo: Todo): JsonNode =
 
 proc `%`(todos: seq[Todo]): JsonNode = %(todos.map(`%`))
 
-template renderToJson(x: expr): JsonNode = %x
+template renderToJson(x: auto): JsonNode = %x
 
 proc makeUrl(n: int): string = "http://localhost:8080/todos/" & $n
 
@@ -38,7 +38,7 @@ let handler = headers(
   ("Access-Control-Allow-Origin", "*"),
   ("Access-Control-Allow-Headers", "Content-Type"),
   ("Access-Control-Allow-Methods", "GET, POST, DELETE, PATCH, OPTIONS")
-) [
+)[
   get[
     path("/todos")[
       scope do:
