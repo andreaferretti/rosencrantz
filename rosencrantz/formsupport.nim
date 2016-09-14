@@ -23,11 +23,6 @@ proc parseUrlEncoded(body: string): StringTableRef {.inline.} =
 proc parseUrlEncodedMulti(body: string): TableRef[string, seq[string]] {.inline.} =
   new result
   result[] = initTable[string, seq[string]]()
-  template add(k, v: string) =
-    if result.hasKey(k):
-      result[k].add(v)
-    else:
-      result[k] = @[v]
 
   var i = 0
   let c = body.decodeUrl
@@ -37,7 +32,10 @@ proc parseUrlEncodedMulti(body: string): TableRef[string, seq[string]] {.inline.
     i += 1
     i += c.parseUntil(v, '&', i)
     i += 1
-    add(k, v)
+    if result.hasKey(k):
+      result[k].add(v)
+    else:
+      result[k] = @[v]
 
 type
   UrlDecodable* = concept x
