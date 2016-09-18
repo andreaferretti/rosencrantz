@@ -69,7 +69,9 @@ to compose two headers `h1` and `h2`:
   matching on two alternative paths.
 
 The combination `h1 -> h2` can also be written `h1[h2]`, which makes it nicer
-when composing many handlers one inside each other.
+when composing many handlers one inside each other. Also remember that,
+according to Nim rules, `~` has higher precedence than `->` - use parentheses
+if necessary to compose your handlers.
 
 ### Starting a server
 
