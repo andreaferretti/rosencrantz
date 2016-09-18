@@ -18,6 +18,7 @@ proc configForTests() =
   --linetrace: on
   --debuginfo
   --path: "."
+  --define:ssl
   --run
 
 
