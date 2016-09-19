@@ -1,11 +1,11 @@
 mode = ScriptMode.Verbose
 
 packageName   = "rosencrantz"
-version       = "0.2.4"
+version       = "0.2.5"
 author        = "Andrea Ferretti"
 description   = "Web server DSL"
 license       = "Apache2"
-skipDirs      = @["tests"]
+skipDirs      = @["tests", "docs"]
 
 requires "nim >= 0.14.2"
 
