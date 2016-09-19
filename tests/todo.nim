@@ -34,10 +34,15 @@ proc merge(todo: Todo, j: JsonNode): Todo =
 
 var todos: seq[Todo] = @[]
 
-let handler = headers(
-  ("Access-Control-Allow-Origin", "*"),
-  ("Access-Control-Allow-Headers", "Content-Type"),
-  ("Access-Control-Allow-Methods", "GET, POST, DELETE, PATCH, OPTIONS")
+let handler = allow(
+  origin = "*",
+  headers = ["Content-Type"],
+  methods = [
+    rosencrantz.HttpMethod.GET,
+    rosencrantz.HttpMethod.POST,
+    rosencrantz.HttpMethod.DELETE,
+    rosencrantz.HttpMethod.PATCH,
+    rosencrantz.HttpMethod.OPTIONS]
 )[
   get[
     path("/todos")[
