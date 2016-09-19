@@ -118,7 +118,9 @@ matching on two alternative paths.</li>
 </ul>
 
 <p>The combination <code>h1 -&gt; h2</code> can also be written <code>h1[h2]</code>, which makes it nicer
-when composing many handlers one inside each other.</p>
+when composing many handlers one inside each other. Also remember that,
+according to Nim rules, <code>~</code> has higher precedence than <code>-&gt;</code> - use parentheses
+if necessary to compose your handlers.</p>
 
 <h3>
 <a id="starting-a-server" class="anchor" href="#starting-a-server" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Starting a server</h3>
@@ -588,7 +590,50 @@ version. They work just fine on Nim 0.14.0 or on devel.</p>
 <h2>
 <a id="cors-support" class="anchor" href="#cors-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>CORS support</h2>
 
-<p>To be done.</p>
+<p>Rosencrantz has support for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS">Cross-Origin requests</a>
+under the module <code>rosencrantz/corssupport</code>.</p>
+
+<p>The following are essentially helper functions to produce headers related to
+handling cross-origin HTTP requests, as well as reading common headers in
+preflight requests. These handlers are available:</p>
+
+<ul>
+<li>
+<code>accessControlAllowOrigin(origin)</code> produces the header <code>Access-Control-Allow-Origin</code>
+with the provided <code>origin</code> value.</li>
+<li>
+<code>accessControlAllowAllOrigins</code> produces the header <code>Access-Control-Allow-Origin</code>
+with the value <code>*</code>, which amounts to accepting all origins.</li>
+<li>
+<code>accessControlExposeHeaders(headers)</code> produces the header <code>Access-Control-Expose-Headers</code>,
+which is used to control which headers are exposed to the client.</li>
+<li>
+<code>accessControlMaxAge(seconds)</code> produces the header <code>Access-Control-Max-Age</code>,
+which controls the time validity for the preflight request.</li>
+<li>
+<code>accessControlAllowCredentials(b)</code>, where <code>b</code> is a boolean value, produces
+the header <code>Access-Control-Allow-Credentials</code>, which is used to allow the
+client to pass cookies and headers related to HTTP authentication.</li>
+<li>
+<code>accessControlAllowMethods(methods)</code>, where <code>methods</code> is an openarray of
+<code>HttpMethod</code>, produces the header <code>Access-Control-Allow-Methods</code>, which is
+used in preflight requests to communicate which methods are allowed on the
+resource.</li>
+<li>
+<code>accessControlAllowHeaders(headers)</code> produces the header <code>Access-Control-Allow-Headers</code>,
+which is used in the preflight request to control which headers can be added
+by the client.</li>
+<li>
+<code>accessControlAllow(origin, methods, headers)</code> is used in preflight requests
+for the common combination of specifying the origin as well as methods and
+headers accepted.</li>
+<li>
+<code>readAccessControl(p)</code> is used to extract information in the preflight request
+from the CORS related headers at once.
+Here <code>p</code> is a <code>proc(origin: string, m: HttpMethod, headers: seq[string]</code>
+that will receive the origin of the request, the desired method and the
+additional headers to be provided, and will return a suitable response.</li>
+</ul>
 
 <h2>
 <a id="api-stability" class="anchor" href="#api-stability" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>API stability</h2>
