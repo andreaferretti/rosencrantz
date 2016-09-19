@@ -489,7 +489,39 @@ version. They work just fine on Nim 0.14.0 or on devel.
 
 ## CORS support
 
-To be done.
+Rosencrantz has support for [Cross-Origin requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)
+under the module `rosencrantz/corssupport`.
+
+The following are essentially helper functions to produce headers related to
+handling cross-origin HTTP requests, as well as reading common headers in
+preflight requests. These handlers are available:
+
+* `accessControlAllowOrigin(origin)` produces the header `Access-Control-Allow-Origin`
+  with the provided `origin` value.
+* `accessControlAllowAllOrigins` produces the header `Access-Control-Allow-Origin`
+  with the value `*`, which amounts to accepting all origins.
+* `accessControlExposeHeaders(headers)` produces the header `Access-Control-Expose-Headers`,
+  which is used to control which headers are exposed to the client.
+* `accessControlMaxAge(seconds)` produces the header `Access-Control-Max-Age`,
+  which controls the time validity for the preflight request.
+* `accessControlAllowCredentials(b)`, where `b` is a boolean value, produces
+  the header `Access-Control-Allow-Credentials`, which is used to allow the
+  client to pass cookies and headers related to HTTP authentication.
+* `accessControlAllowMethods(methods)`, where `methods` is an openarray of
+  `HttpMethod`, produces the header `Access-Control-Allow-Methods`, which is
+  used in preflight requests to communicate which methods are allowed on the
+  resource.
+* `accessControlAllowHeaders(headers)` produces the header `Access-Control-Allow-Headers`,
+  which is used in the preflight request to control which headers can be added
+  by the client.
+* `accessControlAllow(origin, methods, headers)` is used in preflight requests
+  for the common combination of specifying the origin as well as methods and
+  headers accepted.
+* `readAccessControl(p)` is used to extract information in the preflight request
+  from the CORS related headers at once.
+  Here `p` is a `proc(origin: string, m: HttpMethod, headers: seq[string]`
+  that will receive the origin of the request, the desired method and the
+  additional headers to be provided, and will return a suitable response.
 
 ## API stability
 
