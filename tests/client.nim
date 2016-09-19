@@ -269,3 +269,39 @@ suite "static file support":
     let resp = get(baseUrl & "/serve-dir/shakespeare.jpg")
     check resp.hasStatus(200)
     check resp.hasContentType("image/jpeg")
+
+suite "cors support":
+  test "access control allow origin":
+    let resp = get(baseUrl & "/cors/allow-origin")
+    check resp.isOkTextPlain
+    check seq[string](resp.headers["Access-Control-Allow-Origin"]) == @["http://localhost"]
+  test "access control allow all origins":
+    let resp = get(baseUrl & "/cors/allow-all-origins")
+    check resp.isOkTextPlain
+    check seq[string](resp.headers["Access-Control-Allow-Origin"]) == @["*"]
+  test "access control expose headers":
+    let resp = get(baseUrl & "/cors/expose-headers")
+    check resp.isOkTextPlain
+    check seq[string](resp.headers["Access-Control-Expose-Headers"]) == @["X-PING, X-CUSTOM"]
+  test "access control max age":
+    let resp = get(baseUrl & "/cors/max-age")
+    check resp.isOkTextPlain
+    check seq[string](resp.headers["Access-Control-Max-Age"]) == @["86400"]
+  test "access control allow credentials":
+    let resp = get(baseUrl & "/cors/allow-credentials")
+    check resp.isOkTextPlain
+    check seq[string](resp.headers["Access-Control-Allow-Credentials"]) == @["true"]
+  test "access control allow methods":
+    let resp = get(baseUrl & "/cors/allow-methods")
+    check resp.isOkTextPlain
+    check seq[string](resp.headers["Access-Control-Allow-Methods"]) == @["GET, POST"]
+  test "access control allow headers":
+    let resp = get(baseUrl & "/cors/allow-headers")
+    check resp.isOkTextPlain
+    check seq[string](resp.headers["Access-Control-Allow-Headers"]) == @["X-PING, Content-Type"]
+  test "access control combined":
+    let resp = get(baseUrl & "/cors/access-control")
+    check resp.isOkTextPlain
+    check seq[string](resp.headers["Access-Control-Allow-Origin"]) == @["*"]
+    check seq[string](resp.headers["Access-Control-Allow-Methods"]) == @["GET, POST"]
+    check seq[string](resp.headers["Access-Control-Allow-Headers"]) == @["X-PING, Content-Type"]

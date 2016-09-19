@@ -180,6 +180,50 @@ let handler = get[
       let x = req.url.path
       await req[].respond(Http200, x, {"Content-Type": "text/plain;charset=utf-8"}.newHttpHeaders)
       return ctx
+  ] ~
+  path("/cors/allow-origin")[
+    allowOrigin("http://localhost")[
+      ok("Hi")
+    ]
+  ] ~
+  path("/cors/allow-all-origins")[
+    allowAllOrigins[
+      ok("Hi")
+    ]
+  ] ~
+  path("/cors/expose-headers")[
+    exposeHeaders(["X-PING", "X-CUSTOM"])[
+      ok("Hi")
+    ]
+  ] ~
+  path("/cors/max-age")[
+    maxAge(86400)[
+      ok("Hi")
+    ]
+  ] ~
+  path("/cors/allow-credentials")[
+    allowCredentials(true)[
+      ok("Hi")
+    ]
+  ] ~
+  path("/cors/allow-methods")[
+    allowMethods([rosencrantz.HttpMethod.GET, rosencrantz.HttpMethod.POST])[
+      ok("Hi")
+    ]
+  ] ~
+  path("/cors/allow-headers")[
+    allowHeaders(["X-PING", "Content-Type"])[
+      ok("Hi")
+    ]
+  ] ~
+  path("/cors/access-control")[
+    allow(
+      origin = "*",
+      methods = [rosencrantz.HttpMethod.GET, rosencrantz.HttpMethod.POST],
+      headers = ["X-PING", "Content-Type"]
+    )[
+      ok("Hi")
+    ]
   ]
 ] ~ post[
   path("/hello-post")[
