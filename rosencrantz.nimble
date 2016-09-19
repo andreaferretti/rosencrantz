@@ -5,7 +5,7 @@ version       = "0.2.5"
 author        = "Andrea Ferretti"
 description   = "Web server DSL"
 license       = "Apache2"
-skipDirs      = @["tests", "docs"]
+skipDirs      = @["tests", "htmldocs"]
 
 requires "nim >= 0.14.2"
 
