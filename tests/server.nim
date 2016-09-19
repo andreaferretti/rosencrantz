@@ -224,6 +224,11 @@ let handler = get[
     )[
       ok("Hi")
     ]
+  ] ~
+  path("/cors/read-headers")[
+    readAccessControl(proc(origin: string, m: rosencrantz.HttpMethod, headers: seq[string]): auto =
+      ok(@[origin, $m, headers.join(",")].join(";"))
+    )
   ]
 ] ~ post[
   path("/hello-post")[

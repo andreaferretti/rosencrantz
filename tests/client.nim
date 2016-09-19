@@ -305,3 +305,18 @@ suite "cors support":
     check seq[string](resp.headers["Access-Control-Allow-Origin"]) == @["*"]
     check seq[string](resp.headers["Access-Control-Allow-Methods"]) == @["GET, POST"]
     check seq[string](resp.headers["Access-Control-Allow-Headers"]) == @["X-PING, Content-Type"]
+  test "access control read headers":
+    let headers = "Origin: http://localhost" & "\n" & "Access-Control-Allow-Method: GET" & "\n" &
+      "Access-Control-Allow-Headers: X-PING" & "\n"
+    let resp = get(baseUrl & "/cors/read-headers", extraHeaders = headers)
+    check resp.isOkTextPlain
+    check resp.body == "http://localhost;GET;X-PING"
+  test "access control read some headers":
+    let headers = "Origin: http://localhost" & "\n" & "Access-Control-Allow-Method: GET" & "\n"
+    let resp = get(baseUrl & "/cors/read-headers", extraHeaders = headers)
+    check resp.isOkTextPlain
+    check resp.body == "http://localhost;GET;"
+  test "access control read headers wrong method":
+    let headers = "Origin: http://localhost" & "\n" & "Access-Control-Allow-Method: BET" & "\n"
+    let resp = get(baseUrl & "/cors/read-headers", extraHeaders = headers)
+    check resp.hasStatus(404)
