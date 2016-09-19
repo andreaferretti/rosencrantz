@@ -2,27 +2,27 @@ import strutils, sequtils
 import ./core, ./handlers, ./headersupport
 
 
-proc allowOrigin*(origin: string): auto =
+proc accessControlAllowOrigin*(origin: string): auto =
   headers(("Access-Control-Allow-Origin", origin))
 
-let allowAllOrigins* = allowOrigin("*")
+let accessControlAllowAllOrigins* = accessControlAllowOrigin("*")
 
-proc exposeHeaders*(headers: openarray[string]): auto =
+proc accessControlExposeHeaders*(headers: openarray[string]): auto =
   headers(("Access-Control-Expose-Headers", headers.join(", ")))
 
-proc maxAge*(seconds: int): auto =
+proc accessControlMaxAge*(seconds: int): auto =
   headers(("Access-Control-Max-Age", $seconds))
 
-proc allowCredentials*(allow: bool): auto =
+proc accessControlAllowCredentials*(allow: bool): auto =
   headers(("Access-Control-Allow-Credentials", $allow))
 
-proc allowMethods*(methods: openarray[HttpMethod]): auto =
+proc accessControlAllowMethods*(methods: openarray[HttpMethod]): auto =
   headers(("Access-Control-Allow-Methods", methods.map(proc(m: auto): auto = $m).join(", ")))
 
-proc allowHeaders*(headers: openarray[string]): auto =
+proc accessControlAllowHeaders*(headers: openarray[string]): auto =
   headers(("Access-Control-Allow-Headers", headers.join(", ")))
 
-proc allow*(origin: string, methods: openarray[HttpMethod], headers: openarray[string]): auto =
+proc accessControlAllow*(origin: string, methods: openarray[HttpMethod], headers: openarray[string]): auto =
   headers(
     ("Access-Control-Allow-Origin", origin),
     ("Access-Control-Allow-Methods", methods.map(proc(m: auto): auto = $m).join(", ")),

@@ -34,7 +34,7 @@ proc merge(todo: Todo, j: JsonNode): Todo =
 
 var todos: seq[Todo] = @[]
 
-let handler = allow(
+let handler = accessControlAllow(
   origin = "*",
   headers = ["Content-Type"],
   methods = [

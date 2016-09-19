@@ -182,42 +182,42 @@ let handler = get[
       return ctx
   ] ~
   path("/cors/allow-origin")[
-    allowOrigin("http://localhost")[
+    accessControlAllowOrigin("http://localhost")[
       ok("Hi")
     ]
   ] ~
   path("/cors/allow-all-origins")[
-    allowAllOrigins[
+    accessControlAllowAllOrigins[
       ok("Hi")
     ]
   ] ~
   path("/cors/expose-headers")[
-    exposeHeaders(["X-PING", "X-CUSTOM"])[
+    accessControlExposeHeaders(["X-PING", "X-CUSTOM"])[
       ok("Hi")
     ]
   ] ~
   path("/cors/max-age")[
-    maxAge(86400)[
+    accessControlMaxAge(86400)[
       ok("Hi")
     ]
   ] ~
   path("/cors/allow-credentials")[
-    allowCredentials(true)[
+    accessControlAllowCredentials(true)[
       ok("Hi")
     ]
   ] ~
   path("/cors/allow-methods")[
-    allowMethods([rosencrantz.HttpMethod.GET, rosencrantz.HttpMethod.POST])[
+    accessControlAllowMethods([rosencrantz.HttpMethod.GET, rosencrantz.HttpMethod.POST])[
       ok("Hi")
     ]
   ] ~
   path("/cors/allow-headers")[
-    allowHeaders(["X-PING", "Content-Type"])[
+    accessControlAllowHeaders(["X-PING", "Content-Type"])[
       ok("Hi")
     ]
   ] ~
   path("/cors/access-control")[
-    allow(
+    accessControlAllow(
       origin = "*",
       methods = [rosencrantz.HttpMethod.GET, rosencrantz.HttpMethod.POST],
       headers = ["X-PING", "Content-Type"]
