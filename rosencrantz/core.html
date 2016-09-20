@@ -1226,6 +1226,7 @@ function main() {
     title="Context = object
   position*: int
   accept*: bool
+  log*: ref string
   headers*: List[StrPair]"><wbr />Context<span class="attachedType" style="visibility:hidden"></span></a></li>
   <li><a class="reference" href="#Handler"
     title="Handler = proc (req: ref Request; ctx: Context): Future[Context]"><wbr />Handler<span class="attachedType" style="visibility:hidden"></span></a></li>
@@ -1241,6 +1242,8 @@ function main() {
     title="addPosition(ctx: Context; n: int): Context"><wbr />add<wbr />Position<span class="attachedType" style="visibility:hidden">Context</span></a></li>
   <li><a class="reference" href="#withPosition,Context,int"
     title="withPosition(ctx: Context; n: int): Context"><wbr />with<wbr />Position<span class="attachedType" style="visibility:hidden">Context</span></a></li>
+  <li><a class="reference" href="#withLogging,Context,ref.string"
+    title="withLogging(ctx: Context; s: ref string): Context"><wbr />with<wbr />Logging<span class="attachedType" style="visibility:hidden">Context</span></a></li>
   <li><a class="reference" href="#withHeaders,Context,openArray[StrPair]"
     title="withHeaders(ctx: Context; hs: openArray[StrPair]): Context"><wbr />with<wbr />Headers<span class="attachedType" style="visibility:hidden">Context</span></a></li>
   <li><a class="reference" href="#handle,Handler"
@@ -1307,6 +1310,7 @@ class="link-seesrc" target="_blank">Source</a>
 <dt id="Context"><a name="Context"></a><pre><span class="Identifier">Context</span> <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">position</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
   <span class="Identifier">accept</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">bool</span>
+  <span class="Identifier">log</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">ref</span> <span class="Identifier">string</span>
   <span class="Identifier">headers</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">List</span><span class="Other">[</span><span class="Identifier">StrPair</span><span class="Other">]</span>
 </pre></dt>
 <dd>
@@ -1321,9 +1325,9 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/tree/master/rosencrantz/core.nim#L61"
+href="/tree/master/rosencrantz/core.nim#L74"
 class="link-seesrc" target="_blank">Source</a>
-<a href="/edit/devel/rosencrantz/core.nim#L61" class="link-seesrc" target="_blank" >Edit</a>
+<a href="/edit/devel/rosencrantz/core.nim#L74" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 
@@ -1335,39 +1339,39 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/tree/master/rosencrantz/core.nim#L30"
+href="/tree/master/rosencrantz/core.nim#L31"
 class="link-seesrc" target="_blank">Source</a>
-<a href="/edit/devel/rosencrantz/core.nim#L30" class="link-seesrc" target="_blank" >Edit</a>
+<a href="/edit/devel/rosencrantz/core.nim#L31" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <dt id="addPosition"><a name="addPosition,Context,int"></a><pre><span class="Keyword">proc</span> <span class="Identifier">addPosition</span><span class="Other">(</span><span class="Identifier">ctx</span><span class="Other">:</span> <span class="Identifier">Context</span><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Context</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/tree/master/rosencrantz/core.nim#L37"
+href="/tree/master/rosencrantz/core.nim#L39"
 class="link-seesrc" target="_blank">Source</a>
-<a href="/edit/devel/rosencrantz/core.nim#L37" class="link-seesrc" target="_blank" >Edit</a>
+<a href="/edit/devel/rosencrantz/core.nim#L39" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <dt id="withPosition"><a name="withPosition,Context,int"></a><pre><span class="Keyword">proc</span> <span class="Identifier">withPosition</span><span class="Other">(</span><span class="Identifier">ctx</span><span class="Other">:</span> <span class="Identifier">Context</span><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Context</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/tree/master/rosencrantz/core.nim#L44"
+href="/tree/master/rosencrantz/core.nim#L47"
 class="link-seesrc" target="_blank">Source</a>
-<a href="/edit/devel/rosencrantz/core.nim#L44" class="link-seesrc" target="_blank" >Edit</a>
+<a href="/edit/devel/rosencrantz/core.nim#L47" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
-<dt id="withHeaders"><a name="withHeaders,Context,openArray[StrPair]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">withHeaders</span><span class="Other">(</span><span class="Identifier">ctx</span><span class="Other">:</span> <span class="Identifier">Context</span><span class="Other">;</span> <span class="Identifier">hs</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">StrPair</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Context</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dt id="withLogging"><a name="withLogging,Context,ref.string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">withLogging</span><span class="Other">(</span><span class="Identifier">ctx</span><span class="Other">:</span> <span class="Identifier">Context</span><span class="Other">;</span> <span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">ref</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Context</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/tree/master/rosencrantz/core.nim#L51"
+href="/tree/master/rosencrantz/core.nim#L55"
 class="link-seesrc" target="_blank">Source</a>
-<a href="/edit/devel/rosencrantz/core.nim#L51" class="link-seesrc" target="_blank" >Edit</a>
+<a href="/edit/devel/rosencrantz/core.nim#L55" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
-<dt id="handle"><a name="handle,Handler"></a><pre><span class="Keyword">proc</span> <span class="Identifier">handle</span><span class="Other">(</span><span class="Identifier">h</span><span class="Other">:</span> <span class="Identifier">Handler</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dt id="withHeaders"><a name="withHeaders,Context,openArray[StrPair]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">withHeaders</span><span class="Other">(</span><span class="Identifier">ctx</span><span class="Other">:</span> <span class="Identifier">Context</span><span class="Other">;</span> <span class="Identifier">hs</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">StrPair</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Context</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
@@ -1376,22 +1380,31 @@ class="link-seesrc" target="_blank">Source</a>
 <a href="/edit/devel/rosencrantz/core.nim#L63" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
+<dt id="handle"><a name="handle,Handler"></a><pre><span class="Keyword">proc</span> <span class="Identifier">handle</span><span class="Other">(</span><span class="Identifier">h</span><span class="Other">:</span> <span class="Identifier">Handler</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/tree/master/rosencrantz/core.nim#L76"
+class="link-seesrc" target="_blank">Source</a>
+<a href="/edit/devel/rosencrantz/core.nim#L76" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
 <dt id="~"><a name="~,Handler,Handler"></a><pre><span class="Keyword">proc</span> <span class="Identifier">`~`</span><span class="Other">(</span><span class="Identifier">h1</span><span class="Other">,</span> <span class="Identifier">h2</span><span class="Other">:</span> <span class="Identifier">Handler</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Handler</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/tree/master/rosencrantz/core.nim#L88"
+href="/tree/master/rosencrantz/core.nim#L101"
 class="link-seesrc" target="_blank">Source</a>
-<a href="/edit/devel/rosencrantz/core.nim#L88" class="link-seesrc" target="_blank" >Edit</a>
+<a href="/edit/devel/rosencrantz/core.nim#L101" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <dt id="->"><a name="->,Handler,Handler"></a><pre><span class="Keyword">proc</span> <span class="Identifier">`-&gt;`</span><span class="Other">(</span><span class="Identifier">h1</span><span class="Other">,</span> <span class="Identifier">h2</span><span class="Other">:</span> <span class="Identifier">Handler</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Handler</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/tree/master/rosencrantz/core.nim#L98"
+href="/tree/master/rosencrantz/core.nim#L111"
 class="link-seesrc" target="_blank">Source</a>
-<a href="/edit/devel/rosencrantz/core.nim#L98" class="link-seesrc" target="_blank" >Edit</a>
+<a href="/edit/devel/rosencrantz/core.nim#L111" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <dt id="serve"><a name="serve,AsyncHttpServer,Port,Handler,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serve</span><span class="Other">(</span><span class="Identifier">server</span><span class="Other">:</span> <span class="Identifier">AsyncHttpServer</span><span class="Other">;</span> <span class="Identifier">port</span><span class="Other">:</span> <span class="Identifier">Port</span><span class="Other">;</span> <span class="Identifier">handler</span><span class="Other">:</span> <span class="Identifier">Handler</span><span class="Other">;</span> <span class="Identifier">address</span> <span class="Other">=</span> <span class="StringLit">&quot;&quot;</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Future</span><span class="Other">[</span>
@@ -1399,9 +1412,9 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/tree/master/rosencrantz/core.nim#L110"
+href="/tree/master/rosencrantz/core.nim#L123"
 class="link-seesrc" target="_blank">Source</a>
-<a href="/edit/devel/rosencrantz/core.nim#L110" class="link-seesrc" target="_blank" >Edit</a>
+<a href="/edit/devel/rosencrantz/core.nim#L123" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 
@@ -1413,9 +1426,9 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/tree/master/rosencrantz/core.nim#L24"
+href="/tree/master/rosencrantz/core.nim#L25"
 class="link-seesrc" target="_blank">Source</a>
-<a href="/edit/devel/rosencrantz/core.nim#L24" class="link-seesrc" target="_blank" >Edit</a>
+<a href="/edit/devel/rosencrantz/core.nim#L25" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 
@@ -1427,9 +1440,9 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/tree/master/rosencrantz/core.nim#L108"
+href="/tree/master/rosencrantz/core.nim#L121"
 class="link-seesrc" target="_blank">Source</a>
-<a href="/edit/devel/rosencrantz/core.nim#L108" class="link-seesrc" target="_blank" >Edit</a>
+<a href="/edit/devel/rosencrantz/core.nim#L121" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 
@@ -1442,7 +1455,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-09-19 18:15:35 UTC</small>
+        <small>Made with Nim. Generated: 2016-09-20 17:17:06 UTC</small>
       </div>
     </div>
   </div>
