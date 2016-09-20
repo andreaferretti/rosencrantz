@@ -15,15 +15,6 @@ proc complete*(code: HttpCode, body: string, headers = newHttpHeaders()): Handle
       hs[h.k] = h.v
     if not ctx.log.isNil:
       debugEcho ctx.log[].format(req.reqMethod, req.url.path, req.headers.table, req.body, code, headers.table, body)
-#    case ctx.log
-#    of LogStyle.Request:
-#      debugEcho "$3 $1 $2".format(req.reqMethod, req.url.path, req.hostname)
-#    of LogStyle.ResponseCode:
-#      debugEcho "$4 $3 $1 $2".format(req.reqMethod, req.url.path, req.hostname, code)
-#    of LogStyle.ResponseBody:
-#      debugEcho "$4 $3 $1 $2\n$5".format(req.reqMethod, req.url.path, req.hostname, code, body)
-#    of LogStyle.Disabled:
-#      discard
     await req[].respond(code, body, hs)
     return ctx
 

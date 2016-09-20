@@ -23,6 +23,7 @@ Table of contents
     - [Path handling](#path-handling)
     - [HTTP methods](#http-methods)
     - [Failure containment](#failure-containment)
+    - [Logging](#logging)
   - [Working with headers](#working-with-headers)
   - [Writing custom handlers](#writing-custom-handlers)
   - [JSON support](#json-support)
@@ -157,8 +158,6 @@ The simplest handlers are:
 * `body(p)` extracts the body of the request. Here `p` is a
   `proc(s: string): Handler` which takes the extracted body as input and
   returns a handler.
-* `logging(handler)` takes a handler and returns the same handler, but logs
-  some information when a request passes through.
 
 For instance, a simple handler that echoes back the body of the request would
 look like
@@ -240,6 +239,42 @@ failWith(Http406, "JSON endpoint")(
     someResponse
   ]
 )
+```
+
+### Logging
+
+Rosencrantz supports logging in two different moments: when a request arrives,
+or when a response is produced (of course you can also manually log at any other
+moment). In the first case, you will only have available the information about
+the current request, while in the latter both the request and the response
+will be available.
+
+The two basic handlers for logging are:
+
+* `logRequest(s)`, where `s` is a format string. The string is used inside
+  the system `format` function, and it is passed the following arguments in
+  order:
+  - the HTTP method of the request
+  - the path of the resource
+  - the headers, as a table
+  - the body of the request, if any.
+* `logResponse(s)`, where `s` is a format string. The first four arguments
+  are the same as in `logRequest`; then there are
+  - the HTTP code of the response
+  - the headers of the response, as a table
+  - the body of the response, if any.
+
+So for instance, in order to log the incoming method and path, as well as the
+HTTP code of the response, you can use the following handler:
+
+```nim
+logResponse("$1 $2 - $5")
+```
+
+which will produce log strings such as
+
+```
+GET /api/users/181 - 200 OK
 ```
 
 ## Working with headers

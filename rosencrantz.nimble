@@ -1,7 +1,7 @@
 mode = ScriptMode.Verbose
 
 packageName   = "rosencrantz"
-version       = "0.2.6"
+version       = "0.2.7"
 author        = "Andrea Ferretti"
 description   = "Web server DSL"
 license       = "Apache2"
