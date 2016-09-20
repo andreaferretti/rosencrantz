@@ -27,9 +27,9 @@ proc parseFromJson(j: JsonNode, m: typedesc[Message]): Message =
 
 let handler = get[
   path("/hello")[
-    logging(
+    logging(LogStyle.ResponseBody)[
       ok("Hello, World!")
-    )
+    ]
   ] ~
   path("/nested/hello")[
     ok("Hello, World!")

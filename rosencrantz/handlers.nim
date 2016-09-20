@@ -13,6 +13,15 @@ proc complete*(code: HttpCode, body: string, headers = newHttpHeaders()): Handle
     # Should traverse in reverse order
     for h in ctx.headers:
       hs[h.k] = h.v
+    case ctx.log
+    of LogStyle.Request:
+      debugEcho "$3 $1 $2".format(req.reqMethod, req.url.path, req.hostname)
+    of LogStyle.ResponseCode:
+      debugEcho "$4 $3 $1 $2".format(req.reqMethod, req.url.path, req.hostname, code)
+    of LogStyle.ResponseBody:
+      debugEcho "$4 $3 $1 $2\n$5".format(req.reqMethod, req.url.path, req.hostname, code, body)
+    of LogStyle.Disabled:
+      discard
     await req[].respond(code, body, hs)
     return ctx
 
@@ -112,10 +121,9 @@ let
   trace* = verb(core.HttpMethod.TRACE)
   connect* = verb(core.HttpMethod.CONNECT)
 
-proc logging*(handler: Handler): auto =
+proc logging*(style: LogStyle): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
-    debugEcho "$3 $1 $2".format(req.reqMethod, req.url.path, req.hostname)
-    return await handler(req, ctx)
+    return ctx.withLogging(style)
 
   return h
 

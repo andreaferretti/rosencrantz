@@ -8,9 +8,12 @@ type
   # TODO: replace these by httpcore-HttpMethod
   HttpMethod* {.pure.} = enum
     GET, POST, PUT, DELETE, HEAD, PATCH, OPTIONS, TRACE, CONNECT
+  LogStyle* {.pure.} = enum
+    Disabled, Request, ResponseCode, ResponseBody
   Context* = object
     position*: int
     accept*: bool
+    log*: LogStyle
     headers*: List[StrPair]
 
 
@@ -31,6 +34,7 @@ proc reject*(ctx: Context): Context =
   Context(
     position: ctx.position,
     accept: false,
+    log: ctx.log,
     headers: ctx.headers
   )
 
@@ -38,6 +42,7 @@ proc addPosition*(ctx: Context, n: int): Context =
   Context(
     position: ctx.position + n,
     accept: ctx.accept,
+    log: ctx.log,
     headers: ctx.headers
   )
 
@@ -45,6 +50,15 @@ proc withPosition*(ctx: Context, n: int): Context =
   Context(
     position: n,
     accept: ctx.accept,
+    log: ctx.log,
+    headers: ctx.headers
+  )
+
+proc withLogging*(ctx: Context, style: LogStyle): Context =
+  Context(
+    position: ctx.position,
+    accept: ctx.accept,
+    log: style,
     headers: ctx.headers
   )
 
@@ -55,6 +69,7 @@ proc withHeaders*(ctx: Context, hs: openarray[StrPair]): Context =
   return Context(
     position: ctx.position,
     accept: ctx.accept,
+    log: ctx.log,
     headers: headers
   )
 
