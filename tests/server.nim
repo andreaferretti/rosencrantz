@@ -27,12 +27,14 @@ proc parseFromJson(j: JsonNode, m: typedesc[Message]): Message =
 
 let handler = get[
   path("/hello")[
-    logging(LogStyle.ResponseBody)[
+    logRequest("$1 $2\n$3")[
       ok("Hello, World!")
     ]
   ] ~
   path("/nested/hello")[
-    ok("Hello, World!")
+    logResponse("$1 $2 $5\n$6\n$7")[
+      ok("Hello, World!")
+    ]
   ] ~
   pathChunk("/nested")[
     pathChunk("/hello-again")[

@@ -1,4 +1,4 @@
-import asynchttpserver, asyncdispatch, httpcore, strutils
+import asynchttpserver, asyncdispatch, httpcore, strutils, tables
 import ./core
 
 proc reject*(): Handler =
@@ -13,15 +13,17 @@ proc complete*(code: HttpCode, body: string, headers = newHttpHeaders()): Handle
     # Should traverse in reverse order
     for h in ctx.headers:
       hs[h.k] = h.v
-    case ctx.log
-    of LogStyle.Request:
-      debugEcho "$3 $1 $2".format(req.reqMethod, req.url.path, req.hostname)
-    of LogStyle.ResponseCode:
-      debugEcho "$4 $3 $1 $2".format(req.reqMethod, req.url.path, req.hostname, code)
-    of LogStyle.ResponseBody:
-      debugEcho "$4 $3 $1 $2\n$5".format(req.reqMethod, req.url.path, req.hostname, code, body)
-    of LogStyle.Disabled:
-      discard
+    if not ctx.log.isNil:
+      debugEcho ctx.log[].format(req.reqMethod, req.url.path, req.headers.table, req.body, code, headers.table, body)
+#    case ctx.log
+#    of LogStyle.Request:
+#      debugEcho "$3 $1 $2".format(req.reqMethod, req.url.path, req.hostname)
+#    of LogStyle.ResponseCode:
+#      debugEcho "$4 $3 $1 $2".format(req.reqMethod, req.url.path, req.hostname, code)
+#    of LogStyle.ResponseBody:
+#      debugEcho "$4 $3 $1 $2\n$5".format(req.reqMethod, req.url.path, req.hostname, code, body)
+#    of LogStyle.Disabled:
+#      discard
     await req[].respond(code, body, hs)
     return ctx
 
@@ -121,9 +123,18 @@ let
   trace* = verb(core.HttpMethod.TRACE)
   connect* = verb(core.HttpMethod.CONNECT)
 
-proc logging*(style: LogStyle): Handler =
+proc logResponse*(s: string): Handler =
+  let x = new(string)
+  x[] = s
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
-    return ctx.withLogging(style)
+    return ctx.withLogging(x)
+
+  return h
+
+proc logRequest*(s: string): Handler =
+  proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
+    debugEcho s.format(req.reqMethod, req.url.path, req.headers.table, req.body)
+    return ctx
 
   return h
 
