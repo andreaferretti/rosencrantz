@@ -57,6 +57,7 @@ and provides a composable way to write HTTP handlers.</p>
 <li><a href="#path-handling">Path handling</a></li>
 <li><a href="#http-methods">HTTP methods</a></li>
 <li><a href="#failure-containment">Failure containment</a></li>
+<li><a href="#logging">Logging</a></li>
 </ul>
 </li>
 <li><a href="#working-with-headers">Working with headers</a></li>
@@ -209,9 +210,6 @@ with a content type of <code>text/plain</code>.</li>
 <code>body(p)</code> extracts the body of the request. Here <code>p</code> is a
 <code>proc(s: string): Handler</code> which takes the extracted body as input and
 returns a handler.</li>
-<li>
-<code>logging(handler)</code> takes a handler and returns the same handler, but logs
-some information when a request passes through.</li>
 </ul>
 
 <p>For instance, a simple handler that echoes back the body of the request would
@@ -305,6 +303,52 @@ handler fails to match. For this, there is</p>
     someResponse
   ]
 )</pre></div>
+
+<h3>
+<a id="logging" class="anchor" href="#logging" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Logging</h3>
+
+<p>Rosencrantz supports logging in two different moments: when a request arrives,
+or when a response is produced (of course you can also manually log at any other
+moment). In the first case, you will only have available the information about
+the current request, while in the latter both the request and the response
+will be available.</p>
+
+<p>The two basic handlers for logging are:</p>
+
+<ul>
+<li>
+<code>logRequest(s)</code>, where <code>s</code> is a format string. The string is used inside
+the system <code>format</code> function, and it is passed the following arguments in
+order:
+
+<ul>
+<li>the HTTP method of the request</li>
+<li>the path of the resource</li>
+<li>the headers, as a table</li>
+<li>the body of the request, if any.</li>
+</ul>
+</li>
+<li>
+<code>logResponse(s)</code>, where <code>s</code> is a format string. The first four arguments
+are the same as in <code>logRequest</code>; then there are
+
+<ul>
+<li>the HTTP code of the response</li>
+<li>the headers of the response, as a table</li>
+<li>the body of the response, if any.</li>
+</ul>
+</li>
+</ul>
+
+<p>So for instance, in order to log the incoming method and path, as well as the
+HTTP code of the response, you can use the following handler:</p>
+
+<div class="highlight highlight-source-nim"><pre><span class="pl-c1">logResponse</span>(<span class="pl-s">"$1 $2 - $5"</span>)</pre></div>
+
+<p>which will produce log strings such as</p>
+
+<pre><code>GET /api/users/181 - 200 OK
+</code></pre>
 
 <h2>
 <a id="working-with-headers" class="anchor" href="#working-with-headers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Working with headers</h2>
