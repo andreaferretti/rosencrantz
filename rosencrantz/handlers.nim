@@ -96,7 +96,8 @@ proc verb*(m: core.HttpMethod): Handler =
   let verbName = $m
 
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
-    if req.reqMethod.toUpper == verbName:
+    # TODO: remove the call to `$` when switching to httpcore.HttpMethod
+    if $(req.reqMethod) == verbName:
       return ctx
     else:
       return ctx.reject()
