@@ -182,24 +182,24 @@ suite "writing custom handlers":
     check resp.body == "/handler-macro"
     check resp.isOkTextPlain
 
-# suite "json support":
-#   test "producing json":
-#     let resp = get(baseUrl & "/write-json")
-#     check resp.body.parseJson["msg"].getStr == "hi there"
-#     check resp.isOkJson
-#   test "reading json":
-#     let resp = post(baseUrl & "/read-json", body = $(%{"msg": %"hi there", "count": %5}))
-#     check resp.body == "hi there"
-#     check resp.isOkTextPlain
-#   test "producing json via typeclasses":
-#     let resp = get(baseUrl & "/write-json-typeclass")
-#     check resp.body.parseJson["msg"].getStr == "hi there"
-#     check resp.isOkJson
-#   test "reading json via typeclasses":
-#     let resp = post(baseUrl & "/read-json-typeclass", body = $(%{"msg": %"hi there", "count": %5}))
-#     check resp.body == "hi there"
-#     check resp.isOkTextPlain
-#
+suite "json support":
+  test "producing json":
+    let resp = get(baseUrl & "/write-json")
+    check resp.body.parseJson["msg"].getStr == "hi there"
+    check resp.isOkJson
+  test "reading json":
+    let resp = post(baseUrl & "/read-json", body = $(%{"msg": %"hi there", "count": %5}))
+    check resp.body == "hi there"
+    check resp.isOkTextPlain
+  test "producing json via typeclasses":
+    let resp = get(baseUrl & "/write-json-typeclass")
+    check resp.body.parseJson["msg"].getStr == "hi there"
+    check resp.isOkJson
+  test "reading json via typeclasses":
+    let resp = post(baseUrl & "/read-json-typeclass", body = $(%{"msg": %"hi there", "count": %5}))
+    check resp.body == "hi there"
+    check resp.isOkTextPlain
+
 # suite "form and querystring support":
 #   test "reading form as x-www-form-urlencoded":
 #     let resp = post(baseUrl & "/read-form", body = "msg=hi there&count=5")
