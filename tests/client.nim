@@ -278,32 +278,32 @@ suite "form and querystring support":
   #   check resp.body == "text.txt"
   #   check resp.isOkTextPlain
 
-# suite "static file support":
-#   test "serving a single file":
-#     let resp = get(baseUrl & "/serve-file")
-#     check resp.body.contains("Apache License")
-#     check resp.isOkTextPlain
-#   test "serving a directory":
-#     let resp = get(baseUrl & "/serve-dir/LICENSE")
-#     check resp.body.contains("Apache License")
-#     check resp.isOkTextPlain
-#   test "error on a missing file":
-#     let resp = get(baseUrl & "/serve-missing-file")
-#     check resp.body == "Not Found"
-#     check resp.hasStatus(404)
-#   test "error on a missing file in a directory":
-#     let resp = get(baseUrl & "/serve-dir/LICENS")
-#     check resp.body == "Not Found"
-#     check resp.hasStatus(404)
-#   test "mimetype on a single file":
-#     let resp = get(baseUrl & "/serve-image")
-#     check resp.hasStatus(200)
-#     check resp.hasContentType("image/jpeg")
-#   test "mimetype on a directory":
-#     let resp = get(baseUrl & "/serve-dir/shakespeare.jpg")
-#     check resp.hasStatus(200)
-#     check resp.hasContentType("image/jpeg")
-#
+suite "static file support":
+  test "serving a single file":
+    let resp = get(baseUrl & "/serve-file")
+    check resp.body.contains("Apache License")
+    check resp.isOkTextPlain
+  test "serving a directory":
+    let resp = get(baseUrl & "/serve-dir/LICENSE")
+    check resp.body.contains("Apache License")
+    check resp.isOkTextPlain
+  test "error on a missing file":
+    let resp = get(baseUrl & "/serve-missing-file")
+    check resp.body == "Not Found"
+    check resp.hasStatus(404)
+  test "error on a missing file in a directory":
+    let resp = get(baseUrl & "/serve-dir/LICENS")
+    check resp.body == "Not Found"
+    check resp.hasStatus(404)
+  test "mimetype on a single file":
+    let resp = get(baseUrl & "/serve-image")
+    check resp.hasStatus(200)
+    check resp.hasContentType("image/jpeg")
+  test "mimetype on a directory":
+    let resp = get(baseUrl & "/serve-dir/shakespeare.jpg")
+    check resp.hasStatus(200)
+    check resp.hasContentType("image/jpeg")
+
 # suite "cors support":
 #   test "access control allow origin":
 #     let resp = get(baseUrl & "/cors/allow-origin")
