@@ -249,34 +249,34 @@ suite "form and querystring support":
     let resp = get(baseUrl & "/query-multi?msg=Hello%2C&msg=World")
     check resp.body == "Hello, World"
     check resp.isOkTextPlain
-  # test "multipart forms: extracting key/value pairs":
-  #   var mp = newMultipartData()
-  #   mp["field"] = "hi there"
-  #   mp["file"] = ("text.txt", "text/plain", "Hello, world!")
-  #   let resp = post(baseUrl & "/multipart-form?echo=field", multipart = mp)
-  #   check resp.body == "hi there"
-  #   check resp.isOkTextPlain
-  # test "multipart forms: file content":
-  #   var mp = newMultipartData()
-  #   mp["field"] = "hi there"
-  #   mp["file"] = ("text.txt", "text/plain", "Hello, world!")
-  #   let resp = post(baseUrl & "/multipart-form?echo=file", multipart = mp)
-  #   check resp.body == "Hello, world!"
-  #   check resp.isOkTextPlain
-  # test "multipart forms: file content type":
-  #   var mp = newMultipartData()
-  #   mp["field"] = "hi there"
-  #   mp["file"] = ("text.txt", "text/plain", "Hello, world!")
-  #   let resp = post(baseUrl & "/multipart-form?echo=content-type", multipart = mp)
-  #   check resp.body == "text/plain"
-  #   check resp.isOkTextPlain
-  # test "multipart forms: file name":
-  #   var mp = newMultipartData()
-  #   mp["field"] = "hi there"
-  #   mp["file"] = ("text.txt", "text/plain", "Hello, world!")
-  #   let resp = post(baseUrl & "/multipart-form?echo=filename", multipart = mp)
-  #   check resp.body == "text.txt"
-  #   check resp.isOkTextPlain
+  test "multipart forms: extracting key/value pairs":
+    var mp = newMultipartData()
+    mp["field"] = "hi there"
+    mp["file"] = ("text.txt", "text/plain", "Hello, world!")
+    let resp = httpclient.post(baseUrl & "/multipart-form?echo=field", multipart = mp)
+    check resp.body == "hi there"
+    check resp.isOkTextPlain
+  test "multipart forms: file content":
+    var mp = newMultipartData()
+    mp["field"] = "hi there"
+    mp["file"] = ("text.txt", "text/plain", "Hello, world!")
+    let resp = httpclient.post(baseUrl & "/multipart-form?echo=file", multipart = mp)
+    check resp.body == "Hello, world!"
+    check resp.isOkTextPlain
+  test "multipart forms: file content type":
+    var mp = newMultipartData()
+    mp["field"] = "hi there"
+    mp["file"] = ("text.txt", "text/plain", "Hello, world!")
+    let resp = httpclient.post(baseUrl & "/multipart-form?echo=content-type", multipart = mp)
+    check resp.body == "text/plain"
+    check resp.isOkTextPlain
+  test "multipart forms: file name":
+    var mp = newMultipartData()
+    mp["field"] = "hi there"
+    mp["file"] = ("text.txt", "text/plain", "Hello, world!")
+    let resp = httpclient.post(baseUrl & "/multipart-form?echo=filename", multipart = mp)
+    check resp.body == "text.txt"
+    check resp.isOkTextPlain
 
 suite "static file support":
   test "serving a single file":
