@@ -8,6 +8,9 @@ and its successor [Akka HTTP](http://doc.akka.io/docs/akka/2.4.2/scala/http/intr
 It sits on top of [asynchttpserver](http://nim-lang.org/docs/asynchttpserver.html)
 and provides a composable way to write HTTP handlers.
 
+Version 0.3 of Rosencrantz requires at least Nim 0.15. Use versions up to 0.2.8
+for older versions of Nim.
+
 Table of contents
 -----------------
 
@@ -204,7 +207,7 @@ pathChunk("/repeat")[
 To filter by HTTP method, one can use
 
 * `verb(m)`, where `m` is a member of the `HttpMethod` enum defined in
-  `rosencrantz/core`. There are corresponding specializations
+  the standard library `httpcore`. There are corresponding specializations
 * `get`, `post`, `put`, `delete`, `head`, `patch`, `options`, `trace` and
   `connect`
 
