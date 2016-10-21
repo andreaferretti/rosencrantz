@@ -1,5 +1,5 @@
 import unittest, httpcore, strtabs, strutils, times, json
-from httpclient import newHttpClient, request, Response
+import httpclient except get, post
 
 const
   baseUrl = "http://localhost:8080"
@@ -10,7 +10,7 @@ proc request(url: string, httpMethod: HttpMethod, headers = newHttpHeaders(), bo
   var client = newHttpClient()
   var hs = headers
   hs[cl] = $(body.len)
-  client.headers = headers
+  client.headers = hs
   return client.request(url, httpMethod = httpMethod, body = body)
 
 proc get(url: string, headers = newHttpHeaders()): Response =
@@ -18,6 +18,10 @@ proc get(url: string, headers = newHttpHeaders()): Response =
 
 proc post(url: string, headers = newHttpHeaders(), body = ""): Response =
   request(url, HttpPost, headers = headers, body = body)
+
+proc post(url: string, multipart: MultipartData): Response =
+  let client = newHttpClient()
+  return httpclient.post(client, url, multipart = multipart)
 
 proc put(url: string, headers = newHttpHeaders(), body = ""): Response =
   request(url, HttpPut, headers = headers, body = body)
@@ -200,80 +204,80 @@ suite "json support":
     check resp.body == "hi there"
     check resp.isOkTextPlain
 
-# suite "form and querystring support":
-#   test "reading form as x-www-form-urlencoded":
-#     let resp = post(baseUrl & "/read-form", body = "msg=hi there&count=5")
-#     check resp.body == "hi there"
-#     check resp.isOkTextPlain
-#   test "reading form as x-www-form-urlencoded with multiple params":
-#     let resp = post(baseUrl & "/read-multi-form", body = "msg=Hello&foo=bar&msg=World")
-#     check resp.body == "Hello World"
-#     check resp.isOkTextPlain
-#   test "reading form via typeclasses":
-#     let resp = post(baseUrl & "/read-form-typeclass", body = "msg=hi there&count=5")
-#     check resp.body == "hi there"
-#     check resp.isOkTextPlain
-#   test "reading form as x-www-form-urlencoded with multiple params via typeclasses":
-#     let resp = post(baseUrl & "/read-multi-form-typeclass", body = "msg=Hello&msg=, &msg=World")
-#     check resp.body == "Hello, World"
-#     check resp.isOkTextPlain
-#   test "querystring extraction":
-#     let resp = get(baseUrl & "/query-echo?hello")
-#     check resp.body == "hello"
-#     check resp.isOkTextPlain
-#   test "querystring parameters extraction":
-#     let resp = get(baseUrl & "/query-repeat?msg=hello&count=3")
-#     check resp.body == "hello,hello,hello"
-#     check resp.isOkTextPlain
-#   test "querystring parameters extraction via typeclasses":
-#     let resp = get(baseUrl & "/query-typeclass?msg=hello&count=3")
-#     check resp.body == "hello,hello,hello"
-#     check resp.isOkTextPlain
-#   test "querystring parameters with spaces extraction":
-#     let resp = get(baseUrl & "/query-repeat?msg=hello%20world&count=3")
-#     check resp.body == "hello world,hello world,hello world"
-#     check resp.isOkTextPlain
-#   test "querystring multiple parameters extraction":
-#     let resp = get(baseUrl & "/query-multi?msg=Hello&msg=World")
-#     check resp.body == "Hello World"
-#     check resp.isOkTextPlain
-#   test "querystring multiple parameters extraction via typeclasses":
-#     let resp = get(baseUrl & "/query-multi-typeclass?msg=Hello&msg=my&msg=World")
-#     check resp.body == "Hello my World"
-#     check resp.isOkTextPlain
-#   test "querystring multiple parameters extraction with comma":
-#     let resp = get(baseUrl & "/query-multi?msg=Hello%2C&msg=World")
-#     check resp.body == "Hello, World"
-#     check resp.isOkTextPlain
-#   test "multipart forms: extracting key/value pairs":
-#     var mp = newMultipartData()
-#     mp["field"] = "hi there"
-#     mp["file"] = ("text.txt", "text/plain", "Hello, world!")
-#     let resp = post(baseUrl & "/multipart-form?echo=field", multipart = mp)
-#     check resp.body == "hi there"
-#     check resp.isOkTextPlain
-#   test "multipart forms: file content":
-#     var mp = newMultipartData()
-#     mp["field"] = "hi there"
-#     mp["file"] = ("text.txt", "text/plain", "Hello, world!")
-#     let resp = post(baseUrl & "/multipart-form?echo=file", multipart = mp)
-#     check resp.body == "Hello, world!"
-#     check resp.isOkTextPlain
-#   test "multipart forms: file content type":
-#     var mp = newMultipartData()
-#     mp["field"] = "hi there"
-#     mp["file"] = ("text.txt", "text/plain", "Hello, world!")
-#     let resp = post(baseUrl & "/multipart-form?echo=content-type", multipart = mp)
-#     check resp.body == "text/plain"
-#     check resp.isOkTextPlain
-#   test "multipart forms: file name":
-#     var mp = newMultipartData()
-#     mp["field"] = "hi there"
-#     mp["file"] = ("text.txt", "text/plain", "Hello, world!")
-#     let resp = post(baseUrl & "/multipart-form?echo=filename", multipart = mp)
-#     check resp.body == "text.txt"
-#     check resp.isOkTextPlain
-#
+suite "form and querystring support":
+  test "reading form as x-www-form-urlencoded":
+    let resp = post(baseUrl & "/read-form", body = "msg=hi there&count=5")
+    check resp.body == "hi there"
+    check resp.isOkTextPlain
+  test "reading form as x-www-form-urlencoded with multiple params":
+    let resp = post(baseUrl & "/read-multi-form", body = "msg=Hello&foo=bar&msg=World")
+    check resp.body == "Hello World"
+    check resp.isOkTextPlain
+  test "reading form via typeclasses":
+    let resp = post(baseUrl & "/read-form-typeclass", body = "msg=hi there&count=5")
+    check resp.body == "hi there"
+    check resp.isOkTextPlain
+  test "reading form as x-www-form-urlencoded with multiple params via typeclasses":
+    let resp = post(baseUrl & "/read-multi-form-typeclass", body = "msg=Hello&msg=, &msg=World")
+    check resp.body == "Hello, World"
+    check resp.isOkTextPlain
+  test "querystring extraction":
+    let resp = get(baseUrl & "/query-echo?hello")
+    check resp.body == "hello"
+    check resp.isOkTextPlain
+  test "querystring parameters extraction":
+    let resp = get(baseUrl & "/query-repeat?msg=hello&count=3")
+    check resp.body == "hello,hello,hello"
+    check resp.isOkTextPlain
+  test "querystring parameters extraction via typeclasses":
+    let resp = get(baseUrl & "/query-typeclass?msg=hello&count=3")
+    check resp.body == "hello,hello,hello"
+    check resp.isOkTextPlain
+  test "querystring parameters with spaces extraction":
+    let resp = get(baseUrl & "/query-repeat?msg=hello%20world&count=3")
+    check resp.body == "hello world,hello world,hello world"
+    check resp.isOkTextPlain
+  test "querystring multiple parameters extraction":
+    let resp = get(baseUrl & "/query-multi?msg=Hello&msg=World")
+    check resp.body == "Hello World"
+    check resp.isOkTextPlain
+  test "querystring multiple parameters extraction via typeclasses":
+    let resp = get(baseUrl & "/query-multi-typeclass?msg=Hello&msg=my&msg=World")
+    check resp.body == "Hello my World"
+    check resp.isOkTextPlain
+  test "querystring multiple parameters extraction with comma":
+    let resp = get(baseUrl & "/query-multi?msg=Hello%2C&msg=World")
+    check resp.body == "Hello, World"
+    check resp.isOkTextPlain
+  # test "multipart forms: extracting key/value pairs":
+  #   var mp = newMultipartData()
+  #   mp["field"] = "hi there"
+  #   mp["file"] = ("text.txt", "text/plain", "Hello, world!")
+  #   let resp = post(baseUrl & "/multipart-form?echo=field", multipart = mp)
+  #   check resp.body == "hi there"
+  #   check resp.isOkTextPlain
+  # test "multipart forms: file content":
+  #   var mp = newMultipartData()
+  #   mp["field"] = "hi there"
+  #   mp["file"] = ("text.txt", "text/plain", "Hello, world!")
+  #   let resp = post(baseUrl & "/multipart-form?echo=file", multipart = mp)
+  #   check resp.body == "Hello, world!"
+  #   check resp.isOkTextPlain
+  # test "multipart forms: file content type":
+  #   var mp = newMultipartData()
+  #   mp["field"] = "hi there"
+  #   mp["file"] = ("text.txt", "text/plain", "Hello, world!")
+  #   let resp = post(baseUrl & "/multipart-form?echo=content-type", multipart = mp)
+  #   check resp.body == "text/plain"
+  #   check resp.isOkTextPlain
+  # test "multipart forms: file name":
+  #   var mp = newMultipartData()
+  #   mp["field"] = "hi there"
+  #   mp["file"] = ("text.txt", "text/plain", "Hello, world!")
+  #   let resp = post(baseUrl & "/multipart-form?echo=filename", multipart = mp)
+  #   check resp.body == "text.txt"
+  #   check resp.isOkTextPlain
+
 # suite "static file support":
 #   test "serving a single file":
 #     let resp = get(baseUrl & "/serve-file")
