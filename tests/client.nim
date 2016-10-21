@@ -143,45 +143,45 @@ suite "handling headers":
       headers = newHttpHeaders({"First": "Hi", "Second": "World!"})
       resp = get(baseUrl & "/check-headers", headers = headers)
     check resp.hasStatus(404)
-#   test "date header":
-#     let resp = get(baseUrl & "/date")
-#     let date = parse(resp.headers["Date"], "ddd, dd MMM yyyy HH:mm:ss 'GMT'")
-#     let now = getTime().getGMTime()
-#     check resp.isOkTextPlain
-#     check now.yearday == date.yearday
-#
-# suite "handling failures":
-#   test "missing page":
-#     let resp = get(baseUrl & "/missing")
-#     check resp.body == "Not Found"
-#     check resp.hasStatus(404)
-#   test "server error":
-#     let resp = get(baseUrl & "/crash")
-#     check resp.body == "Server Error"
-#     check resp.hasStatus(500)
-#   test "custom failure":
-#     let resp = get(baseUrl & "/custom-failure")
-#     check resp.body == "Unauthorized"
-#     check resp.hasStatus(401)
-#
-# suite "writing custom handlers":
-#   test "scope template":
-#     let resp = get(baseUrl & "/custom-block")
-#     check resp.body == "Hello, World!"
-#     check resp.isOkTextPlain
-#   test "scope async template":
-#     let resp = get(baseUrl & "/custom-block-async")
-#     check resp.body == "Hello, World!"
-#     check resp.isOkTextPlain
-#   test "request extractor":
-#     let resp = get(baseUrl & "/custom-handler")
-#     check resp.body == "/custom-handler"
-#     check resp.isOkTextPlain
-#   test "handler macros":
-#     let resp = get(baseUrl & "/handler-macro")
-#     check resp.body == "/handler-macro"
-#     check resp.isOkTextPlain
-#
+  test "date header":
+    let resp = get(baseUrl & "/date")
+    let date = parse(resp.headers["Date"], "ddd, dd MMM yyyy HH:mm:ss 'GMT'")
+    let now = getTime().getGMTime()
+    check resp.isOkTextPlain
+    check now.yearday == date.yearday
+
+suite "handling failures":
+  test "missing page":
+    let resp = get(baseUrl & "/missing")
+    check resp.body == "Not Found"
+    check resp.hasStatus(404)
+  test "server error":
+    let resp = get(baseUrl & "/crash")
+    check resp.body == "Server Error"
+    check resp.hasStatus(500)
+  test "custom failure":
+    let resp = get(baseUrl & "/custom-failure")
+    check resp.body == "Unauthorized"
+    check resp.hasStatus(401)
+
+suite "writing custom handlers":
+  test "scope template":
+    let resp = get(baseUrl & "/custom-block")
+    check resp.body == "Hello, World!"
+    check resp.isOkTextPlain
+  test "scope async template":
+    let resp = get(baseUrl & "/custom-block-async")
+    check resp.body == "Hello, World!"
+    check resp.isOkTextPlain
+  test "request extractor":
+    let resp = get(baseUrl & "/custom-handler")
+    check resp.body == "/custom-handler"
+    check resp.isOkTextPlain
+  test "handler macros":
+    let resp = get(baseUrl & "/handler-macro")
+    check resp.body == "/handler-macro"
+    check resp.isOkTextPlain
+
 # suite "json support":
 #   test "producing json":
 #     let resp = get(baseUrl & "/write-json")
