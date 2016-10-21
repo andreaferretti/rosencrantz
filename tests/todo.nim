@@ -1,4 +1,4 @@
-import asynchttpserver, asyncdispatch, sequtils, json, random, rosencrantz
+import asynchttpserver, asyncdispatch, httpcore, sequtils, json, random, rosencrantz
 
 type Todo = object
   title: string
@@ -37,12 +37,7 @@ var todos: seq[Todo] = @[]
 let handler = accessControlAllow(
   origin = "*",
   headers = ["Content-Type"],
-  methods = [
-    rosencrantz.HttpMethod.GET,
-    rosencrantz.HttpMethod.POST,
-    rosencrantz.HttpMethod.DELETE,
-    rosencrantz.HttpMethod.PATCH,
-    rosencrantz.HttpMethod.OPTIONS]
+  methods = [HttpGet, HttpPost, HttpDelete, HttpPatch, HttpOptions]
 )[
   get[
     path("/todos")[

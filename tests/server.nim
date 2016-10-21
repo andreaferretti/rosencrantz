@@ -209,7 +209,7 @@ let handler = get[
     ]
   ] ~
   path("/cors/allow-methods")[
-    accessControlAllowMethods([rosencrantz.HttpMethod.GET, rosencrantz.HttpMethod.POST])[
+    accessControlAllowMethods([HttpGet, HttpPost])[
       ok("Hi")
     ]
   ] ~
@@ -221,14 +221,14 @@ let handler = get[
   path("/cors/access-control")[
     accessControlAllow(
       origin = "*",
-      methods = [rosencrantz.HttpMethod.GET, rosencrantz.HttpMethod.POST],
+      methods = [HttpGet, HttpPost],
       headers = ["X-PING", "Content-Type"]
     )[
       ok("Hi")
     ]
   ] ~
   path("/cors/read-headers")[
-    readAccessControl(proc(origin: string, m: rosencrantz.HttpMethod, headers: seq[string]): auto =
+    readAccessControl(proc(origin: string, m: HttpMethod, headers: seq[string]): auto =
       ok(@[origin, $m, headers.join(",")].join(";"))
     )
   ]

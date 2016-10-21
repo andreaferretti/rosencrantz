@@ -6,8 +6,6 @@ type
     next: List[A]
   StrPair* = tuple[k, v: string]
   # TODO: replace these by httpcore-HttpMethod
-  HttpMethod* {.pure.} = enum
-    GET, POST, PUT, DELETE, HEAD, PATCH, OPTIONS, TRACE, CONNECT
   Context* = object
     position*: int
     accept*: bool

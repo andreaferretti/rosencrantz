@@ -92,7 +92,7 @@ proc body*(p: proc(s: string): Handler): Handler =
 
   return h
 
-proc verb*(m: core.HttpMethod): Handler =
+proc verb*(m: HttpMethod): Handler =
   let verbName = $m
 
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
@@ -105,15 +105,15 @@ proc verb*(m: core.HttpMethod): Handler =
   return h
 
 let
-  get* = verb(core.HttpMethod.GET)
-  post* = verb(core.HttpMethod.POST)
-  put* = verb(core.HttpMethod.PUT)
-  delete* = verb(core.HttpMethod.DELETE)
-  head* = verb(core.HttpMethod.HEAD)
-  patch* = verb(core.HttpMethod.PATCH)
-  options* = verb(core.HttpMethod.OPTIONS)
-  trace* = verb(core.HttpMethod.TRACE)
-  connect* = verb(core.HttpMethod.CONNECT)
+  get* = verb(HttpGet)
+  post* = verb(HttpPost)
+  put* = verb(HttpPut)
+  delete* = verb(HttpDelete)
+  head* = verb(HttpHead)
+  patch* = verb(HttpPatch)
+  options* = verb(HttpOptions)
+  trace* = verb(HttpTrace)
+  connect* = verb(HttpConnect)
 
 proc logResponse*(s: string): Handler =
   let x = new(string)

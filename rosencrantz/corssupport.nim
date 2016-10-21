@@ -1,4 +1,4 @@
-import strutils, sequtils
+import strutils, sequtils, httpcore
 import ./core, ./handlers, ./headersupport
 
 
@@ -31,15 +31,15 @@ proc accessControlAllow*(origin: string, methods: openarray[HttpMethod], headers
 
 proc stringToMethod(s: string): HttpMethod =
   case s.toUpper
-  of "GET": return HttpMethod.GET
-  of "POST": return HttpMethod.POST
-  of "PUT": return HttpMethod.PUT
-  of "DELETE": return HttpMethod.DELETE
-  of "HEAD": return HttpMethod.HEAD
-  of "PATCH": return HttpMethod.PATCH
-  of "OPTIONS": return HttpMethod.OPTIONS
-  of "TRACE": return HttpMethod.TRACE
-  of "CONNECT": return HttpMethod.CONNECT
+  of "GET": return HttpGet
+  of "POST": return HttpPost
+  of "PUT": return HttpPut
+  of "DELETE": return HttpDelete
+  of "HEAD": return HttpHead
+  of "PATCH": return HttpPatch
+  of "OPTIONS": return HttpOptions
+  of "TRACE": return HttpTrace
+  of "CONNECT": return HttpConnect
   else: raise newException(ValueError, "Unknown method name")
 
 proc readAccessControl*(p: proc(origin: string, m: HttpMethod, headers: seq[string]): Handler): Handler =
