@@ -89,46 +89,60 @@ suite "basic functionality":
     check resp.body == "hello,hello,hello"
     check resp.isOkTextPlain
 
-# suite "handling headers":
-#   test "producing headers":
-#     let resp = get(baseUrl & "/emit-headers")
-#     check resp.body == "Hi there"
-#     check resp.hasStatus(200)
-#     check resp.hasContentType("text/html")
-#     check seq[string](resp.headers["date"]) == @["Today"]
-#   test "content negotiation":
-#     let
-#       headers = newHttpHeaders([("Accept", "text/html")])
-#       resp1 = get(baseUrl & "/content-negotiation", headers = headers)
-#     check resp1.body == "<html>hi</html>"
-#     check resp1.hasStatus(200)
-#     check resp1.hasContentType("text/html")
-#     let resp2 = get(baseUrl & "/content-negotiation", "Accept: text/plain\n")
-#     check resp2.body == "hi"
-#     check resp2.hasStatus(200)
-#     check resp2.hasContentType("text/plain")
-#   test "read all headers":
-#     let resp = get(baseUrl & "/read-all-headers", "First: Hello\nSecond: World!\n")
-#     check resp.body == "Hello, World!"
-#     check resp.isOkTextPlain
-#   test "read some headers":
-#     let resp = get(baseUrl & "/read-headers", "First: Hello\nSecond: World!\n")
-#     check resp.body == "Hello, World!"
-#     check resp.isOkTextPlain
-#   test "sending less headers than expected should not match":
-#     let resp = get(baseUrl & "/read-headers", "First: Hello\n")
-#     check resp.hasStatus(404)
-#   test "try read some headers":
-#     let resp = get(baseUrl & "/try-read-headers", "First: Hello\nSecond: World!\n")
-#     check resp.body == "Hello, World!"
-#     check resp.isOkTextPlain
-#   test "checking headers":
-#     let resp = get(baseUrl & "/check-headers", "First: Hello\nSecond: World!\n")
-#     check resp.body == "Hello, World!"
-#     check resp.isOkTextPlain
-#   test "failing to match headers":
-#     let resp = get(baseUrl & "/check-headers", "First: Hi\nSecond: World!\n")
-#     check resp.hasStatus(404)
+suite "handling headers":
+  test "producing headers":
+    let resp = get(baseUrl & "/emit-headers")
+    check resp.body == "Hi there"
+    check resp.hasStatus(200)
+    check resp.hasContentType("text/html")
+    check seq[string](resp.headers["date"]) == @["Today"]
+  test "content negotiation":
+    let
+      headers1 = newHttpHeaders({"Accept": "text/html"})
+      resp1 = get(baseUrl & "/content-negotiation", headers = headers1)
+    check resp1.body == "<html>hi</html>"
+    check resp1.hasStatus(200)
+    check resp1.hasContentType("text/html")
+    let
+      headers2 = newHttpHeaders({"Accept": "text/plain"})
+      resp2 = get(baseUrl & "/content-negotiation", headers = headers2)
+    check resp2.body == "hi"
+    check resp2.hasStatus(200)
+    check resp2.hasContentType("text/plain")
+  test "read all headers":
+    let
+      headers = newHttpHeaders({"First": "Hello", "Second": "World!"})
+      resp = get(baseUrl & "/read-all-headers", headers = headers)
+    check resp.body == "Hello, World!"
+    check resp.isOkTextPlain
+  test "read some headers":
+    let
+      headers = newHttpHeaders({"First": "Hello", "Second": "World!"})
+      resp = get(baseUrl & "/read-headers", headers = headers)
+    check resp.body == "Hello, World!"
+    check resp.isOkTextPlain
+  test "sending less headers than expected should not match":
+    let
+      headers = newHttpHeaders({"First": "Hello"})
+      resp = get(baseUrl & "/read-headers", headers = headers)
+    check resp.hasStatus(404)
+  test "try read some headers":
+    let
+      headers = newHttpHeaders({"First": "Hello", "Second": "World!"})
+      resp = get(baseUrl & "/try-read-headers", headers = headers)
+    check resp.body == "Hello, World!"
+    check resp.isOkTextPlain
+  test "checking headers":
+    let
+      headers = newHttpHeaders({"First": "Hello", "Second": "World!"})
+      resp = get(baseUrl & "/check-headers", headers = headers)
+    check resp.body == "Hello, World!"
+    check resp.isOkTextPlain
+  test "failing to match headers":
+    let
+      headers = newHttpHeaders({"First": "Hi", "Second": "World!"})
+      resp = get(baseUrl & "/check-headers", headers = headers)
+    check resp.hasStatus(404)
 #   test "date header":
 #     let resp = get(baseUrl & "/date")
 #     let date = parse(resp.headers["Date"], "ddd, dd MMM yyyy HH:mm:ss 'GMT'")
