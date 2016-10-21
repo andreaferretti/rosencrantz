@@ -30,7 +30,7 @@ proc accessControlAllow*(origin: string, methods: openarray[HttpMethod], headers
   )
 
 proc stringToMethod(s: string): HttpMethod =
-  case s.toUpper
+  case s.toUpperAscii
   of "GET": return HttpGet
   of "POST": return HttpPost
   of "PUT": return HttpPut

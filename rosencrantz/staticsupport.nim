@@ -12,7 +12,7 @@ proc sendChunk(req: ref Request, s: string): Future[void] {.async.} =
 proc getContentType(fileName: string, mime: MimeDB): string {.inline.} =
   let (_, _, ext) = splitFile(fileName)
   let extension = if ext[0] == '.': ext[1 .. ext.high] else: ext
-  return mime.getMimetype(extension.toLower)
+  return mime.getMimetype(extension.toLowerAscii)
 
 
 proc file*(path: string): Handler =
