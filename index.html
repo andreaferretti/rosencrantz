@@ -30,6 +30,9 @@ and its successor <a href="http://doc.akka.io/docs/akka/2.4.2/scala/http/introdu
 <p>It sits on top of <a href="http://nim-lang.org/docs/asynchttpserver.html">asynchttpserver</a>
 and provides a composable way to write HTTP handlers.</p>
 
+<p>Version 0.3 of Rosencrantz requires at least Nim 0.15. Use versions up to 0.2.8
+for older versions of Nim.</p>
+
 <h2>
 <a id="table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Table of contents</h2>
 
@@ -264,7 +267,7 @@ integer number. It fails if the segment does not represent an integer. Here
 <ul>
 <li>
 <code>verb(m)</code>, where <code>m</code> is a member of the <code>HttpMethod</code> enum defined in
-<code>rosencrantz/core</code>. There are corresponding specializations</li>
+the standard library <code>httpcore</code>. There are corresponding specializations</li>
 <li>
 <code>get</code>, <code>post</code>, <code>put</code>, <code>delete</code>, <code>head</code>, <code>patch</code>, <code>options</code>, <code>trace</code> and
 <code>connect</code>
