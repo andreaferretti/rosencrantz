@@ -3,5 +3,6 @@ nimcache
 nimsuggest.log
 tests/client
 tests/server
+tests/rosencrantz
 tests/todo
 *.ndb
