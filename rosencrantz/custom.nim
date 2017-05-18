@@ -44,4 +44,6 @@ macro makeHandler*(body: untyped): untyped =
 
     innerProc()
 
-  getAst(inner(body[6]))
+
+  result = getAst(inner(body))
+  echo result.toStrLit
