@@ -64,7 +64,7 @@ proc segment*(p: proc(s: string): Handler): Handler =
     if path[pos] != '/':
       return ctx.reject()
     let nextSlash = path.find('/', pos + 1)
-    let final = if nextSlash == -1: path.len else: nextSlash - 1
+    let final = if nextSlash == -1: path.len - 1 else: nextSlash - 1
     let s = path[(pos + 1) .. final]
     let handler = p(s)
     let newCtx = await handler(req, ctx.addPosition(final - pos + 1))

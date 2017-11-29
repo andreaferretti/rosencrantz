@@ -1,7 +1,7 @@
 mode = ScriptMode.Verbose
 
 packageName   = "rosencrantz"
-version       = "0.3.1"
+version       = "0.3.2"
 author        = "Andrea Ferretti"
 description   = "Web server DSL"
 license       = "Apache2"
@@ -24,22 +24,22 @@ proc configForTests() =
 task server, "compile server":
   configForTests()
   switch("out", "tests/rosencrantz")
-  setCommand "c", "tests/server"
+  setCommand "c", "tests/server.nim"
 
 task client, "run client":
   configForTests()
   --run
-  setCommand "c", "tests/client"
+  setCommand "c", "tests/client.nim"
 
 task gendoc, "generate documentation":
   --docSeeSrcUrl: https://github.com/andreaferretti/rosencrantz/blob/master
   --project
-  setCommand "doc2", "rosencrantz"
+  setCommand "doc", "rosencrantz"
 
 task todo, "run todo example":
   --path: "."
   --run
-  setCommand "c", "tests/todo"
+  setCommand "c", "tests/todo.nim"
 
 task tests, "run tests":
   exec "./test.sh"
