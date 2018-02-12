@@ -1,14 +1,14 @@
 mode = ScriptMode.Verbose
 
 packageName   = "rosencrantz"
-version       = "0.3.2"
+version       = "0.3.3"
 author        = "Andrea Ferretti"
 description   = "Web server DSL"
 license       = "Apache2"
 skipDirs      = @["tests", "htmldocs"]
 skipFiles     = @["test.sh"]
 
-requires "nim >= 0.17.0"
+requires "nim >= 0.17.3"
 
 --forceBuild
 

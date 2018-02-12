@@ -150,7 +150,7 @@ suite "handling headers":
   test "date header":
     let resp = get(baseUrl & "/date")
     let date = parse(resp.headers["Date"], "ddd, dd MMM yyyy HH:mm:ss 'GMT'")
-    let now = getTime().getGMTime()
+    let now = getTime().utc()
     check resp.isOkTextPlain
     check now.yearday == date.yearday
 
@@ -253,28 +253,28 @@ suite "form and querystring support":
     var mp = newMultipartData()
     mp["field"] = "hi there"
     mp["file"] = ("text.txt", "text/plain", "Hello, world!")
-    let resp = httpclient.post(baseUrl & "/multipart-form?echo=field", multipart = mp)
+    let resp = post(baseUrl & "/multipart-form?echo=field", multipart = mp)
     check resp.body == "hi there"
     check resp.isOkTextPlain
   test "multipart forms: file content":
     var mp = newMultipartData()
     mp["field"] = "hi there"
     mp["file"] = ("text.txt", "text/plain", "Hello, world!")
-    let resp = httpclient.post(baseUrl & "/multipart-form?echo=file", multipart = mp)
+    let resp = post(baseUrl & "/multipart-form?echo=file", multipart = mp)
     check resp.body == "Hello, world!"
     check resp.isOkTextPlain
   test "multipart forms: file content type":
     var mp = newMultipartData()
     mp["field"] = "hi there"
     mp["file"] = ("text.txt", "text/plain", "Hello, world!")
-    let resp = httpclient.post(baseUrl & "/multipart-form?echo=content-type", multipart = mp)
+    let resp = post(baseUrl & "/multipart-form?echo=content-type", multipart = mp)
     check resp.body == "text/plain"
     check resp.isOkTextPlain
   test "multipart forms: file name":
     var mp = newMultipartData()
     mp["field"] = "hi there"
     mp["file"] = ("text.txt", "text/plain", "Hello, world!")
-    let resp = httpclient.post(baseUrl & "/multipart-form?echo=filename", multipart = mp)
+    let resp = post(baseUrl & "/multipart-form?echo=filename", multipart = mp)
     check resp.body == "text.txt"
     check resp.isOkTextPlain
 

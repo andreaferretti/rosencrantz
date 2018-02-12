@@ -93,7 +93,7 @@ proc accept*(s: string): Handler = checkHeaders(("Accept", s))
 proc addDate*(): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     # https://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
-    let now = getTime().getGMTime().format("ddd, dd MMM yyyy HH:mm:ss 'GMT'")
+    let now = getTime().utc().format("ddd, dd MMM yyyy HH:mm:ss 'GMT'")
     return ctx.withHeaders([("Date", now)])
 
   return h

@@ -22,7 +22,7 @@ proc parseFromUrl(s: TableRef[string, seq[string]], m: typedesc[Messages]): Mess
 proc parseFromJson(j: JsonNode, m: typedesc[Message]): Message =
   let
     s = j["msg"].getStr
-    c = j["count"].getNum.int
+    c = j["count"].getInt
   return Message(message: s, count: c)
 
 let handler = get[
