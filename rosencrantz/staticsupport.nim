@@ -11,6 +11,7 @@ proc sendChunk(req: ref Request, s: string): Future[void] {.async.} =
 
 proc getContentType(fileName: string, mime: MimeDB): string {.inline.} =
   let (_, _, ext) = splitFile(fileName)
+  if ext == "": return "text/plain"
   let extension = if ext[0] == '.': ext[1 .. ext.high] else: ext
   return mime.getMimetype(extension.toLowerAscii)
 
