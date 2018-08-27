@@ -183,7 +183,7 @@ proc parseChunk(chunk: var string, accum: var MultiPart) {.inline.} =
   doAssert name != ""
   j += chunk.doSkip(sep, j)
   # if filename found, parse next line for Content-Type
-  if filename != nil:
+  if filename != "":
     lineEnd = chunk.find(sep, j)
     j += chunk.doSkipIgnoreCase("Content-Type:", j)
     j += chunk.skipWhiteSpace(j)
