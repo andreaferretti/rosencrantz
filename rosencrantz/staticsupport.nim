@@ -1,13 +1,6 @@
 import asynchttpserver, asyncdispatch, asyncnet, asyncfile, httpcore, os,
   mimetypes, strutils, tables
-import ./core, ./handlers
-
-proc sendChunk(req: ref Request, s: string): Future[void] {.async.} =
-  var chunk = s.len.toHex
-  chunk.add("\c\L")
-  chunk.add(s)
-  chunk.add("\c\L")
-  await req[].client.send(chunk)
+import ./core, ./handlers, ./streamingsupport
 
 proc getContentType(fileName: string, mime: MimeDB): string {.inline.} =
   let (_, _, ext) = splitFile(fileName)

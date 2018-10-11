@@ -1,5 +1,5 @@
-import asynchttpserver, asyncdispatch, httpcore, json, math, strtabs, strutils,
-  sequtils, tables, rosencrantz
+import asynchttpserver, asyncdispatch, asyncstreams, httpcore, json, math,
+  strtabs, strutils, sequtils, tables, rosencrantz
 
 type
   Message = object
@@ -156,6 +156,24 @@ let handler = get[
   ] ~
   path("/serve-image")[
     file("shakespeare.jpg")
+  ] ~
+  path("/serve-file-async")[
+    fileAsync("LICENSE")
+  ] ~
+  path("/serve-stream")[
+    scopeAsync do:
+      var fs = newFutureStream[string]("serve-stream")
+      await fs.write("Hello")
+      await sleepAsync(50)
+      await fs.write("World")
+      # TODO: Sending an empty string
+      # should not be necessary
+      await sleepAsync(50)
+      await fs.write("")
+      let s = sleepAsync(50)
+      s.callback = (proc() = echo "closing"; fs.complete())
+      await s
+      return streaming(fs)
   ] ~
   pathChunk("/serve-dir")[
     dir(".")
