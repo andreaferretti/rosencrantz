@@ -72,7 +72,7 @@ proc withHeaders*(ctx: Context, hs: openarray[StrPair]): Context =
 type Handler* = proc(req: ref Request, ctx: Context): Future[Context]
 
 proc handle*(h: Handler): auto =
-  proc server(req: Request): Future[void] {.async.} =
+  proc server(req: Request): Future[void] {.async, closure.} =
     let emptyCtx = Context(
       position: 0,
       accept: true,

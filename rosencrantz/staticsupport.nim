@@ -69,7 +69,7 @@ proc dir*(path: string): Handler =
     template p: auto = req.url.path
 
     let
-      fileName = p[ctx.position .. p.high]
+      fileName = p[ctx.position+1 .. p.high]
       completeFileName = path / fileName
     if fileExists(completeFileName):
       let
