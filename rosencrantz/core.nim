@@ -71,8 +71,8 @@ proc withHeaders*(ctx: Context, hs: openarray[StrPair]): Context =
 
 type Handler* = proc(req: ref Request, ctx: Context): Future[Context]
 
-proc handle*(h: Handler): auto {.gcsafe.} =
-  proc server(req: Request): Future[void] {.async, closure.} =
+proc handle*(h: Handler): auto =
+  proc server(req: Request): Future[void] {.async, closure, gcsafe.} =
     let emptyCtx = Context(
       position: 0,
       accept: true,
@@ -119,6 +119,7 @@ proc `->`*(h1, h2: Handler): Handler =
 template `[]`*(h1, h2: Handler): auto = h1 -> h2
 
 proc serve*(server: AsyncHttpServer, port: Port, handler: Handler, address = ""): Future[void] =
-  echo "My most dear lord!"
-  echo "Rosencrantz ready on port ", port.int16
+  if not defined(silence_rosencrantz):
+    echo "My most dear lord!"
+    echo "Rosencrantz ready on port ", port.int16
   serve(server, port, handle(handler), address)
