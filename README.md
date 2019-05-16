@@ -121,7 +121,7 @@ let handler = get[
       )
     ]
   ]
-] ~ post [
+] ~ post[
   path("/api/new-message")[
     jsonBody(proc(msg: Message): auto =
       let
