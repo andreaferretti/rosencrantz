@@ -61,7 +61,7 @@ proc segment*(p: proc(s: string): Handler): Handler =
     template path: auto = req.url.path
 
     let pos = ctx.position
-    if path[pos] != '/':
+    if pos >= path.len or path[pos] != '/':
       return ctx.reject()
     let nextSlash = path.find('/', pos + 1)
     let final = if nextSlash == -1: path.len - 1 else: nextSlash - 1
