@@ -319,3 +319,12 @@ let handler = get[
 let server = newAsyncHttpServer()
 
 waitFor server.serve(Port(8080), handler)
+
+discard """
+  path("/accept")[
+    rosencrantz.xaccept()
+  ] ~
+  path("/accept-or-reject")[
+    acceptOrReject(true)
+  ]
+  """

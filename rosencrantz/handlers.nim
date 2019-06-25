@@ -7,6 +7,22 @@ proc reject*(): Handler =
 
   return h
 
+proc accept*(): Handler =
+  ## Helper proc for when you need to return a Handler, but already
+  ## know that you are not reject()-ing the request
+  proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
+    return ctx
+
+  return h
+
+proc acceptOrReject*(b: bool) : Handler =
+  ## Helper proc for creating a Handler that will accept or reject
+  ## based on a single boolean
+  if b:
+    return accept()
+  else:
+    return reject()
+
 proc complete*(code: HttpCode, body: string, headers = newHttpHeaders()): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     var hs = headers
