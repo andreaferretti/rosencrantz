@@ -182,6 +182,9 @@ There are a few handlers to filter by path and extract path parameters:
 * `pathEnd(p)` extracts whatever is not matched yet of the path and passes it
   to `p`. Here `p` is a `proc(s: string): Handler` that takes the final part of
   the path and returns a handler.
+* `pathEnd(s)` filters the requests where the remaining path is equal
+   to `s`. Defaults to case sensitive matching, but you can use
+   `pathEnd(s, caseSensitive=false)` to do a case insensitive match.
 * `segment(p)`, that extracts a segment of path among two `/` signs. Here `p`
   is a `proc(s: string): Handler` that takes the matched segment and return a
   handler. This fails if the position is not just before a `/` sign.

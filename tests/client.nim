@@ -104,6 +104,22 @@ suite "basic functionality":
     let resp = get(baseUrl & "/sEgMeNt-TeXt-cAse-iNseNsiTive")
     check resp.body == "Matched /segment-text-case-insensitive"
     check resp.isOkTextPlain
+  test "pathEnd default":
+    let resp = get(baseUrl & "/no-trailing-slash")
+    check resp.body == "Matched /no-trailing-slash"
+    check resp.isOkTextPlain
+  test "pathEnd default does not match trailing slash":
+    let resp = get(baseUrl & "/no-trailing-slash/")
+    check resp.body == "Not Found"
+    check resp.hasStatus(404)
+  test "pathEnd specific":
+    let resp = get(baseUrl & "/path-end-rest/of/path")
+    check resp.body == "Matched /path-end-rest/of/path"
+    check resp.isOkTextPlain
+  test "pathEnd specific does not match with trailing":
+    let resp = get(baseUrl & "/path-end-rest/of/path2")
+    check resp.body == "Not Found"
+    check resp.hasStatus(404)
 
 suite "handling headers":
   test "producing headers":

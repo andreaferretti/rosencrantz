@@ -72,6 +72,26 @@ proc pathEnd*(p: proc(s: string): Handler): Handler =
 
   return h
 
+proc matchText(s1, s2: string, caseSensitive=true) : bool =
+  result = if caseSensitive:
+             s1 == s2
+           else:
+             s1.cmpIgnoreCase(s2) == 0
+
+proc pathEnd*(s = "", caseSensitive=true) : Handler =
+  ## Matches if the remaining path matches ''s''. The default
+  ## is an empty string for the common scenario of ensuring
+  ## that there is no trailing path. You can supply your own
+  ## value to override this (e.g. ''pathEnd("/")'' to ensure
+  ## a trailing slash on the URL)
+  ##
+  ## The matching defaults to case sensitive, but you can override
+  ## this if needed.
+  proc inner(remaining: string) : Handler =
+    return acceptOrReject(matchText(s, remaining, caseSensitive))
+
+  return pathEnd(inner)
+
 proc segment*(p: proc(s: string): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     template path: auto = req.url.path
@@ -88,16 +108,10 @@ proc segment*(p: proc(s: string): Handler): Handler =
 
   return h
 
-proc matchText(s1, s2: string, caseSensitive=true) : bool =
-  result = if caseSensitive:
-             s1 == s2
-           else:
-             s1.cmpIgnoreCase(s2) == 0
-
 proc segment*(s : string, caseSensitive=true) : Handler =
   ## Matches a path segment if the entire segment matches ''s''
   ## For example ''segment("hello")'' will match a request
-  ## like ''/hello'',  but not ''/helloworld''. 
+  ## like ''/hello'',  but not ''/helloworld''.
   ##
   ## The matching defaults to case sensitive, but you can override
   ## this if needed.

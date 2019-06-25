@@ -255,6 +255,16 @@ let handler = get[
   ] ~
   segment("segment-text-case-insensitive", caseSensitive=false)[
     ok("Matched /segment-text-case-insensitive")
+  ] ~
+  pathChunk("/no-trailing-slash")[
+    pathEnd()[
+      ok("Matched /no-trailing-slash")
+    ]
+  ] ~
+  pathChunk("/path-end-")[
+    pathEnd("rest/of/path")[
+      ok("Matched /path-end-rest/of/path")
+    ]
   ]
 ] ~ post[
   path("/hello-post")[
