@@ -249,6 +249,12 @@ let handler = get[
     readAccessControl(proc(origin: string, m: HttpMethod, headers: seq[string]): auto =
       ok(@[origin, $m, headers.join(",")].join(";"))
     )
+  ] ~
+  segment("segment-text")[
+    ok("Matched /segment-text")
+  ] ~
+  segment("segment-text-case-insensitive", caseSensitive=false)[
+    ok("Matched /segment-text-case-insensitive")
   ]
 ] ~ post[
   path("/hello-post")[
@@ -319,12 +325,3 @@ let handler = get[
 let server = newAsyncHttpServer()
 
 waitFor server.serve(Port(8080), handler)
-
-discard """
-  path("/accept")[
-    rosencrantz.xaccept()
-  ] ~
-  path("/accept-or-reject")[
-    acceptOrReject(true)
-  ]
-  """

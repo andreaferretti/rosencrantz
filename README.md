@@ -185,6 +185,10 @@ There are a few handlers to filter by path and extract path parameters:
 * `segment(p)`, that extracts a segment of path among two `/` signs. Here `p`
   is a `proc(s: string): Handler` that takes the matched segment and return a
   handler. This fails if the position is not just before a `/` sign.
+* `segment(s)` filters the requests where the current path segment is equal
+   to `s`. Defaults to case sensitive matching, but you can use
+   `segment(s, caseSensitive=false)` to do a case insensitive match.
+   This fails if the position is not just before a `/` sign.
 * `intSegment(p)`, works the same as `segment`, but extracts and parses an
   integer number. It fails if the segment does not represent an integer. Here
   `p` is a `proc(s: int): Handler`.

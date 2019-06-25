@@ -88,6 +88,24 @@ proc segment*(p: proc(s: string): Handler): Handler =
 
   return h
 
+proc matchText(s1, s2: string, caseSensitive=true) : bool =
+  result = if caseSensitive:
+             s1 == s2
+           else:
+             s1.cmpIgnoreCase(s2) == 0
+
+proc segment*(s : string, caseSensitive=true) : Handler =
+  ## Matches a path segment if the entire segment matches ''s''
+  ## For example ''segment("hello")'' will match a request
+  ## like ''/hello'',  but not ''/helloworld''. 
+  ##
+  ## The matching defaults to case sensitive, but you can override
+  ## this if needed.
+  proc inner(segmentTxt: string): Handler =
+    return acceptOrReject(matchText(s, segmentTxt, caseSensitive))
+
+  return segment(inner)
+
 proc intSegment*(p: proc(n: int): Handler): Handler =
   proc inner(s: string): Handler =
     var n: int
