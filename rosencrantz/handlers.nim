@@ -7,6 +7,22 @@ proc reject*(): Handler =
 
   return h
 
+proc accept*(): Handler =
+  ## Helper proc for when you need to return a Handler, but already
+  ## know that you are not reject()-ing the request
+  proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
+    return ctx
+
+  return h
+
+proc acceptOrReject*(b: bool) : Handler =
+  ## Helper proc for creating a Handler that will accept or reject
+  ## based on a single boolean
+  if b:
+    return accept()
+  else:
+    return reject()
+
 proc complete*(code: HttpCode, body: string, headers = newHttpHeaders()): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     var hs = headers
@@ -56,6 +72,26 @@ proc pathEnd*(p: proc(s: string): Handler): Handler =
 
   return h
 
+proc matchText(s1, s2: string, caseSensitive=true) : bool =
+  result = if caseSensitive:
+             s1 == s2
+           else:
+             s1.cmpIgnoreCase(s2) == 0
+
+proc pathEnd*(s = "", caseSensitive=true) : Handler =
+  ## Matches if the remaining path matches ''s''. The default
+  ## is an empty string for the common scenario of ensuring
+  ## that there is no trailing path. You can supply your own
+  ## value to override this (e.g. ''pathEnd("/")'' to ensure
+  ## a trailing slash on the URL)
+  ##
+  ## The matching defaults to case sensitive, but you can override
+  ## this if needed.
+  proc inner(remaining: string) : Handler =
+    return acceptOrReject(matchText(s, remaining, caseSensitive))
+
+  return pathEnd(inner)
+
 proc segment*(p: proc(s: string): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     template path: auto = req.url.path
@@ -71,6 +107,18 @@ proc segment*(p: proc(s: string): Handler): Handler =
     return newCtx
 
   return h
+
+proc segment*(s : string, caseSensitive=true) : Handler =
+  ## Matches a path segment if the entire segment matches ''s''
+  ## For example ''segment("hello")'' will match a request
+  ## like ''/hello'',  but not ''/helloworld''.
+  ##
+  ## The matching defaults to case sensitive, but you can override
+  ## this if needed.
+  proc inner(segmentTxt: string): Handler =
+    return acceptOrReject(matchText(s, segmentTxt, caseSensitive))
+
+  return segment(inner)
 
 proc intSegment*(p: proc(n: int): Handler): Handler =
   proc inner(s: string): Handler =

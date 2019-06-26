@@ -249,6 +249,22 @@ let handler = get[
     readAccessControl(proc(origin: string, m: HttpMethod, headers: seq[string]): auto =
       ok(@[origin, $m, headers.join(",")].join(";"))
     )
+  ] ~
+  segment("segment-text")[
+    ok("Matched /segment-text")
+  ] ~
+  segment("segment-text-case-insensitive", caseSensitive=false)[
+    ok("Matched /segment-text-case-insensitive")
+  ] ~
+  pathChunk("/no-trailing-slash")[
+    pathEnd()[
+      ok("Matched /no-trailing-slash")
+    ]
+  ] ~
+  pathChunk("/path-end-")[
+    pathEnd("rest/of/path")[
+      ok("Matched /path-end-rest/of/path")
+    ]
   ]
 ] ~ post[
   path("/hello-post")[
