@@ -1,6 +1,6 @@
 import asynchttpserver, asyncdispatch, asyncnet, asyncfile, httpcore, os,
   mimetypes, strutils, tables
-import ./core, ./handlers, ./streamingsupport
+import ./core, ./streamingsupport
 
 proc getContentType(fileName: string, mime: MimeDB): string {.inline.} =
   let (_, _, ext) = splitFile(fileName)

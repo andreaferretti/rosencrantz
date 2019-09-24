@@ -8,8 +8,8 @@ and its successor [Akka HTTP](http://doc.akka.io/docs/akka/2.4.2/scala/http/intr
 It sits on top of [asynchttpserver](http://nim-lang.org/docs/asynchttpserver.html)
 and provides a composable way to write HTTP handlers.
 
-Version 0.3 of Rosencrantz requires at least Nim 0.15. Use versions up to 0.2.8
-for older versions of Nim.
+Version 0.4 of Rosencrantz is tested with Nim 1.0.0, but is compatible with
+versions of Nim from 0.19.0 on.
 
 Table of contents
 -----------------

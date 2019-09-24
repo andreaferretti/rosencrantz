@@ -1,5 +1,5 @@
-import strtabs, asynchttpserver, asyncdispatch, httpcore, times
-import ./core, ./handlers
+import asynchttpserver, asyncdispatch, httpcore, times
+import ./core
 
 proc headers*(hs: varargs[StrPair]): Handler =
   let headerSeq = @hs

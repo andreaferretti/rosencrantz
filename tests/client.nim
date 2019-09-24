@@ -8,9 +8,7 @@ const
 
 proc request(url: string, httpMethod: HttpMethod, headers = newHttpHeaders(), body = ""): Response =
   var client = newHttpClient()
-  var hs = headers
-  hs[cl] = $(body.len)
-  client.headers = hs
+  client.headers = headers
   return client.request(url, httpMethod = httpMethod, body = body)
 
 proc get(url: string, headers = newHttpHeaders()): Response =

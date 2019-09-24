@@ -1,6 +1,6 @@
 import asynchttpserver, asyncdispatch, asyncfutures, asyncnet, asyncstreams,
-  httpcore, os, strutils, tables
-import ./core, ./handlers
+  httpcore, strutils, tables
+import ./core
 
 proc sendChunk*(req: ref Request, s: string): Future[void] {.async.} =
   var chunk = s.len.toHex
