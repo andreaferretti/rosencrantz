@@ -1,4 +1,4 @@
-import unittest, httpcore, strtabs, strutils, times, json
+import unittest, httpcore, strutils, times, json
 import httpclient except get, post
 
 const

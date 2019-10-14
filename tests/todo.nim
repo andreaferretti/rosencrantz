@@ -19,17 +19,17 @@ proc makeUrl(n: int): string = "http://localhost:8080/todos/" & $n
 proc parseFromJson(j: JsonNode, m: typedesc[Todo]): Todo =
   let
     title = j["title"].getStr
-    completed = if j.hasKey("completed"): j["completed"].getBVal else: false
-    url = if j.hasKey("url"): j["url"].getStr else: random(1000000).makeUrl
-    order = if j.hasKey("order"): j["order"].getNum.int else: 0
+    completed = if j.hasKey("completed"): j["completed"].getBool else: false
+    url = if j.hasKey("url"): j["url"].getStr else: rand(1000000).makeUrl
+    order = if j.hasKey("order"): j["order"].getInt else: 0
   return Todo(title: title, completed: completed, url: url, order: order)
 
 proc merge(todo: Todo, j: JsonNode): Todo =
   let
     title = if j.hasKey("title"): j["title"].getStr else: todo.title
-    completed = if j.hasKey("completed"): j["completed"].getBVal else: todo.completed
+    completed = if j.hasKey("completed"): j["completed"].getBool else: todo.completed
     url = if j.hasKey("url"): j["url"].getStr else: todo.url
-    order = if j.hasKey("order"): j["order"].getNum.int else: todo.order
+    order = if j.hasKey("order"): j["order"].getInt else: todo.order
   return Todo(title: title, completed: completed, url: url, order: order)
 
 var todos: seq[Todo] = @[]

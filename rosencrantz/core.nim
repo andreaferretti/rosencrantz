@@ -83,11 +83,12 @@ proc handle*(h: Handler): auto =
     var
       f: Future[Context]
       ctx: Context
-    try:
-      f = h(reqHeap, emptyCtx)
-      ctx = await f
-    except:
-      discard
+    {.gcsafe.}:
+      try:
+        f = h(reqHeap, emptyCtx)
+        ctx = await f
+      except:
+        discard
     if f.failed:
       await req.respond(Http500, "Server Error", {"Content-Type": "text/plain;charset=utf-8"}.newHttpHeaders)
     else:
