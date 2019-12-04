@@ -145,6 +145,12 @@ let handler = get[
   path("/write-json")[
     ok(%{"msg": %"hi there", "count": %5})
   ] ~
+  path("/write-json-pretty")[
+    ok(%{"msg": %"hi there", "count": %5}, pretty=true)
+  ] ~
+  path("/write-json-non-pretty")[
+    ok(%{"msg": %"hi there", "count": %5}, pretty=false)
+  ] ~
   path("/write-json-typeclass")[
     ok(Message(message: "hi there", count: 5))
   ] ~

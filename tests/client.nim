@@ -217,6 +217,16 @@ suite "json support":
     let resp = get(baseUrl & "/write-json")
     check resp.body.parseJson["msg"].getStr == "hi there"
     check resp.isOkJson
+  test "producing pretty json":
+    let resp = get(baseUrl & "/write-json-pretty")
+    check resp.body.parseJson["msg"].getStr == "hi there"
+    check resp.isOkJson
+    check resp.body.find('\n') != -1
+  test "producing non-pretty json":
+    let resp = get(baseUrl & "/write-json-non-pretty")
+    check resp.body.parseJson["msg"].getStr == "hi there"
+    check resp.isOkJson
+    check resp.body.find('\n') == -1
   test "reading json":
     let resp = post(baseUrl & "/read-json", body = $(%{"msg": %"hi there", "count": %5}))
     check resp.body == "hi there"

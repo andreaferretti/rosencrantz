@@ -8,18 +8,20 @@ type
   JsonWritable* = concept x
     renderToJson(x) is JsonNode
 
-proc ok*(j: JsonNode): Handler =
+proc ok*(j: JsonNode, pretty=false): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     var headers = {"Content-Type": "application/json"}.newHttpHeaders
     # Should traverse in reverse order
     for h in ctx.headers:
       headers[h.k] = h.v
-    await req[].respond(Http200, $j, headers)
+    let body = if pretty: pretty(j) else: $j
+    await req[].respond(Http200, body, headers)
     return ctx
 
   return h
 
-proc ok*[A: JsonWritable](a: A): Handler = ok(a.renderToJson)
+proc ok*[A: JsonWritable](a: A, pretty=false): Handler =
+  ok(a.renderToJson, pretty)
 
 proc jsonBody*(p: proc(j: JsonNode): Handler): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
