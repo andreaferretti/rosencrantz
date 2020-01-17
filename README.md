@@ -1,4 +1,4 @@
-# Rosencrantz
+# 1. Rosencrantz
 
 ![shakespeare](https://raw.githubusercontent.com/andreaferretti/rosencrantz/master/shakespeare.jpg)
 
@@ -14,30 +14,30 @@ versions of Nim from 0.19.0 on.
 Table of contents
 -----------------
 
-<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+<!-- TOC depthfrom:1 depthto:6 withlinks:false updateonsave:false orderedlist:false -->
 
-- [Rosencrantz](#rosencrantz)
-  - [Introduction](#introduction)
-    - [Composing handlers](#composing-handlers)
-    - [Starting a server](#starting-a-server)
-  - [Structure of the package](#structure-of-the-package)
-  - [An example](#an-example)
-  - [Basic handlers](#basic-handlers)
-    - [Path handling](#path-handling)
-    - [HTTP methods](#http-methods)
-    - [Failure containment](#failure-containment)
-    - [Logging](#logging)
-  - [Working with headers](#working-with-headers)
-  - [Writing custom handlers](#writing-custom-handlers)
-  - [JSON support](#json-support)
-  - [Form and querystring support](#form-and-querystring-support)
-  - [Static file support](#static-file-support)
-  - [CORS support](#cors-support)
-  - [API stability](#api-stability)
+- Rosencrantz
+  - Introduction
+    - Composing handlers
+    - Starting a server
+  - Structure of the package
+  - An example
+  - Basic handlers
+    - Path handling
+    - HTTP methods
+    - Failure containment
+    - Logging
+  - Working with headers
+  - Writing custom handlers
+  - JSON support
+  - Form and querystring support
+  - Static file support
+  - CORS support
+  - API stability
 
 <!-- /TOC -->
 
-## Introduction
+## 1.1. Introduction
 
 The core abstraction in Rosencrantz is the `Handler`, which is just an alias
 for a `proc(req: ref Request, ctx: Context): Future[Context]`. Here `Request`
@@ -59,7 +59,7 @@ A handler usually does one or more of the following:
 Rosencrantz provides many of those handlers, which are described below. For the
 complete API, check [here](http://andreaferretti.github.io/rosencrantz/rosencrantz.html).
 
-### Composing handlers
+### 1.1.1. Composing handlers
 
 The nice thing about handlers is that they are composable. There are two ways
 to compose two headers `h1` and `h2`:
@@ -77,7 +77,7 @@ when composing many handlers one inside each other. Also remember that,
 according to Nim rules, `~` has higher precedence than `->` - use parentheses
 if necessary to compose your handlers.
 
-### Starting a server
+### 1.1.2. Starting a server
 
 Once you have a handler, you can serve it using a server from `asynchttpserver`,
 like this:
@@ -88,7 +88,7 @@ let server = newAsyncHttpServer()
 waitFor server.serve(Port(8080), handler)
 ```
 
-## Structure of the package
+## 1.2. Structure of the package
 
 Rosencrantz can be fully imported with just
 
@@ -101,7 +101,7 @@ The `rosencrantz` module just re-exports functionality from the submodules
 on. These modules can be imported separately. The API is available
 [here](http://andreaferretti.github.io/rosencrantz/rosencrantz.html).
 
-## An example
+## 1.3. An example
 
 The following uses some of the predefined handlers and composes them together.
 We write a small piece of a fictionary API to save and retrieve messages, and
@@ -141,7 +141,7 @@ tests every handler defined in Rosencrantz, while
 implements a server compliant with the [TODO backend project](http://www.todobackend.com/)
 specs.
 
-## Basic handlers
+## 1.4. Basic handlers
 
 In order to work with Rosencrantz, you can `import rosencrantz`. If you prefer
 a more fine-grained control, there are packages `rosencrantz/core` (which
@@ -171,7 +171,7 @@ body(proc(s: string): auto =
 )
 ```
 
-### Path handling
+### 1.4.1. Path handling
 
 There are a few handlers to filter by path and extract path parameters:
 
@@ -209,7 +209,7 @@ pathChunk("/repeat")[
 ]
 ```
 
-### HTTP methods
+### 1.4.2. HTTP methods
 
 To filter by HTTP method, one can use
 
@@ -218,7 +218,7 @@ To filter by HTTP method, one can use
 * `get`, `post`, `put`, `delete`, `head`, `patch`, `options`, `trace` and
   `connect`
 
-### Failure containment
+### 1.4.3. Failure containment
 
 When a requests falls through all routes without matching, Rosencrantz will
 return a standard response of `404 Not Found`. Similarly, whenever an
@@ -251,7 +251,20 @@ failWith(Http406, "JSON endpoint")(
 )
 ```
 
-### Logging
+Similarly, you may want to customize the behaviour of Rosencrantz when the
+application crashes.
+
+* `crashWith(code, s, logError)` can be used to wrap your handler:
+
+```nim
+crashWith(Http500, "Sorry :-(")(
+  accept("application/json")[
+    someResponse
+  ]
+)
+```
+
+### 1.4.4. Logging
 
 Rosencrantz supports logging in two different moments: when a request arrives,
 or when a response is produced (of course you can also manually log at any other
@@ -287,7 +300,7 @@ which will produce log strings such as
 GET /api/users/181 - 200 OK
 ```
 
-## Working with headers
+## 1.5. Working with headers
 
 Under `rosencrantz/headersupport`, there are various handlers to read HTTP
 headers, filter requests by their values, or accumulate HTTP headers for the
@@ -331,7 +344,7 @@ accept("application/json")[
 ]
 ```
 
-## Writing custom handlers
+## 1.6. Writing custom handlers
 
 Sometimes, the need arises to write handlers that perform a little more custom
 logic than those shown above. For those cases, Rosencrantz provides a few
@@ -403,7 +416,7 @@ path("/custom-handler")[
 Notice that `makeHandler` is a little lower-level than other parts of
 Rosencrantz, and requires you to know how to write a custom handler.
 
-## JSON support
+## 1.7. JSON support
 
 Rosencrantz has support to parse and respond with JSON, under the
 `rosencrantz/jsonsupport` module. It defines two typeclasses:
@@ -426,7 +439,7 @@ The module `rosencrantz/core` contains the following handlers:
   is `JsonReadable`; it extracts the body as a `T` and passes it to `p`, failing
   if the body is not valid JSON or cannot be converted to `T`.
 
-## Form and querystring support
+## 1.8. Form and querystring support
 
 Rosencrantz has support to read the body of a form, either of type
 `application/x-www-form-urlencoded` or multipart. It also supports
@@ -490,7 +503,7 @@ The handler for multipart forms is:
   exception is raised - you can choose whether to let it propagate it and
   return a 500 error, or contain it using `failWith`.
 
-## Static file support
+## 1.9. Static file support
 
 Rosencrantz has support to serve static files or directories. For now, it is
 limited to small files, because it does not support streaming yet.
@@ -532,7 +545,7 @@ handler inside a `contentType` handler to override the content type.
 version. They work just fine on Nim 0.14.0 or on devel.
 
 
-## CORS support
+## 1.10. CORS support
 
 Rosencrantz has support for [Cross-Origin requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)
 under the module `rosencrantz/corssupport`.
@@ -568,7 +581,7 @@ preflight requests. These handlers are available:
   that will receive the origin of the request, the desired method and the
   additional headers to be provided, and will return a suitable response.
 
-## API stability
+## 1.11. API stability
 
 While the basic design is not going to change, the API is not completely
 stable yet. It is possible that the `Context` will change to accomodate some

@@ -1,4 +1,4 @@
-import asynchttpserver, asyncdispatch, asyncstreams, httpcore, json, math,
+import asynchttpserver, asyncdispatch, asyncstreams, httpcore, json, random,
   strtabs, strutils, sequtils, tables, rosencrantz
 
 type
@@ -50,6 +50,14 @@ let handler = get[
         {"Content-Type": "text/plain"}.newHttpHeaders)
     ]
   ] ~
+  crashWith(Http500, "Sorry :-(")(
+    path("/custom-crash")[
+      scope do:
+        if rand(5) < 6:
+          raise newException(Exception, "crash")
+        return ok("hello")
+    ]
+  ) ~
   pathChunk("/echo")[
     pathEnd(proc(rest: string): auto = ok(rest))
   ] ~

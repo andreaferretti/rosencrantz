@@ -31,6 +31,8 @@ proc complete*(code: HttpCode, body: string, headers = newHttpHeaders()): Handle
       hs[h.k] = h.v
     if not ctx.log.isNil:
       debugEcho ctx.log[].format(req.reqMethod, req.url.path, req.headers.table, req.body, code, headers.table, body)
+    if not ctx.error.isNil:
+      stderr.write(ctx.error[])
     await req[].respond(code, body, hs)
     return ctx
 
@@ -181,5 +183,21 @@ proc logRequest*(s: string): Handler =
 proc failWith*(code: HttpCode, s: string): auto =
   proc inner(handler: Handler): Handler =
     handler ~ complete(code, s)
+
+  return inner
+
+proc crashWith*(code = Http500, s = "Server Error", logError = true): auto =
+  let failSafeHandler = complete(code, s)
+
+  proc inner(handler: Handler): Handler =
+    proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
+      try:
+        let newCtx = await handler(req, ctx)
+        return newCtx
+      except Exception as e:
+        let newCtx = if logError: ctx.withError(e.msg) else: ctx
+        return await failSafeHandler(req, newCtx)
+
+    return h
 
   return inner

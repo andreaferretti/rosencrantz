@@ -10,6 +10,7 @@ type
     position*: int
     accept*: bool
     log*: ref string
+    error*: ref string
     headers*: List[StrPair]
 
 
@@ -31,6 +32,7 @@ proc reject*(ctx: Context): Context =
     position: ctx.position,
     accept: false,
     log: ctx.log,
+    error: ctx.error,
     headers: ctx.headers
   )
 
@@ -39,6 +41,7 @@ proc addPosition*(ctx: Context, n: int): Context =
     position: ctx.position + n,
     accept: ctx.accept,
     log: ctx.log,
+    error: ctx.error,
     headers: ctx.headers
   )
 
@@ -47,6 +50,7 @@ proc withPosition*(ctx: Context, n: int): Context =
     position: n,
     accept: ctx.accept,
     log: ctx.log,
+    error: ctx.error,
     headers: ctx.headers
   )
 
@@ -55,6 +59,19 @@ proc withLogging*(ctx: Context, s: ref string): Context =
     position: ctx.position,
     accept: ctx.accept,
     log: s,
+    error: ctx.error,
+    headers: ctx.headers
+  )
+
+proc withError*(ctx: Context, s: string): Context =
+  var x: ref string
+  new x
+  x[] = s
+  Context(
+    position: ctx.position,
+    accept: ctx.accept,
+    log: ctx.log,
+    error: x,
     headers: ctx.headers
   )
 
@@ -66,6 +83,7 @@ proc withHeaders*(ctx: Context, hs: openarray[StrPair]): Context =
     position: ctx.position,
     accept: ctx.accept,
     log: ctx.log,
+    error: ctx.error,
     headers: headers
   )
 

@@ -193,6 +193,10 @@ suite "handling failures":
     let resp = get(baseUrl & "/custom-failure")
     check resp.body == "Unauthorized"
     check resp.hasStatus(401)
+  test "crash containment":
+    let resp = get(baseUrl & "/custom-crash")
+    check resp.body == "Sorry :-("
+    check resp.hasStatus(500)
 
 suite "writing custom handlers":
   test "scope template":

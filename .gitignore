@@ -6,3 +6,4 @@ tests/server
 tests/rosencrantz
 tests/todo
 *.ndb
+*.dSYM
