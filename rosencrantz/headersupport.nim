@@ -19,7 +19,12 @@ proc readAllHeaders*(p: proc(headers: HttpHeaders): Handler): Handler =
 
   return h
 
-proc readHeaders*(s1: string, p: proc(h1: string): Handler): Handler =
+type
+  Read1Header[A] = proc(h1: A): Handler {.nimcall.}
+  Read2Header[A] = proc(h1, h2: A): Handler {.nimcall.}
+  Read3Header[A] = proc(h1, h2, h3: A): Handler {.nimcall.}
+
+proc readHeaders*(s1: string, p: Read1Header[string] or Read1Header[HttpHeaderValues]): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     if req.headers.hasKey(s1):
       let handler = p(req.headers[s1])
@@ -30,7 +35,7 @@ proc readHeaders*(s1: string, p: proc(h1: string): Handler): Handler =
 
   return h
 
-proc readHeaders*(s1, s2: string, p: proc(h1, h2: string): Handler): Handler =
+proc readHeaders*(s1, s2: string, p: Read2Header[string] or Read2Header[HttpHeaderValues]): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     if req.headers.hasKey(s1) and req.headers.hasKey(s2):
       let handler = p(req.headers[s1], req.headers[s2])
@@ -41,7 +46,7 @@ proc readHeaders*(s1, s2: string, p: proc(h1, h2: string): Handler): Handler =
 
   return h
 
-proc readHeaders*(s1, s2, s3: string, p: proc(h1, h2, h3: string): Handler): Handler =
+proc readHeaders*(s1, s2, s3: string, p: Read3Header[string] or Read3Header[HttpHeaderValues]): Handler =
   proc h(req: ref Request, ctx: Context): Future[Context] {.async.} =
     if req.headers.hasKey(s1) and req.headers.hasKey(s2) and req.headers.hasKey(s3):
       let handler = p(req.headers[s1], req.headers[s2], req.headers[s3])

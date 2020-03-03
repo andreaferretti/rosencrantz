@@ -147,9 +147,16 @@ suite "handling headers":
     check resp.isOkTextPlain
   test "read some headers":
     let
-      headers = newHttpHeaders({"First": "Hello", "Second": "World!"})
+      headers = newHttpHeaders([("First", "Hello"), ("Second", "World!")])
       resp = get(baseUrl & "/read-headers", headers = headers)
     check resp.body == "Hello, World!"
+    check resp.isOkTextPlain
+  test "read some repeated headers":
+    var headers = newHttpHeaders()
+    headers.add("Repeated", "One")
+    headers.add("Repeated", "Two")
+    let resp = get(baseUrl & "/read-headers-multi-values", headers = headers)
+    check resp.body == "One,Two"
     check resp.isOkTextPlain
   test "sending less headers than expected should not match":
     let
