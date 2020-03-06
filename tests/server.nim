@@ -126,7 +126,7 @@ let handler = get[
   path("/read-headers-multi-values")[
     readHeaders("Repeated", proc(repeated: HttpHeaderValues): auto =
       let values: seq[string] = seq[string](repeated)
-      return ok(values.join(","))
+      return ok(values.join(" "))
     )
   ] ~
   path("/try-read-headers")[
