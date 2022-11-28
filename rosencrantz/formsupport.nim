@@ -1,4 +1,4 @@
-import strtabs, strutils, parseutils, tables, asynchttpserver, asyncdispatch, cgi
+import strtabs, strutils, parseutils, tables, asynchttpserver, asyncdispatch, uri
 import ./core, ./handlers
 
 type
